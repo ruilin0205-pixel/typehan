@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
-<title>HanziLens · 汉字精读 — Chinese Reading & Learning Tool</title>
+<title>HanziLens · 汉字精读 — أداة قراءة اللغة الصينية وتعلّمها</title>
 <!-- Hanzi Writer for animated stroke order (requires internet for first-time char data) -->
 <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.0/dist/hanzi-writer.min.js"></script>
 <!-- pinyin-pro: accurate pinyin + segmentation for ALL Chinese characters (not only HSK 1~3) -->
@@ -5009,7 +5009,7 @@
      ONBOARDING OVERLAY — 新手引导弹窗
      Shown once on first visit. Dismissed state saved to localStorage.
      ============================================================ -->
-<div class="ob-overlay" id="obOverlay" role="dialog" aria-modal="true" aria-label="Welcome to HanziLens">
+<div class="ob-overlay" id="obOverlay" role="dialog" aria-modal="true" aria-label="مرحبًا بك في HanziLens">
   <div class="ob-card" id="obCard">
 
     <!-- Progress dots -->
@@ -5023,82 +5023,82 @@
     <div class="ob-step" id="obStep0">
       <div class="ob-icon">🏮</div>
       <div class="ob-title">欢迎 · Welcome to HanziLens</div>
-      <div class="ob-subtitle">Chinese Reading & Learning Tool</div>
+      <div class="ob-subtitle">أداة قراءة اللغة الصينية وتعلّمها</div>
       <div class="ob-body">
-        Turn <strong>any Chinese text</strong> into a complete learning experience —<br>
-        pinyin, translation, stroke order, and more.<br>
+        حوّل <strong>أي نص صيني</strong> إلى تجربة تعليمية كاملة —<br>
+        البينيين والترجمة وترتيب الخطوط والمزيد.<br>
         <span class="ar-hint">حوّل أي نص صيني إلى تجربة تعليمية كاملة</span>
       </div>
       <div class="ob-demo">
         <div class="char-box"><span class="py">nǐ hǎo</span>你好</div>
         <div class="arrow">→</div>
-        <div class="meaning">Hello · مرحبًا</div>
+        <div class="meaning">مرحبًا · 你好</div>
       </div>
       <div class="ob-actions">
-        <button class="ob-btn-next" id="obNext0">Let's start · 开始 →</button>
-        <button class="ob-btn-skip" id="obSkip">Skip · 跳过</button>
+        <button class="ob-btn-next" id="obNext0">لنبدأ · 开始 →</button>
+        <button class="ob-btn-skip" id="obSkip">تخطّى · 跳过</button>
       </div>
     </div>
 
     <!-- Step 1: Paste & Translate -->
     <div class="ob-step" id="obStep1" style="display:none;">
       <div class="ob-icon">📝</div>
-      <div class="ob-title">Step 1 · 输入文字</div>
-      <div class="ob-subtitle">Paste or type any Chinese text</div>
+      <div class="ob-title">الخطوة 1 · 输入文字</div>
+      <div class="ob-subtitle">الصق أو اكتب أي نص صيني</div>
       <div class="ob-body">
-        Type a <strong>single character</strong>, a word, or a full sentence.<br>
-        Auto cloud translation is enabled by default — no API key needed · 自动翻译，无需密钥。<br>
-        Or try one of the <strong>example sentences</strong> below the input box.
+        اكتب <strong>حرفًا واحدًا</strong> أو كلمة أو جملة كاملة.<br>
+        الترجمة السحابية التلقائية مفعَّلة افتراضيًا — لا يلزم مفتاح API · 自动翻译，无需密钥。<br>
+        أو جرّب إحدى <strong>الجمل النموذجية</strong> أسفل خانة الإدخال.
       </div>
       <div class="ob-demo" style="font-size:15px; gap:8px; flex-direction:column; align-items:flex-start; text-align:left;">
-        <div style="font-family:var(--font-ui); font-size:12px; color:var(--text-faint); letter-spacing:0.08em; text-transform:uppercase;">Example presets 示例</div>
+        <div style="font-family:var(--font-ui); font-size:12px; color:var(--text-faint); letter-spacing:0.08em; text-transform:uppercase;">أمثلة · 示例</div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <span style="padding:6px 12px; border:1px solid rgba(31,37,43,0.10); border-radius:999px; background:#fff; font-size:14px; font-family:var(--font-han);">你好 Hello</span>
+          <span style="padding:6px 12px; border:1px solid rgba(31,37,43,0.10); border-radius:999px; background:#fff; font-size:14px; font-family:var(--font-han);">你好 · مرحبًا</span>
           <span style="padding:6px 12px; border:1px solid rgba(31,37,43,0.10); border-radius:999px; background:#fff; font-size:14px; font-family:var(--font-han);">今天天气很好。</span>
           <span style="padding:6px 12px; border:1px solid rgba(31,37,43,0.10); border-radius:999px; background:#fff; font-size:14px; font-family:var(--font-han);">我喜欢学习汉语。</span>
         </div>
       </div>
       <div class="ob-actions">
-        <button class="ob-btn-next" id="obNext1">Next · 下一步 →</button>
-        <button class="ob-btn-skip" id="obSkip1">Skip · 跳过</button>
+        <button class="ob-btn-next" id="obNext1">التالي · 下一步 →</button>
+        <button class="ob-btn-skip" id="obSkip1">تخطّى · 跳过</button>
       </div>
     </div>
 
     <!-- Step 2: Understand the sentence -->
     <div class="ob-step" id="obStep2" style="display:none;">
       <div class="ob-icon">🎧</div>
-      <div class="ob-title">Step 2 · 理解句子</div>
-      <div class="ob-subtitle">Listen · Read · Understand</div>
+      <div class="ob-title">الخطوة 2 · 理解句子</div>
+      <div class="ob-subtitle">استمع · اقرأ · افهم</div>
       <div class="ob-body">
-        Press <strong>▶ Start Learning</strong> to hear the sentence read aloud.<br>
-        See <strong>pinyin</strong>, <strong>English</strong>, and <strong>Arabic</strong> translation.<br>
-        Use <strong>Echo Mode 跟读</strong> to pause after each sentence and repeat it yourself.
+        اضغط <strong>▶ ابدأ التعلّم</strong> للاستماع إلى الجملة.<br>
+        اطّلع على <strong>البينيين</strong> والترجمة <strong>بالعربية</strong>.<br>
+        استخدم <strong>وضع الصدى 跟读</strong> للتوقف بعد كل جملة وتكرارها.
       </div>
       <div class="ob-demo" style="flex-direction:column; gap:6px; font-size:14px;">
         <div style="display:flex; align-items:center; gap:10px; font-family:var(--font-ui);">
-          <span style="padding:7px 14px; border-radius:12px; background:linear-gradient(180deg,#4c7996,#355974); color:#fff; font-size:13px; font-weight:700;">▶ Start Learning</span>
-          <span style="color:var(--text-faint); font-size:13px;">→ plays audio</span>
+          <span style="padding:7px 14px; border-radius:12px; background:linear-gradient(180deg,#4c7996,#355974); color:#fff; font-size:13px; font-weight:700;">▶ ابدأ التعلّم</span>
+          <span style="color:var(--text-faint); font-size:13px;">← تشغيل الصوت</span>
         </div>
         <div style="display:flex; align-items:center; gap:10px; font-family:var(--font-ui); margin-top:4px;">
-          <span style="padding:7px 14px; border-radius:12px; border:1px solid rgba(31,37,43,0.10); background:#fff; font-size:13px;">🎤 Echo Mode</span>
-          <span style="color:var(--text-faint); font-size:13px;">→ pauses for you to repeat</span>
+          <span style="padding:7px 14px; border-radius:12px; border:1px solid rgba(31,37,43,0.10); background:#fff; font-size:13px;">🎤 وضع الصدى · 跟读</span>
+          <span style="color:var(--text-faint); font-size:13px;">← توقف لتكرار الجملة</span>
         </div>
       </div>
       <div class="ob-actions">
-        <button class="ob-btn-next" id="obNext2">Next · 下一步 →</button>
-        <button class="ob-btn-skip" id="obSkip2">Skip · 跳过</button>
+        <button class="ob-btn-next" id="obNext2">التالي · 下一步 →</button>
+        <button class="ob-btn-skip" id="obSkip2">تخطّى · 跳过</button>
       </div>
     </div>
 
     <!-- Step 3: Tap a character -->
     <div class="ob-step" id="obStep3" style="display:none;">
       <div class="ob-icon">✍️</div>
-      <div class="ob-title">Step 3 · 单字精读</div>
-      <div class="ob-subtitle">Tap any character to go deep</div>
+      <div class="ob-title">الخطوة 3 · 单字精读</div>
+      <div class="ob-subtitle">انقر على أي حرف للتعمّق</div>
       <div class="ob-body">
-        Tap any <strong>character card</strong> below the text to see:<br>
-        <strong>Stroke order animation · 笔顺</strong>, radical, structure,<br>
-        pronunciation, and meaning — all in one place.
+        انقر على أي <strong>بطاقة حرف</strong> أسفل النص لترى:<br>
+        <strong>رسم متحرك لترتيب الخطوط · 笔顺</strong> والجذر والبنية<br>
+        والنطق والمعنى — كل شيء في مكان واحد.
       </div>
       <div class="ob-demo" style="gap:6px;">
         <div class="char-box" style="cursor:pointer; border-color:rgba(70,111,142,0.30); box-shadow:0 6px 18px rgba(70,111,142,0.18);">
@@ -5106,13 +5106,13 @@
         </div>
         <div class="arrow">→</div>
         <div style="display:flex; flex-direction:column; gap:4px; font-family:var(--font-ui); font-size:12px; color:var(--text-soft);">
-          <span>✦ Stroke order · 笔顺</span>
-          <span>✦ Radical 部首: 女</span>
-          <span>✦ Meaning: good, well</span>
+          <span>✦ ترتيب الخطوط · 笔顺</span>
+          <span>✦ الجذر 部首: 女</span>
+          <span>✦ المعنى: جيد</span>
         </div>
       </div>
       <div class="ob-actions">
-        <button class="ob-btn-next" id="obNext3">Got it · 开始使用 🚀</button>
+        <button class="ob-btn-next" id="obNext3">فهمتُ · 开始使用 🚀</button>
       </div>
     </div>
 
@@ -5132,9 +5132,9 @@
       <span class="topbar-sub">Chinese Reading &amp; Learning Tool</span>
     </div>
     <div class="topbar-right">
-      <span class="topbar-status" id="topbarStatus">Study · Beginner</span>
+      <span class="topbar-status" id="topbarStatus">دراسة · مبتدئ</span>
       <button id="btnPanelToggle" type="button" title="Control panel · 控制面板">
-        ⚙ Controls · 设置
+        ⚙ الإعدادات · 设置
       </button>
     </div>
   </header>
@@ -5142,57 +5142,57 @@
   <!-- ============ FLOATING CONTROL PANEL ============ -->
   <div id="ctrlPanel" role="dialog" aria-label="Control panel">
     <div class="cp-head" id="cpDragHandle">
-      <span class="cp-head-title">Controls · 控制面板</span>
+      <span class="cp-head-title">لوحة التحكم · 控制面板</span>
       <div class="cp-dock">
-        <button class="cp-dock-btn" id="cpDockLeft"  title="Dock left · 靠左">◧</button>
-        <button class="cp-dock-btn" id="cpDockFloat" title="Float · 悬浮" style="font-size:11px;">⊞</button>
-        <button class="cp-dock-btn" id="cpDockRight" title="Dock right · 靠右">◨</button>
-        <button class="cp-dock-btn" id="cpClose"     title="Close · 关闭" style="margin-left:4px;">✕</button>
+        <button class="cp-dock-btn" id="cpDockLeft"  title="محاذاة يسار · 靠左">◧</button>
+        <button class="cp-dock-btn" id="cpDockFloat" title="تعويم · 悬浮" style="font-size:11px;">⊞</button>
+        <button class="cp-dock-btn" id="cpDockRight" title="محاذاة يمين · 靠右">◨</button>
+        <button class="cp-dock-btn" id="cpClose"     title="إغلاق · 关闭" style="margin-left:4px;">✕</button>
       </div>
     </div>
     <div class="cp-body">
 
       <!-- Mode -->
       <div class="cp-section">
-        <div class="cp-label">Mode · 模式</div>
+        <div class="cp-label">الوضع · 模式</div>
         <div class="cp-row">
-          <button class="cp-mode-pill is-active" data-mode="learning">📖 Study · 学习</button>
-          <button class="cp-mode-pill"           data-mode="tool">🔍 Tool · 工具</button>
+          <button class="cp-mode-pill is-active" data-mode="learning">📖 الدراسة · 学习</button>
+          <button class="cp-mode-pill"           data-mode="tool">🔍 الأداة · 工具</button>
         </div>
       </div>
 
       <!-- Level (learning mode only) -->
       <div class="cp-section" id="cpLevelSection">
-        <div class="cp-label">Level · 难度</div>
+        <div class="cp-label">المستوى · 难度</div>
         <div class="cp-row cp-row-col">
           <button class="cp-lv-pill is-active" data-level="beginner">
-            <span class="lv-en">Beginner</span><span class="lv-cn">初学</span>
+            <span class="lv-en">مبتدئ</span><span class="lv-cn">初学</span>
           </button>
           <button class="cp-lv-pill" data-level="practice">
-            <span class="lv-en">Practice</span><span class="lv-cn">练习</span>
+            <span class="lv-en">تدريب</span><span class="lv-cn">练习</span>
           </button>
           <button class="cp-lv-pill" data-level="advanced">
-            <span class="lv-en">Advanced</span><span class="lv-cn">进阶</span>
+            <span class="lv-en">متقدّم</span><span class="lv-cn">进阶</span>
           </button>
         </div>
         <div class="cp-lv-desc" id="cpLvDesc">
           <ul>
-            <li>Chinese text · 原文</li>
-            <li>Pinyin · 拼音</li>
-            <li>English translation · 英文翻译</li>
-            <li>Stroke order · 笔顺</li>
-            <li class="off">No Arabic · 无阿语</li>
-            <li class="off">No word cards · 无词语卡</li>
+            <li>النص الصيني · 原文</li>
+            <li>البينيين · 拼音</li>
+            <li>الترجمة الإنجليزية · 英文翻译</li>
+            <li>ترتيب الخطوط · 笔顺</li>
+            <li class="off">بدون عربي · 无阿语</li>
+            <li class="off">بدون بطاقات الكلمات · 无词语卡</li>
           </ul>
         </div>
       </div>
 
       <!-- Vocab + Progress -->
       <div class="cp-section">
-        <div class="cp-label">Tools · 工具</div>
+        <div class="cp-label">الأدوات · 工具</div>
         <div class="cp-row">
-          <button class="cp-action-btn" id="cpBtnVocab">⭐ Vocab · 生词本 <span id="cpVocabCount">0</span></button>
-          <button class="cp-action-btn" id="cpBtnProgress">🔥 Progress · 进度</button>
+          <button class="cp-action-btn" id="cpBtnVocab">⭐ المفردات · 生词本 <span id="cpVocabCount">0</span></button>
+          <button class="cp-action-btn" id="cpBtnProgress">🔥 التقدّم · 进度</button>
         </div>
       </div>
 
@@ -5202,43 +5202,43 @@
   <!-- keep hidden originals so existing JS still finds them -->
   <div style="display:none">
     <div id="modeSwitch">
-      <button class="mode-pill is-active" type="button" data-mode="learning">Study Mode · 学习</button>
-      <button class="mode-pill"           type="button" data-mode="tool">Tool Mode · 工具</button>
+      <button class="mode-pill is-active" type="button" data-mode="learning">وضع الدراسة · 学习</button>
+      <button class="mode-pill"           type="button" data-mode="tool">وضع الأداة · 工具</button>
     </div>
-    <button class="vocab-entry-btn empty" id="btnVocabOpen" type="button">⭐ 生词本 Vocab Book <span class="vb-count" id="vocabCount">0</span></button>
+    <button class="vocab-entry-btn empty" id="btnVocabOpen" type="button">⭐ كتاب المفردات · 生词本 <span class="vb-count" id="vocabCount">0</span></button>
     <button class="progress-pill" id="btnProgressOpen" type="button">
       <span class="pp-stat"><span class="pp-icon">📖</span><span id="ppChars">0</span></span>
       <span class="pp-stat"><span class="pp-icon">🔥</span><span id="ppStreak">0</span></span>
       <span class="pp-stat"><span class="pp-icon">⭐</span><span id="ppVocab">0</span></span>
     </button>
     <div class="level-switch" id="levelSwitch">
-      <button class="lv-pill is-active" type="button" data-level="beginner">Beginner · 初学</button>
-      <button class="lv-pill"           type="button" data-level="practice">Practice · 练习</button>
-      <button class="lv-pill"           type="button" data-level="advanced">Advanced · 进阶</button>
+      <button class="lv-pill is-active" type="button" data-level="beginner">مبتدئ · 初学</button>
+      <button class="lv-pill"           type="button" data-level="practice">تدريب · 练习</button>
+      <button class="lv-pill"           type="button" data-level="advanced">متقدّم · 进阶</button>
     </div>
   </div>
 
   <div class="overview learning-only" id="overview">
     <div class="overview-card">
       <div class="overview-step">1</div>
-      <div class="overview-title">Paste any Chinese · 输入内容</div>
-      <div class="overview-sub">Input</div>
-      <div class="overview-desc">Type or paste any Chinese — a single character, a word, or a full sentence — and understand it instantly.</div>
+      <div class="overview-title">أدخل أي نص صيني · 输入内容</div>
+      <div class="overview-sub">إدخال</div>
+      <div class="overview-desc">اكتب أو الصق أي نص صيني — حرفًا واحدًا أو كلمة أو جملة كاملة — وافهمه فورًا.</div>
     </div>
     <div class="overview-card">
       <div class="overview-step">2</div>
-      <div class="overview-title">Understand it · 理解句子</div>
-      <div class="overview-sub">Comprehend</div>
-      <div class="overview-desc">See pinyin, English, Arabic, and key vocabulary. Build full-sentence understanding before going deeper.</div>
+      <div class="overview-title">افهم الجملة · 理解句子</div>
+      <div class="overview-sub">استيعاب</div>
+      <div class="overview-desc">اطّلع على البينيين والترجمة والمفردات الأساسية. ابنِ فهمًا كاملًا للجملة قبل التعمّق.</div>
     </div>
     <div class="overview-card">
       <div class="overview-step">3</div>
-      <div class="overview-title">Go deep on characters · 单字精读</div>
-      <div class="overview-sub">Inspect</div>
-      <div class="overview-desc">Tap any character to see its stroke order, radical, structure, and pronunciation — the complete learning loop.</div>
+      <div class="overview-title">تعمّق في الحروف · 单字精读</div>
+      <div class="overview-sub">استكشاف</div>
+      <div class="overview-desc">انقر على أي حرف لترى ترتيب خطوطه وجذره وبنيته ونطقه — دورة تعلّم متكاملة.</div>
     </div>
     <div style="grid-column:1/-1;text-align:right;margin-top:-4px;">
-      <button id="btnDismissOverview" style="padding:4px 12px;border:1px solid rgba(31,37,43,0.08);border-radius:999px;background:transparent;font-size:11px;color:var(--text-faint);cursor:pointer;" onclick="(function(){try{localStorage.setItem('hanzi.overviewDismissed','1');}catch(e){}document.getElementById('overview').style.display='none';})()">我知道了 · Got it ✕</button>
+      <button id="btnDismissOverview" style="padding:4px 12px;border:1px solid rgba(31,37,43,0.08);border-radius:999px;background:transparent;font-size:11px;color:var(--text-faint);cursor:pointer;" onclick="(function(){try{localStorage.setItem('hanzi.overviewDismissed','1');}catch(e){}document.getElementById('overview').style.display='none';})()">✕ فهمتُ · 我知道了</button>
     </div>
   </div>
   <script>
@@ -5255,24 +5255,24 @@
   <!-- ============ EDITOR ============ -->
   <div class="section">
     <div class="section-head">
-      <div class="section-label"><span class="cn">Step 1 · 输入文字</span> · Enter Chinese</div>
-      <div class="section-note learning-only">Enter text → understand → study characters · 输入 → 理解 → 精读</div>
+      <div class="section-label"><span class="cn">الخطوة 1 · 输入文字</span> · أدخل النص الصيني</div>
+      <div class="section-note learning-only">أدخل النص ← افهم ← ادرس الحروف · 输入 → 理解 → 精读</div>
     </div>
 
     <!-- Learning Steps strip -->
     <div class="learning-steps learning-only" id="learningSteps" data-step="1" aria-label="Learning steps">
-      <span class="ls-step active" data-step-num="1"><span class="num">1</span>Enter · 输入</span>
+      <span class="ls-step active" data-step-num="1"><span class="num">1</span>إدخال · 输入</span>
       <span class="ls-arrow">→</span>
-      <span class="ls-step" data-step-num="2"><span class="num">2</span>Understand · 理解</span>
+      <span class="ls-step" data-step-num="2"><span class="num">2</span>فهم · 理解</span>
       <span class="ls-arrow">→</span>
-      <span class="ls-step" data-step-num="3"><span class="num">3</span>Listen &amp; Repeat · 跟读</span>
+      <span class="ls-step" data-step-num="3"><span class="num">3</span>استمع وكرّر · 跟读</span>
       <span class="ls-arrow">→</span>
-      <span class="ls-step" data-step-num="4"><span class="num">4</span>Characters · 单字</span>
+      <span class="ls-step" data-step-num="4"><span class="num">4</span>الحروف · 单字</span>
     </div>
 
     <div class="editor-wrap">
-      <textarea class="editor" id="editor" placeholder="Paste or type any Chinese text here — a character, word, or sentence&#10;例如 e.g.: 你好 · 好好学习 · 春天来了，花儿开了。" style="padding-right:54px;"></textarea>
-      <button id="btnMic" title="点击说阿拉伯语，自动翻译成中文 · Speak Arabic → Chinese" aria-label="Arabic voice input">
+      <textarea class="editor" id="editor" placeholder="الصق أو اكتب أي نص صيني هنا — حرفًا أو كلمةً أو جملةً كاملة&#10;مثال: 你好 · 好好学习 · 春天来了，花儿开了。" style="padding-right:54px;"></textarea>
+      <button id="btnMic" title="انقر وتحدّث بالعربية، يُترجم تلقائيًا للصينية · 点击说阿语" aria-label="Arabic voice input">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
           <rect x="9" y="2" width="6" height="12" rx="3"/>
           <path d="M5 10a7 7 0 0 0 14 0"/>
@@ -5284,7 +5284,7 @@
     <div id="micStatus"></div>
 
     <div class="presets">
-      <button class="preset-btn" data-preset="你好">你好 Hello</button>
+      <button class="preset-btn" data-preset="你好">你好 · مرحبًا</button>
       <button class="preset-btn" data-preset="好好学习，天天向上。">好好学习，天天向上。</button>
       <button class="preset-btn" data-preset="春天来了，花儿开了。">春天来了，花儿开了。</button>
       <button class="preset-btn" data-preset="今天天气很好。">今天天气很好。</button>
@@ -5293,12 +5293,12 @@
 
     <!-- ============ CONTROLS ============ -->
     <div class="controls">
-      <button class="btn primary" id="btnPlayAll">▶ Start Learning · 开始学习</button>
-      <button class="btn" id="btnFollow" type="button" title="逐句播放，每句朗读后停顿，方便你跟读">🎤 Echo Mode · 跟读</button>
-      <button class="btn" id="btnClear">Clear · 清空</button>
+      <button class="btn primary" id="btnPlayAll">▶ ابدأ التعلّم · 开始学习</button>
+      <button class="btn" id="btnFollow" type="button" title="تشغيل جملةً جملةً، توقف بعد كل جملة لتكرارها">🎤 وضع الصدى · 跟读</button>
+      <button class="btn" id="btnClear">مسح · 清空</button>
 
       <div class="speed-group">
-        Speed · 语速
+        السرعة · 语速
         <input type="range" id="speedSlider" min="0.6" max="1.2" step="0.05" value="0.9">
         <span class="val" id="speedVal">0.90×</span>
       </div>
@@ -5306,37 +5306,37 @@
 
     <!-- follow-along hint — only visible while Echo Mode is on -->
     <div class="follow-hint" id="followHint" aria-live="polite">
-      <strong>Echo Mode · 跟读模式 is on</strong>
-      每句朗读后自动停顿 <span id="followPauseLabel">2.0</span> 秒，你可以跟着读。
-      再次点击“🎤 跟读模式”可退出。
+      <strong>وضع الصدى · 跟读模式 مفعَّل</strong>
+      يتوقف تلقائيًا بعد كل جملة <span id="followPauseLabel">2.0</span> ثانية لتتمكن من التكرار.
+      انقر مجددًا على “🎤 وضع الصدى” للخروج.
     </div>
 
     <div class="utility-bar">
       <div class="utility-group">
-        <button type="button" class="utility-btn" id="btnJumpAnalysis">看翻译 Translation</button>
-        <button type="button" class="utility-btn" id="btnJumpDetail">看单字 Characters</button>
-        <button type="button" class="utility-btn" id="btnTogglePy" aria-pressed="false" title="切换显示/隐藏拼音">隐藏拼音 Hide Pinyin</button>
-        <button type="button" class="utility-btn" id="btnToggleTr" aria-pressed="false" title="切换显示/隐藏翻译">隐藏翻译 Hide Translation</button>
+        <button type="button" class="utility-btn" id="btnJumpAnalysis">الترجمة · 看翻译</button>
+        <button type="button" class="utility-btn" id="btnJumpDetail">الحروف · 看单字</button>
+        <button type="button" class="utility-btn" id="btnTogglePy" aria-pressed="false" title="إظهار/إخفاء البينيين">إخفاء البينيين · 隐藏拼音</button>
+        <button type="button" class="utility-btn" id="btnToggleTr" aria-pressed="false" title="إظهار/إخفاء الترجمة">إخفاء الترجمة · 隐藏翻译</button>
       </div>
     </div>
 
     <div class="helper-strip">
-      <div class="save-status" id="saveStatus">Ready</div>
+      <div class="save-status" id="saveStatus">جاهز · 已准备</div>
     </div>
 
     <!-- ============ TRANSLATION ENGINE SETTINGS ============ -->
     <details class="engine-panel" id="enginePanel">
       <summary>
-        <span class="engine-title">Translation Engine · 翻译引擎</span>
-        <span class="engine-status" id="engineStatus">自动翻译 · Auto</span>
+        <span class="engine-title">محرك الترجمة · 翻译引擎</span>
+        <span class="engine-status" id="engineStatus">ترجمة تلقائية · 自动翻译</span>
       </summary>
       <div class="engine-body">
         <div class="engine-row">
-          <label class="engine-label">Engine · 引擎</label>
+          <label class="engine-label">المحرك · 引擎</label>
           <div class="engine-options">
             <label class="radio">
               <input type="radio" name="engine" value="mymemory" checked>
-              <span>Auto cloud translate · 自动翻译 <span class="hint">Google → MyMemory → LibreTranslate · No API key needed · 无需密钥</span></span>
+              <span>ترجمة سحابية تلقائية · 自动翻译 <span class="hint">Google → MyMemory → LibreTranslate · لا يلزم مفتاح API · 无需密钥</span></span>
             </label>
           </div>
         </div>
@@ -5350,7 +5350,7 @@
     <!-- READING NOW -->
     <div class="reading-now" id="readingNow">
       <span class="wave"><span></span><span></span><span></span><span></span></span>
-      <span class="label">Now playing · 正在朗读:</span>
+      <span class="label">يُقرأ الآن · 正在朗读:</span>
       <span class="text" id="readingText"></span>
     </div>
   </div>
@@ -5358,19 +5358,19 @@
   <!-- ============ ANALYSIS (word/sentence meaning) ============ -->
   <div class="analysis" id="analysis">
     <div class="analysis-head">
-      <div class="analysis-kicker" id="analysisType">Sentence · 句子</div>
-      <div class="analysis-hint">Understand the full sentence first · 先理解整句，再查单字</div>
+      <div class="analysis-kicker" id="analysisType">جملة · 句子</div>
+      <div class="analysis-hint">افهم الجملة كاملةً أولًا · 先理解整句，再查单字</div>
     </div>
 
     <!-- ⑤ 理解卡上方：学习路径提示 -->
     <div class="learning-steps compact learning-only" aria-label="Understand sentence steps">
-      <span class="ls-step"><span class="num">1</span>Understand · 理解</span>
+      <span class="ls-step"><span class="num">1</span>فهم · 理解</span>
       <span class="ls-arrow">→</span>
-      <span class="ls-step"><span class="num">2</span>Key words · 重点词</span>
+      <span class="ls-step"><span class="num">2</span>الكلمات الأساسية · 重点词</span>
       <span class="ls-arrow">→</span>
-      <span class="ls-step"><span class="num">3</span>Tap · 点击</span>
+      <span class="ls-step"><span class="num">3</span>انقر · 点击</span>
       <span class="ls-arrow">→</span>
-      <span class="ls-step"><span class="num">4</span>Re-read · 再读</span>
+      <span class="ls-step"><span class="num">4</span>أعد القراءة · 再读</span>
     </div>
 
     <div class="analysis-reading">
@@ -5382,28 +5382,28 @@
 
     <!-- Previous / Next 句子导航，多句时由 JS 显示 -->
     <div class="sentence-nav" id="sentenceNav" style="display:none;">
-      <button type="button" class="sn-btn" id="snPrev" disabled>◀ Previous</button>
+      <button type="button" class="sn-btn" id="snPrev" disabled>◀ السابق</button>
       <span class="sn-counter" id="snCounter"></span>
-      <button type="button" class="sn-btn" id="snNext">Next ▶</button>
+      <button type="button" class="sn-btn" id="snNext">التالي ▶</button>
     </div>
 
     <div class="analysis-translations">
       <div class="translation-row">
-        <div class="translation-label">English</div>
+        <div class="translation-label">الإنجليزية</div>
         <div class="translation-content"><span id="analysisEn"></span></div>
-        <div class="translation-tools"><button type="button" class="translation-copy" id="btnCopyEn">复制</button><span class="q-badge" id="analysisEnBadge"></span></div>
+        <div class="translation-tools"><button type="button" class="translation-copy" id="btnCopyEn">نسخ</button><span class="q-badge" id="analysisEnBadge"></span></div>
       </div>
       <!-- ① Arabic 默认收起 -->
       <details class="translation-row collapsible" id="arabicCollapse">
         <summary>
           <span class="chev">▸</span>
           العربية
-          <span class="en-hint">Arabic · 阿拉伯语 · tap to expand · 点击展开</span>
+          <span class="en-hint">العربية · 阿拉伯语 · انقر للتوسيع · 点击展开</span>
         </summary>
         <div class="collapsible-body">
           <div class="translation-label">العربية</div>
           <div class="translation-content ar" id="analysisAr" dir="rtl"></div>
-          <div class="translation-tools"><button type="button" class="translation-copy" id="btnCopyAr">复制</button><span class="q-badge" id="analysisArBadge"></span></div>
+          <div class="translation-tools"><button type="button" class="translation-copy" id="btnCopyAr">نسخ</button><span class="q-badge" id="analysisArBadge"></span></div>
         </div>
       </details>
     </div>
@@ -5412,47 +5412,47 @@
     <details class="learning-focus learning-only collapsible" id="focusCollapse">
       <summary>
         <span class="chev">▸</span>
-        Key Words · 重点词
-        <span class="en-hint">· tap to expand · 点击展开</span>
+        الكلمات الأساسية · 重点词
+        <span class="en-hint">· انقر للتوسيع · 点击展开</span>
       </summary>
       <div class="collapsible-body">
         <div class="focus-card">
-          <div class="focus-title">Key Words · 重点词</div>
-          <div class="focus-summary" id="focusSummary">Key vocabulary from this text will appear here.</div>
+          <div class="focus-title">الكلمات الأساسية · 重点词</div>
+          <div class="focus-summary" id="focusSummary">ستظهر هنا المفردات الأساسية من هذا النص.</div>
           <div class="focus-chips" id="focusWords"></div>
         </div>
         <div class="focus-card">
-          <div class="focus-title">Suggested Next Step · 学习建议</div>
-          <div class="focus-next" id="focusNext">Tap any character card below to see its pronunciation, stroke order and structure.</div>
+          <div class="focus-title">الخطوة التالية المقترحة · 学习建议</div>
+          <div class="focus-next" id="focusNext">انقر على أي بطاقة حرف أدناه لترى نطقه وترتيب خطوطه وبنيته.</div>
         </div>
       </div>
     </details>
 
     <div class="sentence-metrics learning-only" id="sentenceMetrics">
       <div class="metric-card">
-        <span class="metric-label">Characters · 汉字</span>
+        <span class="metric-label">الحروف · 汉字</span>
         <div class="metric-value" id="metricChars">0</div>
-        <div class="metric-sub">Chinese characters in this text · 汉字数量</div>
+        <div class="metric-sub">عدد الحروف الصينية في النص · 汉字数量</div>
       </div>
       <div class="metric-card">
-        <span class="metric-label">Key Words · 重点词</span>
+        <span class="metric-label">الكلمات الأساسية · 重点词</span>
         <div class="metric-value" id="metricWords">0</div>
-        <div class="metric-sub">Vocabulary to learn first · 优先掌握</div>
+        <div class="metric-sub">المفردات الأولى للتعلّم · 优先掌握</div>
       </div>
       <div class="metric-card">
-        <span class="metric-label">HSK Coverage · 覆盖率</span>
+        <span class="metric-label">تغطية HSK · 覆盖率</span>
         <div class="metric-value" id="metricCoverage">0%</div>
-        <div class="metric-sub">Covered by dictionary · 词典可识别</div>
+        <div class="metric-sub">مغطّاة بالقاموس · 词典可识别</div>
       </div>
       <div class="metric-card">
-        <span class="metric-label">Type · 类型</span>
+        <span class="metric-label">النوع · 类型</span>
         <div class="metric-value" id="metricType">词语</div>
-        <div class="metric-sub">Character / Word / Sentence · 单字/词语/句子</div>
+        <div class="metric-sub">حرف / كلمة / جملة · 单字/词语/句子</div>
       </div>
     </div>
 
     <div class="focus-card learning-only" style="margin-top:14px;">
-      <div class="focus-title">Word Cards · 词语卡</div>
+      <div class="focus-title">بطاقات الكلمات · 词语卡</div>
       <div class="word-deck" id="wordDeck"></div>
     </div>
   </div>
@@ -5460,66 +5460,66 @@
   <!-- ============ PRACTICE LOOP 练习闭环 ============ -->
   <div class="practice-loop learning-only" id="practiceLoop">
     <div class="pl-header">
-      <div class="pl-title">Practice Loop · 练习闭环</div>
-      <div class="pl-badge" id="plBadge">Not done yet · 未完成</div>
+      <div class="pl-title">حلقة التدريب · 练习闭环</div>
+      <div class="pl-badge" id="plBadge">لم يكتمل بعد · 未完成</div>
     </div>
 
     <!-- Section 1: Choose Pinyin (beginner+) -->
     <div class="pl-section pl-pinyin-section" id="plPinyinSection">
-      <div class="pl-section-title">Choose Pinyin</div>
+      <div class="pl-section-title">اختر البينيين · 选拼音</div>
       <div class="pl-pinyin-items" id="plPinyinItems"></div>
     </div>
 
     <!-- Section 2: Fill Character (practice+) -->
     <div class="pl-section pl-fill-section" id="plFillSection">
-      <div class="pl-section-title">Fill the Character · 填汉字</div>
+      <div class="pl-section-title">أكمل الحرف · 填汉字</div>
       <div class="pl-fill-sentence" id="plFillSentence"></div>
       <div class="pl-fill-actions">
-        <button type="button" class="pl-fill-check" id="plFillCheck">Check · 检查</button>
+        <button type="button" class="pl-fill-check" id="plFillCheck">تحقّق · 检查</button>
         <span class="pl-fill-result" id="plFillResult"></span>
       </div>
     </div>
 
     <!-- Section 3: Read & Check (advanced+) -->
     <div class="pl-section pl-read-section" id="plReadSection">
-      <div class="pl-section-title">Read &amp; Check · 跟读确认</div>
+      <div class="pl-section-title">اقرأ وتحقّق · 跟读确认</div>
       <div class="pl-read-body">
         <div class="pl-read-sentence" id="plReadSentence"></div>
-        <button type="button" class="pl-repeat-btn" id="plRepeatBtn">🎤 I repeated</button>
+        <button type="button" class="pl-repeat-btn" id="plRepeatBtn">🎤 كرّرتُ · 已跟读</button>
       </div>
     </div>
 
     <!-- Completion banner -->
     <div class="pl-complete" id="plComplete">
-      ✓ Sentence completed! · 本句练习完成！
+      ✓ اكتملت الجملة! · 本句练习完成！
     </div>
   </div>
 
   <!-- ============ CHARACTER GRID ============ -->
   <div class="section char-grid-wrap">
     <div class="section-head">
-      <div class="section-label">Step 2 · 单字精读 · Characters · Tap to inspect · 点击查看</div>
-      <div class="section-note learning-only">Read the card above first, then tap a key character · 先看上方理解卡，再点击重点字</div>
+      <div class="section-label">الخطوة 2 · 单字精读 · الحروف · انقر للاستكشاف · 点击查看</div>
+      <div class="section-note learning-only">اقرأ البطاقة أعلاه أولًا، ثم انقر على حرف مهم · 先看上方理解卡，再点击重点字</div>
     </div>
     <div class="char-grid empty" id="charGrid"></div>
   </div>
 
   <!-- ============ DETAIL PANEL ============ -->
   <div class="detail-wrap">
-    <div class="detail-quicknav learning-only">单字详情 Character Detail · Tap any character card above to explore · 点击字卡后自动定位</div>
+    <div class="detail-quicknav learning-only">تفاصيل الحرف · 单字详情 · انقر على أي بطاقة حرف للاستكشاف · 点击字卡后自动定位</div>
   <div class="detail" id="detail">
     <div class="detail-stroke">
       <div class="stroke-stage" id="strokeStage">
         <div class="placeholder">字</div>
       </div>
       <div class="stroke-controls">
-        <button class="stroke-btn" id="btnAnimate"><span class="icon">▶</span> Replay · 重播</button>
-        <button class="stroke-btn" id="btnPause-stroke"><span class="icon">⏸</span> Pause · 暂停</button>
-        <button class="stroke-btn" id="btnSpeak-detail"><span class="icon">🔊</span> Speak · 发音</button>
-        <button class="stroke-btn" id="dVocabBtn" type="button">☆ Save · 加入生词本</button>
+        <button class="stroke-btn" id="btnAnimate"><span class="icon">▶</span> إعادة · 重播</button>
+        <button class="stroke-btn" id="btnPause-stroke"><span class="icon">⏸</span> إيقاف · 暂停</button>
+        <button class="stroke-btn" id="btnSpeak-detail"><span class="icon">🔊</span> نطق · 发音</button>
+        <button class="stroke-btn" id="dVocabBtn" type="button">☆ حفظ · 加入生词本</button>
       </div>
       <div class="stroke-legend">
-        Stroke order · 笔顺:
+        ترتيب الخطوط · 笔顺:
         <span class="dot" style="background:var(--r1);"></span>
         <span class="dot" style="background:var(--r2);"></span>
         <span class="dot" style="background:var(--r3);"></span>
@@ -5538,15 +5538,15 @@
 
       <div class="info-grid">
         <div class="info-cell">
-          <span class="k">Strokes · 笔画</span>
+          <span class="k">عدد الخطوط · 笔画</span>
           <span class="v" id="dStrokes">—</span>
         </div>
         <div class="info-cell">
-          <span class="k">Radical · 部首</span>
+          <span class="k">الجذر · 部首</span>
           <span class="v" id="dRadical">—</span>
         </div>
         <div class="info-cell info-cell-structure">
-          <span class="k">Structure · 结构</span>
+          <span class="k">البنية · 结构</span>
           <span class="v" id="dStructure">
             <span class="structure-icon" id="dStructureIcon" aria-hidden="true"></span>
             <span class="structure-text">
@@ -5556,7 +5556,7 @@
           </span>
         </div>
         <div class="info-cell">
-          <span class="k">Pinyin · 拼音</span>
+          <span class="k">البينيين · 拼音</span>
           <span class="v"><span class="latin" id="dPyCell">—</span></span>
         </div>
       </div>
@@ -5570,7 +5570,7 @@
         <details class="collapsible m-row-collapsible" id="dArCollapse" style="padding:0;">
           <summary style="padding:5px 10px; font-size:11.5px;">
             <span class="chev">▸</span>
-            AR <span class="en-hint">العربية · 阿拉伯语 · tap to expand · 点击展开</span>
+            AR <span class="en-hint">العربية · 阿拉伯语 · انقر للتوسيع · 点击展开</span>
           </summary>
           <div class="collapsible-body" style="padding-top:6px;">
             <div class="m-row">
@@ -5585,8 +5585,8 @@
   </div>
 
   <footer>
-    HSK 1–3 · 654 字 characters · 197 词 words · 笔顺 Stroke order by Hanzi Writer
-    <div style="margin-top:6px;">Built by Lin Rui · HanziLens · 汉字精读</div>
+    HSK 1–3 · 654 字 حرف · 197 词 كلمة · ترتيب الخطوط بواسطة Hanzi Writer
+    <div style="margin-top:6px;">بناء Lin Rui · HanziLens · 汉字精读</div>
   </footer>
 
 </div>
@@ -5599,8 +5599,7 @@
 
     <div class="progress-drawer-head">
       <div class="progress-drawer-title">
-        学习进度
-        <span class="en">Learning Progress</span>
+        تقدّم التعلّم · 学习进度
       </div>
       <button class="progress-drawer-close" id="btnProgressClose" type="button" aria-label="Close">✕</button>
     </div>
@@ -5610,8 +5609,8 @@
     </div>
 
     <div class="progress-drawer-foot">
-      <span class="progress-foot-note">Stored locally · 数据存在本地</span>
-      <button class="progress-reset-btn" id="btnProgressReset" type="button">Reset · 重置</button>
+      <span class="progress-foot-note">محفوظ محليًا · 数据存在本地</span>
+      <button class="progress-reset-btn" id="btnProgressReset" type="button">إعادة الضبط · 重置</button>
     </div>
 
   </div>
@@ -5625,8 +5624,7 @@
 
     <div class="vocab-drawer-head">
       <div class="vocab-drawer-title">
-        生词本
-        <span class="en">Vocab Book</span>
+        كتاب المفردات · 生词本
       </div>
       <button class="vocab-drawer-close" id="btnVocabClose" type="button" aria-label="Close">✕</button>
     </div>
@@ -5636,16 +5634,16 @@
     </div>
 
     <div class="vocab-drawer-foot">
-      <span class="vocab-foot-count" id="vocabFootCount">0 characters saved · 0 个字</span>
-      <button class="vocab-clear-btn" id="btnVocabClear" type="button">Clear all · 清空</button>
+      <span class="vocab-foot-count" id="vocabFootCount">0 حرف محفوظ · 0 个字</span>
+      <button class="vocab-clear-btn" id="btnVocabClear" type="button">مسح الكل · 清空</button>
     </div>
 
   </div>
 </div>
 
 <div class="floating-actions">
-  <button type="button" class="float-btn is-hidden" id="btnBackTop" title="Back to top · 返回顶部">↑</button>
-  <button type="button" class="float-btn" id="btnFocusInput" title="Back to input · 回到输入">✎</button>
+  <button type="button" class="float-btn is-hidden" id="btnBackTop" title="العودة للأعلى · 返回顶部">↑</button>
+  <button type="button" class="float-btn" id="btnFocusInput" title="العودة للإدخال · 回到输入">✎</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -5673,9 +5671,9 @@ function updateSaveStatus(text){
 function persistDraft(){
   try{
     localStorage.setItem(APP_STORAGE.draft, editor.value || '');
-    updateSaveStatus('Auto-saved · 已保存');
+    updateSaveStatus('تم الحفظ · 已保存');
   }catch(e){
-    updateSaveStatus('Auto-save not supported');
+    updateSaveStatus('الحفظ التلقائي غير مدعوم · 不支持');
   }
 }
 
@@ -5684,7 +5682,7 @@ function restoreDraft(){
     const saved = localStorage.getItem(APP_STORAGE.draft);
     if(saved && !editor.value.trim()){
       editor.value = saved;
-      updateSaveStatus('Last session restored · 已恢复');
+      updateSaveStatus('تمت استعادة الجلسة السابقة · 已恢复');
     }
   }catch(e){}
 }
@@ -5710,9 +5708,9 @@ function loadLevelPreference(){
 }
 
 const LEVEL_LABELS = {
-  beginner: { cn: 'Beginner · 初学模式：汉字、拼音和英文', en: 'Beginner: Chinese, Pinyin & English only' },
-  practice: { cn: 'Practice · 练习模式', en: 'Practice: word cards, echo mode & hide toggles' },
-  advanced: { cn: 'Advanced · 进阶模式：显示全部', en: 'Advanced: all content visible' }
+  beginner: { cn: 'مبتدئ · 初学：الصيني والبينيين', en: 'مبتدئ: الصيني والبينيين فقط' },
+  practice: { cn: 'تدريب · 练习模式', en: 'تدريب: بطاقات، وضع الصدى، إخفاء/إظهار' },
+  advanced: { cn: 'متقدّم · 进阶：عرض الكل', en: 'متقدّم: كل المحتوى مرئي' }
 };
 
 function setLearningLevel(level){
@@ -5741,7 +5739,7 @@ function loadRatePreference(){
 async function copyPlainText(text, successCN, successEN){
   const value = String(text || '').trim();
   if(!value){
-    showToast('Nothing to copy');
+    showToast('لا يوجد شيء للنسخ · 无内容');
     return false;
   }
   try{
@@ -5758,10 +5756,10 @@ async function copyPlainText(text, successCN, successEN){
       document.execCommand('copy');
       ta.remove();
     }
-    showToast(successCN || 'Copied', successEN || 'Copied');
+    showToast(successCN || 'تم النسخ', successEN || 'تم النسخ');
     return true;
   }catch(err){
-    showToast('Copy failed — please copy manually');
+    showToast('فشل النسخ — يرجى النسخ يدويًا · 复制失败');
     return false;
   }
 }
@@ -6178,7 +6176,7 @@ if('speechSynthesis' in window){
 function speak(text, opts={}){
   return new Promise((resolve)=>{
     if(!('speechSynthesis' in window)){
-      showToast('Speech synthesis not supported in this browser'); resolve(); return;
+      showToast('متصفحك لا يدعم تركيب الكلام · 不支持语音合成'); resolve(); return;
     }
     try{
       speechSynthesis.cancel();
@@ -7058,8 +7056,8 @@ function renderWordDeck(words){
         <div class="ar"><strong style="direction:ltr; display:inline-block;">AR</strong> · ${data.ar || '—'}</div>
       </div>
       <div class="actions">
-        <button type="button" class="word-btn" data-action="speak"><span class="wb-icon">🔊</span><span class="wb-cn">朗读</span><span class="wb-en">Listen</span></button>
-        <button type="button" class="word-btn" data-action="inspect"><span class="wb-icon">🔍</span><span class="wb-cn">首字</span><span class="wb-en">Inspect</span></button>
+        <button type="button" class="word-btn" data-action="speak"><span class="wb-icon">🔊</span><span class="wb-cn">朗读</span><span class="wb-en">استمع</span></button>
+        <button type="button" class="word-btn" data-action="inspect"><span class="wb-icon">🔍</span><span class="wb-cn">首字</span><span class="wb-en">استكشف</span></button>
       </div>
     `;
 
@@ -7118,7 +7116,7 @@ function renderLearningFocus(label, sourceText){
       : 'Text is short — go straight to the character grid below.';
   }
   if(!words.length){
-    focusWords.innerHTML = '<div class="focus-empty">No key words found — tap any character below.</div>';
+    focusWords.innerHTML = '<div class="focus-empty">لا توجد كلمات أساسية — انقر على أي حرف أدناه.</div>';
   }else{
     for(const item of words){
       const chip = document.createElement('button');
@@ -7197,7 +7195,7 @@ let _followAlongActive = false;
 
 async function startFollowAlong(index){
   if(_followAlongActive){
-    showToast('Please wait for the current session to finish');
+    showToast('يرجى الانتظار حتى تنتهي الجلسة الحالية · 请等待当前操作完成');
     return;
   }
   _followAlongActive = true;
@@ -7221,8 +7219,8 @@ async function startFollowAlong(index){
     hintEl.className = 'sb-repeat-hint';
     hintEl.innerHTML =
       '<span class="rh-icon">🎤</span>' +
-      '<span>Now repeat</span>' +
-      '<span class="rh-en">Now repeat</span>';
+      '<span>الآن كرّر · 跟读</span>' +
+      '<span class="rh-en">الآن كرّر</span>';
     block.appendChild(hintEl);
   }
   if(hintEl) hintEl.classList.remove('show');
@@ -7250,7 +7248,7 @@ async function startFollowAlong(index){
   if(block) block.classList.remove('follow-active');
   _followAlongActive = false;
 
-  showToast('Sentence done · 本句完成！Try the next one');
+  showToast('اكتملت الجملة · 本句完成！ جرّب الجملة التالية');
 }
 
 /**
@@ -7506,7 +7504,7 @@ async function analyzeInput(text){
   if(charCount === 1 && !hasPunct){
     const ch = cjkChars[0];
     const e = getCharEntry(ch);
-    label = 'Character';
+    label = 'حرف · 字';
     displayText = ch;
     /* Pinyin is ALWAYS produced — dict entry first, then pinyin-pro fallback. */
     pinyin = (e && e.pinyin) ? e.pinyin : (getPinyinProForChar(ch) || '');
@@ -7524,7 +7522,7 @@ async function analyzeInput(text){
   else if(getWordEntry(strippedForLookup)){
     const w = getWordEntry(strippedForLookup);
     const isShort = charCount <= 4;
-    label = isShort ? 'Word · 词语' : 'Phrase';
+    label = isShort ? 'كلمة · 词语' : 'عبارة · 短语';
     displayText = trimmed;
     pinyin = w.pinyin;
     enResult = { text: w.en, quality: 'verified' };
@@ -7532,7 +7530,7 @@ async function analyzeInput(text){
   }
   /* Short multi-char, no terminal punct → word-level composition */
   else if(!hasPunct && charCount <= 4){
-    label = '词语 Word';
+    label = 'كلمة · 词语';
     displayText = trimmed;
     pinyin = buildPinyinForText(trimmed);
     enResult = translateSegment(trimmed, 'en');
@@ -7540,7 +7538,7 @@ async function analyzeInput(text){
   }
   /* Otherwise → sentence */
   else{
-    label = 'Sentence · 句子';
+    label = 'جملة · 句子';
     displayText = trimmed.length > 60 ? trimmed.slice(0,60)+'…' : trimmed;
     pinyin = buildPinyinForText(trimmed);
     enResult = translateSentence(trimmed, 'en');
@@ -7624,24 +7622,24 @@ function setMeaningWithBadge(textId, badgeId, result){
   if(badgeEl){
     badgeEl.className = 'q-badge q-' + result.quality;
     if(result.quality === 'verified'){
-      badgeEl.textContent = 'Verified';
+      badgeEl.textContent = 'موثّق';
       badgeEl.title = '整体释义来自经过校对的词典 · Translation from curated dictionary';
     }else if(result.quality === 'partial'){
-      badgeEl.textContent = 'Partial';
+      badgeEl.textContent = 'جزئي';
       badgeEl.title = '部分词语来自词典，其余为逐字拼接 · Some words from dictionary, rest are per-character glosses';
     }else if(result.quality === 'machine'){
       const engine = result.engineName || (TRANSLATION_STATE.engine === 'google' ? (getYoudaoCredentials().appKey ? 'Youdao' : 'Google') :
                      TRANSLATION_STATE.engine === 'mymemory' ? 'Google' : 'Cloud');
-      badgeEl.textContent = '云端 ' + engine;
+      badgeEl.textContent = 'سحابي · ' + engine;
       badgeEl.title = '由真实翻译接口提供 · Machine translation via ' + engine;
     }else if(result.quality === 'loading'){
-      badgeEl.textContent = '翻译中…';
+      badgeEl.textContent = 'جارٍ الترجمة…';
       badgeEl.title = '正在调用云端翻译 · Calling cloud translation…';
     }else if(result.quality === 'error'){
-      badgeEl.textContent = 'Cloud failed';
+      badgeEl.textContent = 'فشل السحابي';
       badgeEl.title = '云端翻译失败（已回退至离线结果）: ' + (result.errorMsg || '') + ' · Cloud translation failed, showing offline fallback';
     }else{
-      badgeEl.textContent = 'Gloss';
+      badgeEl.textContent = 'حرفي';
       badgeEl.title = '字面对照，非完整翻译 · Per-character gloss, not a full translation';
     }
   }
@@ -7664,12 +7662,12 @@ function render(){
     /* Hide practice loop */
     const _pl = document.getElementById('practiceLoop');
     if(_pl) _pl.classList.remove('show');
-    if(focusSummary) focusSummary.textContent = 'Key vocabulary will appear here · 重点词将在此显示';
-    if(focusNext) focusNext.textContent = 'Tap a character below · 点击下方单字查看详情';
+    if(focusSummary) focusSummary.textContent = 'ستظهر هنا المفردات الأساسية · 重点词将在此显示';
+    if(focusNext) focusNext.textContent = 'انقر على حرف أدناه · 点击下方单字查看详情';
     if(metricChars) metricChars.textContent = '0';
     if(metricWords) metricWords.textContent = '0';
     if(metricCoverage) metricCoverage.textContent = '0%';
-    if(metricType) metricType.textContent = 'Word · 词语';
+    if(metricType) metricType.textContent = 'كلمة · 词语';
     setLearningStep(1);
     return;
   }
@@ -7711,7 +7709,7 @@ function render(){
       const star = document.createElement('span');
       star.className = 'char-star' + (vocabHas(ch) ? ' saved' : '');
       star.textContent = '★';
-      star.title = vocabHas(ch) ? 'Remove from vocab · 从生词本移除' : 'Save to vocab · 加入生词本';
+      star.title = vocabHas(ch) ? 'إزالة من المفردات · 从生词本移除' : 'حفظ في المفردات · 加入生词本';
       star.setAttribute('aria-label', star.title);
       star.setAttribute('role', 'button');
       star.setAttribute('tabindex', '0');
@@ -7775,7 +7773,7 @@ function onCharClick(card, ch, entry){
 
   /* === 学习流程：进入步骤4 Character Study === */
   setLearningStep(4);
-  showToast('Tap a character · 点击单字查看笔顺和发音');
+  showToast('انقر على حرف · 点击单字查看笔顺和发音');
 
   /* show detail panel */
   showDetail(ch, entry);
@@ -7844,10 +7842,10 @@ function showDetail(ch, entry){
   const strokesEl = document.getElementById('dStrokes');
   const radicalEl = document.getElementById('dRadical');
   if(rad){
-    strokesEl.innerHTML = rad[1] + ' <span style="font-size:11px;color:var(--ink-faint);">画 strokes</span>';
+    strokesEl.innerHTML = rad[1] + ' <span style="font-size:11px;color:var(--ink-faint);">خط · 画</span>';
     radicalEl.textContent = rad[0];
   }else{
-    strokesEl.innerHTML = '<span style="color:var(--ink-faint);">加载中…</span>';
+    strokesEl.innerHTML = '<span style="color:var(--ink-faint);">جارٍ التحميل…</span>';
     radicalEl.textContent = '—';
     const strokeToken = ch + '::strokes::' + Date.now();
     showDetail._strokeToken = strokeToken;
@@ -7858,7 +7856,7 @@ function showDetail(ch, entry){
             if(showDetail._strokeToken !== strokeToken || currentDetailChar !== ch) return;
             const n = (data && Array.isArray(data.strokes)) ? data.strokes.length : 0;
             if(n > 0){
-              strokesEl.innerHTML = n + ' <span style="font-size:11px;color:var(--ink-faint);">画 strokes</span>';
+              strokesEl.innerHTML = n + ' <span style="font-size:11px;color:var(--ink-faint);">خط · 画</span>';
             }else{
               strokesEl.textContent = '—';
             }
@@ -7881,12 +7879,12 @@ function showDetail(ch, entry){
   const dVocabBtn = document.getElementById('dVocabBtn');
   if(dVocabBtn){
     const isSaved = vocabHas(ch);
-    dVocabBtn.textContent = isSaved ? '★ Saved · 已收藏' : '☆ Save · 加入生词本';
+    dVocabBtn.textContent = isSaved ? '★ محفوظ · 已收藏' : '☆ حفظ · 加入生词本';
     dVocabBtn.className = 'stroke-btn' + (isSaved ? ' vocab-detail-saved' : '');
     dVocabBtn.onclick = () => {
       vocabToggle(ch, null);
       const nowSaved = vocabHas(ch);
-      dVocabBtn.textContent = nowSaved ? '★ Saved · 已收藏' : '☆ Save · 加入生词本';
+      dVocabBtn.textContent = nowSaved ? '★ محفوظ · 已收藏' : '☆ حفظ · 加入生词本';
       dVocabBtn.className = 'stroke-btn' + (nowSaved ? ' vocab-detail-saved' : '');
       /* also update any matching star in charGrid */
       document.querySelectorAll('.char-card[data-char]').forEach(card => {
@@ -7968,11 +7966,11 @@ function renderStrokeAnimation(ch){
   /* Show loading state */
   const loading = document.createElement('div');
   loading.className = 'loading';
-  loading.innerHTML = '加载中…<br><small>Loading stroke data</small>';
+  loading.innerHTML = 'جارٍ التحميل…<br><small>جارٍ تحميل بيانات الخطوط</small>';
   strokeStage.appendChild(loading);
 
   if(typeof HanziWriter === 'undefined'){
-    strokeStage.innerHTML = '<div class="error">Hanzi Writer 未加载<br>需要联网首次加载笔顺数据<br><small>Internet required for stroke data</small></div>';
+    strokeStage.innerHTML = '<div class="error">Hanzi Writer 未加载<br>需要联网首次加载笔顺数据<br><small>يلزم الإنترنت لتحميل بيانات الخطوط</small></div>';
     hanziWriter = null;
     return;
   }
@@ -8001,7 +7999,7 @@ function renderStrokeAnimation(ch){
         playRainbowAnimation();
       },
       onLoadCharDataError: (err) => {
-        strokeStage.innerHTML = '<div class="error">无法加载笔顺数据<br>Cannot load stroke data<br><small>请检查网络连接<br>Check internet connection</small></div>';
+        strokeStage.innerHTML = '<div class="error">无法加载笔顺数据<br>تعذّر تحميل الخطوط<br><small>请检查网络连接<br>يرجى التحقق من الاتصال بالإنترنت</small></div>';
         hanziWriter = null;
       },
     });
@@ -8071,7 +8069,7 @@ btnPauseStroke.addEventListener('click', () => {
   if(strokeAnimating){
     hanziWriter.pauseAnimation();
     strokeAnimating = false;
-    btnPauseStroke.innerHTML = '<span class="icon">▶</span> 继续 Resume';
+    btnPauseStroke.innerHTML = '<span class="icon">▶</span> متابعة · 继续';
   }else{
     hanziWriter.resumeAnimation();
     strokeAnimating = true;
@@ -8096,10 +8094,10 @@ function togglePause(){
   isPaused = !isPaused;
   if(isPaused){
     try{ speechSynthesis.pause(); }catch(e){}
-    btnPlayAll.innerHTML = '▶ Resume · 继续';
+    btnPlayAll.innerHTML = '▶ متابعة · 继续';
   } else {
     try{ speechSynthesis.resume(); }catch(e){}
-    btnPlayAll.innerHTML = '■ Stop · 停止';
+    btnPlayAll.innerHTML = '■ إيقاف · 停止';
   }
 }
 
@@ -8108,7 +8106,7 @@ function togglePause(){
    ============================================================ */
 async function playAll(){
   if(!editor.value.trim()){
-    showToast('请先输入文字', 'Please enter text first');
+    showToast('الرجاء إدخال نص أولًا · 请先输入文字', 'الرجاء إدخال نص');
     editor.focus();
     return;
   }
@@ -8121,7 +8119,7 @@ async function playAll(){
 
   isPlayingQueue = true; queueAbort = false; isPaused = false;
   btnPlayAll.classList.add('is-active');
-  btnPlayAll.innerHTML = '■ Stop';
+  btnPlayAll.innerHTML = '■ إيقاف · 停止';
 
   /* === 学习流程：进入步骤2 Understand === */
   setLearningStep(2);
@@ -8137,7 +8135,7 @@ async function playAll(){
     _activeSentenceIndex = 0;
     _updateSentenceNav();
   }
-  showToast('正在朗读 · 请看下方理解卡', 'Playing · 正在朗读 — follow the card below ↓');
+  showToast('يُقرأ الآن · 请看下方理解卡', 'يُقرأ الآن — تابع البطاقة أدناه ↓');
 
   /* Highlighting: absIdx tracks UTF-16 offset in full text (= card data-idx).
      highlightByOffset is an arrow function defined outside the loop to avoid
@@ -8213,13 +8211,13 @@ async function playAll(){
     if(followMode && !queueAbort && ci < chunks.length - 1){
       const cjkCount = _offsetToCard.size || Array.from(chunk).filter(isCJK).length || chunk.length;
       const pauseMs  = Math.max(1200, Math.min(4000, Math.round(cjkCount * perChar * 1000 * 0.9)));
-      btnPlayAll.innerHTML = '🎞️ Your turn · 跟读…';
+      btnPlayAll.innerHTML = '🎞️ دورك الآن · 跟读…';
       const pauseStart = performance.now();
       while(!queueAbort && (performance.now() - pauseStart) < pauseMs){
         while(isPaused && !queueAbort){ await new Promise(r=>setTimeout(r,120)); }
         await new Promise(r=>setTimeout(r, 80));
       }
-      if(!queueAbort) btnPlayAll.innerHTML = '停止 <span class="en">Stop</span>';
+      if(!queueAbort) btnPlayAll.innerHTML = '■ إيقاف · 停止';
     }
   }
 
@@ -8227,9 +8225,9 @@ async function playAll(){
   document.querySelectorAll('.char-card.highlighted').forEach(el=> el.classList.remove('highlighted'));
   isPlayingQueue = false; isPaused = false;
   btnPlayAll.classList.remove('is-active');
-  btnPlayAll.innerHTML = '▶ Start Learning · 开始学习';
+  btnPlayAll.innerHTML = '▶ ابدأ التعلّم · 开始学习';
   hideReadingNow();
-  if(!queueAbort) showToast('朗读已结束', 'Reading finished');
+  if(!queueAbort) showToast('انتهت القراءة · 朗读已结束', 'انتهت القراءة');
   queueAbort = false;
 }
 
@@ -8257,7 +8255,7 @@ function stopAll(){
     el.classList.remove('playing'); el.classList.remove('highlighted');
   });
   btnPlayAll.classList.remove('is-active');
-  btnPlayAll.innerHTML = '开始学习 <span class="en">Start Learning</span>';
+  btnPlayAll.innerHTML = '▶ ابدأ التعلّم · 开始学习';
   hideReadingNow();
   isPlayingQueue = false;
   setLearningStep(1);
@@ -8268,11 +8266,11 @@ function clearAll(){
   editor.value = '';
   persistDraft();
   render();
-updateSaveStatus(editor.value.trim() ? 'Auto-saved' : 'Ready · 已准备');
+updateSaveStatus(editor.value.trim() ? 'تم الحفظ · 已保存' : 'جاهز · 已准备');
   detail.classList.remove('show');
   if(hanziWriter){ try{ hanziWriter.cancelQuiz?.(); }catch(e){} hanziWriter = null; }
   strokeStage.innerHTML = '<div class="placeholder">字</div>';
-  showToast('Cleared · 已清空');
+  showToast('تم المسح · 已清空');
   editor.focus();
 }
 
@@ -8310,7 +8308,7 @@ function resetPracticeState(text){
   const complete = document.getElementById('plComplete');
   const badge = document.getElementById('plBadge');
   if(complete) complete.classList.remove('show');
-  if(badge){ badge.textContent = 'In progress · 未完成'; badge.className = 'pl-badge'; }
+  if(badge){ badge.textContent = 'قيد التنفيذ · 未完成'; badge.className = 'pl-badge'; }
 }
 
 /* --- Pinyin distractors: given correct pinyin, generate 2 wrong ones --- */
@@ -8530,7 +8528,7 @@ function buildReadCheck(text){
 
   sentenceEl.innerHTML = renderAnnotatedTextHTML(text.length > 60 ? text.slice(0,60)+'…' : text);
   repeatBtn.className = 'pl-repeat-btn';
-  repeatBtn.textContent = '🎤 I repeated';
+  repeatBtn.textContent = '🎤 كرّرتُ · 已跟读';
 
   /* Remove old listener by cloning */
   const newBtn = repeatBtn.cloneNode(true);
@@ -8647,8 +8645,8 @@ if(btnFollow){
     /* === 学习流程：跟读开启 → step 3，关闭 → 回 step 2 === */
     if(followMode){ setLearningStep(3); } else { setLearningStep(2); }
     showToast(
-      followMode ? 'Echo Mode on · 跟读模式已开启' : 'Echo Mode off · 跟读模式已关闭',
-      followMode ? 'Echo Mode on' : 'Echo mode off'
+      followMode ? 'وضع الصدى مفعَّل · 跟读模式已开启' : 'وضع الصدى معطَّل · 跟读模式已关闭',
+      followMode ? 'وضع الصدى مفعَّل' : 'وضع الصدى معطَّل'
     );
   });
 }
@@ -8667,7 +8665,7 @@ function setPyHidden(on){
   if(btnTogglePy){
     btnTogglePy.classList.toggle('is-on', !!on);
     btnTogglePy.setAttribute('aria-pressed', on ? 'true' : 'false');
-    btnTogglePy.textContent = on ? '显示拼音 Show Pinyin' : '隐藏拼音 Hide Pinyin';
+    btnTogglePy.textContent = on ? 'إظهار البينيين · 显示拼音' : 'إخفاء البينيين · 隐藏拼音';
   }
   try{ localStorage.setItem('ui.hidePinyin', on ? '1' : '0'); }catch(e){}
 }
@@ -8676,7 +8674,7 @@ function setTrHidden(on){
   if(btnToggleTr){
     btnToggleTr.classList.toggle('is-on', !!on);
     btnToggleTr.setAttribute('aria-pressed', on ? 'true' : 'false');
-    btnToggleTr.textContent = on ? '显示翻译 Show Translation' : '隐藏翻译 Hide Translation';
+    btnToggleTr.textContent = on ? 'إظهار الترجمة · 显示翻译' : 'إخفاء الترجمة · 隐藏翻译';
   }
   try{ localStorage.setItem('ui.hideTranslation', on ? '1' : '0'); }catch(e){}
 }
@@ -8689,16 +8687,16 @@ if(btnTogglePy){
   btnTogglePy.addEventListener('click', () => {
     const on = !document.body.classList.contains('hide-pinyin');
     setPyHidden(on);
-    showToast(on ? 'Pinyin hidden · 拼音已隐藏' : 'Pinyin visible · 拼音已显示',
-              on ? 'Pinyin hidden' : 'Pinyin visible');
+    showToast(on ? 'البينيين مخفي · 拼音已隐藏' : 'البينيين مرئي · 拼音已显示',
+              on ? 'البينيين مخفي' : 'البينيين مرئي');
   });
 }
 if(btnToggleTr){
   btnToggleTr.addEventListener('click', () => {
     const on = !document.body.classList.contains('hide-translation');
     setTrHidden(on);
-    showToast(on ? 'Translation hidden · 翻译已隐藏' : 'Translation visible · 翻译已显示',
-              on ? 'Translation hidden' : 'Translation visible');
+    showToast(on ? 'الترجمة مخفية · 翻译已隐藏' : 'الترجمة مرئية · 翻译已显示',
+              on ? 'الترجمة مخفية' : 'الترجمة مرئية');
   });
 }
 
@@ -8723,11 +8721,11 @@ document.querySelectorAll('input[name="engine"]').forEach(radio => {
     const engine = e.target.value;
     setEngine(engine);
     if(engine === 'google'){
-      showToast('Auto translation · 自动翻译已启用', 'Auto translation enabled; Youdao will be used first if configured');
+      showToast('الترجمة التلقائية مفعَّلة · 自动翻译已启用', 'الترجمة التلقائية مفعَّلة');
     }else if(engine === 'mymemory'){
-      showToast('Auto translation · 已切换自动翻译', 'Switched to automatic translation');
+      showToast('تم التبديل للترجمة التلقائية · 已切换自动翻译', 'الترجمة التلقائية');
     }else if(engine === 'dict'){
-      showToast('Dictionary mode · 已切换词典模式', 'Switched to dictionary mode');
+      showToast('وضع القاموس · 已切换词典模式', 'وضع القاموس');
     }
   });
 });
@@ -8779,8 +8777,8 @@ if(modeSwitch){
     const btn = e.target.closest('.mode-pill');
     if(!btn) return;
     setProductMode(btn.dataset.mode);
-    showToast(btn.dataset.mode === 'tool' ? 'Switched to Tool Mode · 工具模式' : 'Switched to Study Mode · 学习模式',
-              btn.dataset.mode === 'tool' ? 'Switched to tool mode' : 'Switched to learning mode');
+    showToast(btn.dataset.mode === 'tool' ? 'تم التبديل لوضع الأداة · 工具模式' : 'تم التبديل لوضع الدراسة · 学习模式',
+              btn.dataset.mode === 'tool' ? 'وضع الأداة' : 'وضع الدراسة');
   });
 }
 
@@ -8799,10 +8797,10 @@ if(levelSwitch){
 
 
 if(btnCopyEn){
-  btnCopyEn.addEventListener('click', () => copyPlainText(document.getElementById('analysisEn')?.textContent || '', 'English copied', 'English copied'));
+  btnCopyEn.addEventListener('click', () => copyPlainText(document.getElementById('analysisEn')?.textContent || '', 'تم نسخ الإنجليزية · 已复制', 'تم النسخ'));
 }
 if(btnCopyAr){
-  btnCopyAr.addEventListener('click', () => copyPlainText(document.getElementById('analysisAr')?.textContent || '', 'Arabic copied', 'Arabic copied'));
+  btnCopyAr.addEventListener('click', () => copyPlainText(document.getElementById('analysisAr')?.textContent || '', 'تم نسخ العربية · 已复制', 'تم النسخ'));
 }
 if(btnJumpAnalysis){
   btnJumpAnalysis.addEventListener('click', () => scrollToBlock(document.getElementById('analysis')));
@@ -8876,13 +8874,13 @@ function vocabWordToggle(text, py, en, starEl){
   if(idx >= 0){
     list.splice(idx, 1);
     vocabSave(list);
-    if(starEl){ starEl.className = 'word-star js-word-star'; starEl.title = 'Save word · 加入生词本'; }
-    showToast('Removed from vocab · 已从生词本移除', 'Removed');
+    if(starEl){ starEl.className = 'word-star js-word-star'; starEl.title = 'حفظ الكلمة · 加入生词本'; }
+    showToast('تمت الإزالة من المفردات · 已从生词本移除', 'تمت الإزالة');
   }else{
     list.push({ ch: text, py, en, ts: Date.now(), type: 'word' });
     vocabSave(list);
-    if(starEl){ starEl.className = 'word-star js-word-star saved'; starEl.title = 'Remove from vocab · 从生词本移除'; }
-    showToast('Word saved · 词语已加入生词本 ⭐', 'Saved');
+    if(starEl){ starEl.className = 'word-star js-word-star saved'; starEl.title = 'إزالة من المفردات · 从生词本移除'; }
+    showToast('تم حفظ الكلمة · 词语已加入生词本 ⭐', 'تم الحفظ');
   }
   vocabUpdateEntryBtn();
 }
@@ -8895,7 +8893,7 @@ function vocabToggle(ch, starEl){
     /* remove */
     list.splice(idx, 1);
     vocabSave(list);
-    if(starEl){ starEl.className = 'char-star'; starEl.title = 'Save to vocab · 加入生词本'; }
+    if(starEl){ starEl.className = 'char-star'; starEl.title = 'حفظ في المفردات · 加入生词本'; }
     showToast('Removed from vocab · 已从生词本移除', 'Removed');
   }else{
     /* add */
@@ -8904,8 +8902,8 @@ function vocabToggle(ch, starEl){
     const en = (entry && entry.en) ? entry.en : '';
     list.push({ ch, py, en, ts: Date.now(), type: 'char' });
     vocabSave(list);
-    if(starEl){ starEl.className = 'char-star saved'; starEl.title = 'Remove from vocab · 从生词本移除'; }
-    showToast('Saved to vocab · 已加入生词本 ⭐', 'Saved');
+    if(starEl){ starEl.className = 'char-star saved'; starEl.title = 'إزالة من المفردات · 从生词本移除'; }
+    showToast('تم الحفظ في المفردات · 已加入生词本 ⭐', 'تم الحفظ');
   }
   vocabUpdateEntryBtn();
 }
@@ -8922,7 +8920,7 @@ function vocabUpdateEntryBtn(){
   }
   /* also update footer count if drawer is open */
   const footEl = document.getElementById('vocabFootCount');
-  if(footEl) footEl.textContent = n + ' character' + (n !== 1 ? 's' : '') + ' saved · ' + n + ' 个字';
+  if(footEl) footEl.textContent = n + ' حرف محفوظ · ' + n + ' 个字';
   /* sync progress pill vocab count */
   const ppVocab = document.getElementById('ppVocab');
   if(ppVocab) ppVocab.textContent = n;
@@ -8937,8 +8935,8 @@ function vocabRenderDrawer(){
   if(list.length === 0){
     body.innerHTML = '<div class="vocab-empty">'
       + '<div class="icon">⭐</div>'
-      + '<div class="msg">No characters or words saved yet.<br>生词本还是空的。</div>'
-      + '<div class="hint">Tap ★ on any character card or word card to save it.<br>点击字卡或词语卡上的 ★ 即可收藏。</div>'
+      + '<div class="msg">لم يُحفظ أي حرف أو كلمة بعد.<br>生词本还是空的。</div>'
+      + '<div class="hint">انقر على ★ في أي بطاقة حرف أو كلمة لحفظها.<br>点击字卡或词语卡上的 ★ 即可收藏。</div>'
       + '</div>';
     return;
   }
@@ -8954,7 +8952,7 @@ function vocabRenderDrawer(){
     sec.className = 'vocab-words-section';
     const title = document.createElement('div');
     title.className = 'vocab-section-title';
-    title.textContent = 'Words · 词语 (' + words.length + ')';
+    title.textContent = 'الكلمات · 词语 (' + words.length + ')';
     sec.appendChild(title);
 
     const grid = document.createElement('div');
@@ -8967,7 +8965,7 @@ function vocabRenderDrawer(){
       const rmBtn = document.createElement('span');
       rmBtn.className = 'vocab-item-remove';
       rmBtn.textContent = '✕';
-      rmBtn.title = 'Remove · 移除';
+      rmBtn.title = 'إزالة · 移除';
       rmBtn.setAttribute('role', 'button');
       rmBtn.setAttribute('tabindex', '0');
       rmBtn.addEventListener('click', (ev) => {
@@ -8985,7 +8983,7 @@ function vocabRenderDrawer(){
         });
         vocabUpdateEntryBtn();
         vocabRenderDrawer();
-        showToast('Removed · 已移除', 'Removed');
+        showToast('تمت الإزالة · 已移除', 'تمت الإزالة');
       });
       row.appendChild(rmBtn);
 
@@ -9012,7 +9010,7 @@ function vocabRenderDrawer(){
     if(words.length){
       const title = document.createElement('div');
       title.className = 'vocab-section-title';
-      title.textContent = 'Characters · 单字 (' + chars.length + ')';
+      title.textContent = 'الحروف · 单字 (' + chars.length + ')';
       sec.appendChild(title);
     }
 
@@ -9043,7 +9041,7 @@ function vocabRenderDrawer(){
         });
         if(currentDetailChar === item.ch){
           const dBtn = document.getElementById('dVocabBtn');
-          if(dBtn){ dBtn.textContent = '☆ Save · 加入生词本'; dBtn.className = 'stroke-btn'; }
+          if(dBtn){ dBtn.textContent = '☆ حفظ · 加入生词本'; dBtn.className = 'stroke-btn'; }
         }
         vocabUpdateEntryBtn();
         vocabRenderDrawer();
@@ -9109,7 +9107,7 @@ if(btnVocabClose) btnVocabClose.addEventListener('click', vocabCloseDrawer);
 
 if(btnVocabClear){
   btnVocabClear.addEventListener('click', () => {
-    if(!confirm('Clear all saved characters? · 确定清空生词本？')) return;
+    if(!confirm('مسح كل الحروف المحفوظة؟ · 确定清空生词本？')) return;
     vocabSave([]);
     /* clear all char stars in charGrid */
     document.querySelectorAll('.char-star.saved').forEach(s => { s.className = 'char-star'; });
@@ -9120,7 +9118,7 @@ if(btnVocabClear){
     if(dBtn){ dBtn.textContent = '☆ Save · 加入生词本'; dBtn.className = 'stroke-btn'; }
     vocabUpdateEntryBtn();
     vocabRenderDrawer();
-    showToast('Vocab cleared · 生词本已清空', 'Cleared');
+    showToast('تم مسح المفردات · 生词本已清空', 'تم المسح');
   });
 }
 
@@ -9255,29 +9253,29 @@ function progressRenderDrawer(){
 
   /* Big stat cards */
   const statsHTML = `
-    <div class="progress-section-title">Overview · 总览</div>
+    <div class="progress-section-title">نظرة عامة · 总览</div>
     <div class="progress-stats">
       <div class="progress-stat-card">
         <div class="ps-icon">📖</div>
         <div class="ps-value">${totalChars}</div>
-        <div class="ps-label">Unique chars<br>读过的汉字</div>
+        <div class="ps-label">حروف مميّزة<br>读过的汉字</div>
       </div>
       <div class="progress-stat-card ${streak >= 2 ? 'streak-active' : ''}">
         <div class="ps-icon">🔥</div>
         <div class="ps-value">${streak}</div>
-        <div class="ps-label">Day streak<br>连续学习天数</div>
+        <div class="ps-label">أيام متتالية<br>连续学习天数</div>
       </div>
       <div class="progress-stat-card">
         <div class="ps-icon">⭐</div>
         <div class="ps-value">${vocabTotal}</div>
-        <div class="ps-label">Saved items<br>生词本收藏</div>
+        <div class="ps-label">محفوظات<br>生词本收藏</div>
       </div>
     </div>
   `;
 
   /* Last 7 days bar chart */
   const days = [];
-  const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const DAY_NAMES = ['أحد','اثن','ثلا','أرب','خمي','جمع','سبت'];
   const dailyLog = data.dailyLog || {};
   let maxVal = 1;
   for(let i = 6; i >= 0; i--){
@@ -9296,19 +9294,19 @@ function progressRenderDrawer(){
     const lblClass = day.isToday ? 'progress-day-label today' : 'progress-day-label';
     return `<div class="progress-day">
       <div class="${barClass}" style="height:${heightPct}px;" title="${day.count} chars · ${day.key}"></div>
-      <div class="${lblClass}">${day.isToday ? 'Today' : day.label}</div>
+      <div class="${lblClass}">${day.isToday ? 'اليوم' : day.label}</div>
     </div>`;
   }).join('');
 
   const weekHTML = `
-    <div class="progress-section-title">Last 7 days · 近7天活跃</div>
+    <div class="progress-section-title">آخر 7 أيام · 近7天活跃</div>
     <div class="progress-week">${barsHTML}</div>
   `;
 
   /* Recently read chars */
   const recentChars = (data.chars || []).slice(-20).reverse();
   const recentHTML = recentChars.length ? `
-    <div class="progress-section-title">Recently studied · 最近读过的字</div>
+    <div class="progress-section-title">حروف دُرست مؤخّرًا · 最近读过的字</div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">
       ${recentChars.map(ch => `<span style="display:inline-flex;flex-direction:column;align-items:center;padding:6px 10px;border:1px solid rgba(31,37,43,0.08);border-radius:12px;background:#fff;font-family:var(--font-han);font-size:20px;color:var(--text);">${ch}</span>`).join('')}
     </div>
@@ -9341,11 +9339,11 @@ if(btnProgressClose) btnProgressClose.addEventListener('click', progressCloseDra
 
 if(btnProgressReset){
   btnProgressReset.addEventListener('click', () => {
-    if(!confirm('Reset all progress? · 确定重置所有进度数据？')) return;
+    if(!confirm('إعادة ضبط كل التقدّم؟ · 确定重置所有进度数据？')) return;
     progressSave({ chars:[], streak:0, lastDate:'', dailyLog:{} });
     progressUpdatePill();
     progressRenderDrawer();
-    showToast('Progress reset · 进度已重置', 'Reset');
+    showToast('تمت إعادة الضبط · 进度已重置', 'إعادة الضبط');
   });
 }
 
@@ -9518,11 +9516,11 @@ progressUpdatePill();
 
   /* ── Level descriptions ── */
   const LV_DESC = {
-    beginner: '<ul><li>Chinese text · 原文</li><li>Pinyin · 拼音</li><li>English translation · 英文翻译</li><li>Stroke order · 笔顺</li><li class="off">No Arabic · 无阿语</li><li class="off">No word cards · 无词语卡</li></ul>',
-    practice: '<ul><li>All Beginner features · 初学全部</li><li>Word cards · 词语卡片</li><li>Hide pinyin/translation toggles</li><li>Echo mode · 跟读模式</li><li class="off">No sentence metrics · 无统计数据</li></ul>',
-    advanced: '<ul><li>All features visible · 显示全部</li><li>Arabic translation · 阿语翻译</li><li>Sentence metrics · 句子统计</li><li>Translation engine settings · 翻译引擎设置</li></ul>'
+    beginner: '<ul><li>النص الصيني · 原文</li><li>البينيين · 拼音</li><li>الترجمة الإنجليزية · 英文翻译</li><li>ترتيب الخطوط · 笔顺</li><li class="off">بدون عربي · 无阿语</li><li class="off">بدون بطاقات الكلمات · 无词语卡</li></ul>',
+    practice: '<ul><li>كل ميزات المبتدئ · 初学全部</li><li>بطاقات الكلمات · 词语卡片</li><li>إخفاء البينيين/الترجمة · 隐藏切换</li><li>وضع الصدى · 跟读模式</li><li class="off">بدون إحصائيات · 无统计数据</li></ul>',
+    advanced: '<ul><li>عرض كل الميزات · 显示全部</li><li>الترجمة العربية · 阿语翻译</li><li>إحصائيات الجملة · 句子统计</li><li>إعدادات محرك الترجمة · 翻译引擎设置</li></ul>'
   };
-  const MODE_LABEL = { learning:'Study 学习', tool:'Tool 工具' };
+  const MODE_LABEL = { learning:'دراسة · 学习', tool:'أداة · 工具' };
   const LV_LABEL   = { beginner:'初学', practice:'练习', advanced:'进阶' };
 
   /* ── helpers ── */
@@ -9716,7 +9714,7 @@ progressUpdatePill();
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SpeechRecognition){
-    btn.title         = '该浏览器不支持语音识别 · Browser unsupported';
+    btn.title         = 'المتصفح لا يدعم التعرف على الصوت · 不支持';
     btn.style.opacity = '0.35';
     btn.style.cursor  = 'not-allowed';
     return;
@@ -9796,7 +9794,7 @@ progressUpdatePill();
 
   async function translateArabicToChinese(arabicText){
     translating = true;        /* FIX 1: block concurrent starts */
-    setStatus('正在翻译… · Translating…', '');
+    setStatus('جارٍ الترجمة… · 正在翻译', '');
     btn.classList.remove('mic-listening');
     btn.classList.add('mic-loading');
 
@@ -9810,12 +9808,12 @@ progressUpdatePill();
       if(chinese){
         editor.value = chinese;
         editor.dispatchEvent(new Event('input', { bubbles: true }));
-        setStatus('✓ 翻译完成 · Done', 'ok');
+        setStatus('✓ اكتملت الترجمة · 翻译完成', 'ok');
       } else {
-        setStatus('翻译结果为空 · Empty result', 'err');
+        setStatus('نتيجة الترجمة فارغة · 结果为空', 'err');
       }
     } catch(e) {
-      setStatus('翻译失败，请重试 · Translation failed', 'err');
+      setStatus('فشلت الترجمة، حاول مجددًا · 翻译失败', 'err');
     } finally {
       btn.classList.remove('mic-loading');
       translating = false;     /* FIX 1: allow new starts */
@@ -9833,13 +9831,13 @@ progressUpdatePill();
     recog.onstart = () => {
       listening = true;
       btn.classList.add('mic-listening');
-      setStatus('🎙 正在收听阿拉伯语… · Listening for Arabic…', '');
+      setStatus('🎙 جارٍ الاستماع للعربية… · 正在收听', '');
     };
 
     recog.onresult = (e) => {
       const arabic = e.results[0][0].transcript.trim();
       if(arabic) translateArabicToChinese(arabic);
-      else setStatus('未识别到内容 · Nothing recognized', 'err');
+      else setStatus('لم يُتعرَّف على شيء · 未识别', 'err');
     };
 
     recog.onerror = (e) => {
@@ -9850,10 +9848,10 @@ progressUpdatePill();
         recog.lang = 'ar';
         try{ recog.start(); return; }catch(ex){}
       }
-      if(e.error === 'no-speech')        setStatus('未检测到语音，请重试 · No speech', 'err');
-      else if(e.error === 'not-allowed') setStatus('麦克风权限被拒绝 · Mic permission denied', 'err');
-      else if(e.error === 'language-not-supported') setStatus('设备不支持阿拉伯语识别 · Arabic ASR unavailable', 'err');
-      else                               setStatus('识别出错: ' + e.error, 'err');
+      if(e.error === 'no-speech')        setStatus('لم يُكتشف صوت، حاول مجددًا · 未检测到语音', 'err');
+      else if(e.error === 'not-allowed') setStatus('تم رفض إذن الميكروفون · 麦克风权限被拒绝', 'err');
+      else if(e.error === 'language-not-supported') setStatus('الجهاز لا يدعم التعرف على العربية · 不支持阿语识别', 'err');
+      else                               setStatus('خطأ في التعرف: ' + e.error, 'err');
     };
 
     recog.onend = () => {
