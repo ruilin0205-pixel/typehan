@@ -4895,6 +4895,71 @@
     .section-label { flex-wrap: wrap; gap: 4px 8px; }
   }
 
+  /* ══════════════════════════════════════════
+     ARABIC VOICE INPUT — 阿拉伯语语音输入
+  ══════════════════════════════════════════ */
+  .editor-wrap {
+    position: relative;
+  }
+  #btnMic {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(31,37,43,0.10);
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(249,247,243,0.94));
+    box-shadow: var(--shadow-xs);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    z-index: 10;
+    padding: 0;
+    color: var(--text-soft);
+  }
+  #btnMic:hover {
+    border-color: rgba(70,111,142,0.22);
+    box-shadow: var(--shadow-sm);
+    color: var(--accent-strong);
+    background: linear-gradient(180deg,rgba(255,255,255,1),rgba(244,248,250,1));
+  }
+  #btnMic.mic-listening {
+    border-color: rgba(180,79,79,0.40);
+    background: linear-gradient(180deg,#d96060,#b44f4f);
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba(180,79,79,0.15), var(--shadow-sm);
+    animation: mic-pulse 1.1s ease-in-out infinite;
+  }
+  #btnMic.mic-loading {
+    border-color: rgba(70,111,142,0.30);
+    background: linear-gradient(180deg,#4c7996,#355974);
+    color: #fff;
+    cursor: wait;
+  }
+  @keyframes mic-pulse {
+    0%,100% { box-shadow: 0 0 0 4px rgba(180,79,79,0.15), var(--shadow-sm); }
+    50%      { box-shadow: 0 0 0 8px rgba(180,79,79,0.08), var(--shadow-sm); }
+  }
+  #btnMic svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  #micStatus {
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+    margin-top: 5px;
+    min-height: 14px;
+    padding-left: 2px;
+    transition: color 0.2s ease;
+  }
+  #micStatus.mic-err { color: var(--danger); }
+  #micStatus.mic-ok  { color: var(--success); }
+
   /* ─── 纯触屏设备：去除 hover 残留高亮 ─── */
   @media (hover: none) and (pointer: coarse) {
     .btn:hover, .preset-btn:hover, .char-card:hover, .word-card:hover,
@@ -5205,7 +5270,18 @@
       <span class="ls-step" data-step-num="4"><span class="num">4</span>Characters · 单字</span>
     </div>
 
-    <textarea class="editor" id="editor" placeholder="Paste or type any Chinese text here — a character, word, or sentence&#10;例如 e.g.: 你好 · 好好学习 · 春天来了，花儿开了。"></textarea>
+    <div class="editor-wrap">
+      <textarea class="editor" id="editor" placeholder="Paste or type any Chinese text here — a character, word, or sentence&#10;例如 e.g.: 你好 · 好好学习 · 春天来了，花儿开了。" style="padding-right:54px;"></textarea>
+      <button id="btnMic" title="点击说阿拉伯语，自动翻译成中文 · Speak Arabic → Chinese" aria-label="Arabic voice input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <rect x="9" y="2" width="6" height="12" rx="3"/>
+          <path d="M5 10a7 7 0 0 0 14 0"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="8"  y1="22" x2="16" y2="22"/>
+        </svg>
+      </button>
+    </div>
+    <div id="micStatus"></div>
 
     <div class="presets">
       <button class="preset-btn" data-preset="你好">你好 Hello</button>
@@ -9627,6 +9703,180 @@ progressUpdatePill();
   /* watch for body class changes (mode/level set by original JS) */
   new MutationObserver(updateStatus).observe(document.body, { attributes:true, attributeFilter:['class'] });
 
+})();
+
+/* ============================================================
+   ARABIC VOICE INPUT — 阿拉伯语语音识别 + 翻译
+   ============================================================ */
+(function(){
+  const btn      = document.getElementById('btnMic');
+  const editor   = document.getElementById('editor');
+  const statusEl = document.getElementById('micStatus');
+  if(!btn || !editor) return;
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    btn.title         = '该浏览器不支持语音识别 · Browser unsupported';
+    btn.style.opacity = '0.35';
+    btn.style.cursor  = 'not-allowed';
+    return;
+  }
+
+  let recog     = null;
+  let listening = false;
+  let translating = false;   /* FIX 1: guard flag — prevents double-start during translation */
+  let clearTimer = null;
+
+  function setStatus(msg, type){
+    clearTimeout(clearTimer);
+    statusEl.textContent = msg;
+    statusEl.className   = type ? 'mic-' + type : '';
+    /* FIX 5: auto-clear success message after 3 s */
+    if(type === 'ok'){
+      clearTimer = setTimeout(() => {
+        statusEl.textContent = '';
+        statusEl.className   = '';
+      }, 3000);
+    }
+  }
+
+  /* ── 超时 fetch ── */
+  function micFetch(url, opts, ms){
+    const ctrl = new AbortController();
+    const t    = setTimeout(() => ctrl.abort(), ms || 7000);
+    return fetch(url, Object.assign({}, opts, { signal: ctrl.signal }))
+      .finally(() => clearTimeout(t));
+  }
+
+  /* ── 验证结果是否含汉字 (FIX 3 + FIX 4) ── */
+  function isValidChinese(str){
+    if(!str) return false;
+    const s = str.trim();
+    /* reject empty, Arabic residue, MyMemory "NULL", pure Latin/pinyin */
+    if(!s) return false;
+    if(/^NULL$/i.test(s)) return false;                    /* FIX 4: MyMemory NULL */
+    if(/[؀-ۿ]/.test(s)) return false;            /* still Arabic */
+    if(/^[A-Za-z0-9\s\p{P}]+$/u.test(s)) return false;    /* pure Latin – likely pinyin */
+    if(!/[一-鿿㐀-䶿]/.test(s)) return false; /* FIX 3: must contain CJK */
+    return true;
+  }
+
+  /* ── Google 免费接口：ar → zh-CN ── */
+  async function googleArToZh(text){
+    const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=zh-CN&dt=t&dj=1&q='
+              + encodeURIComponent(text);
+    const res  = await micFetch(url, {}, 6000);
+    if(!res.ok) throw new Error('Google HTTP ' + res.status);
+    const data = await res.json();
+    const out  = (data.sentences || []).map(s => (s && s.trans) || '').join('').trim();
+    if(!isValidChinese(out)) throw new Error('Google invalid result');
+    return out;
+  }
+
+  /* ── MyMemory fallback：ar → zh-CN ── */
+  async function myMemoryArToZh(text){
+    const url = 'https://api.mymemory.translated.net/get?q='
+              + encodeURIComponent(text)
+              + '&langpair=ar|zh-CN&de=webapp@example.com';
+    const res  = await micFetch(url, {}, 7000);
+    if(!res.ok) throw new Error('MyMemory HTTP ' + res.status);
+    const data = await res.json();
+    let out = (data.responseData && data.responseData.translatedText) || '';
+    /* FIX 4: reject NULL string, Arabic residue, MyMemory warnings */
+    if(!isValidChinese(out) || /MYMEMORY WARNING/i.test(out)){
+      const best = (data.matches || [])
+        .filter(m => m && m.translation && isValidChinese(m.translation))
+        .sort((a, b) => Number(b.quality || 0) - Number(a.quality || 0))[0];
+      out = best ? best.translation : '';
+    }
+    out = (out || '').trim();
+    if(!isValidChinese(out)) throw new Error('MyMemory invalid result');
+    return out;
+  }
+
+  async function translateArabicToChinese(arabicText){
+    translating = true;        /* FIX 1: block concurrent starts */
+    setStatus('正在翻译… · Translating…', '');
+    btn.classList.remove('mic-listening');
+    btn.classList.add('mic-loading');
+
+    try {
+      let chinese = '';
+      try       { chinese = await googleArToZh(arabicText); }
+      catch(e1) {
+        try     { chinese = await myMemoryArToZh(arabicText); }
+        catch(e2){ throw new Error('All providers failed'); }
+      }
+      if(chinese){
+        editor.value = chinese;
+        editor.dispatchEvent(new Event('input', { bubbles: true }));
+        setStatus('✓ 翻译完成 · Done', 'ok');
+      } else {
+        setStatus('翻译结果为空 · Empty result', 'err');
+      }
+    } catch(e) {
+      setStatus('翻译失败，请重试 · Translation failed', 'err');
+    } finally {
+      btn.classList.remove('mic-loading');
+      translating = false;     /* FIX 1: allow new starts */
+    }
+  }
+
+  function startListening(){
+    /* FIX 7: try ar-SA first, fall back to generic 'ar' on error */
+    recog = new SpeechRecognition();
+    recog.lang           = 'ar-SA';
+    recog.interimResults = false;
+    recog.maxAlternatives = 1;
+    recog.continuous     = false;
+
+    recog.onstart = () => {
+      listening = true;
+      btn.classList.add('mic-listening');
+      setStatus('🎙 正在收听阿拉伯语… · Listening for Arabic…', '');
+    };
+
+    recog.onresult = (e) => {
+      const arabic = e.results[0][0].transcript.trim();
+      if(arabic) translateArabicToChinese(arabic);
+      else setStatus('未识别到内容 · Nothing recognized', 'err');
+    };
+
+    recog.onerror = (e) => {
+      listening = false;
+      btn.classList.remove('mic-listening');
+      /* FIX 7: if ar-SA language not supported, retry with generic 'ar' */
+      if(e.error === 'language-not-supported' && recog.lang === 'ar-SA'){
+        recog.lang = 'ar';
+        try{ recog.start(); return; }catch(ex){}
+      }
+      if(e.error === 'no-speech')        setStatus('未检测到语音，请重试 · No speech', 'err');
+      else if(e.error === 'not-allowed') setStatus('麦克风权限被拒绝 · Mic permission denied', 'err');
+      else if(e.error === 'language-not-supported') setStatus('设备不支持阿拉伯语识别 · Arabic ASR unavailable', 'err');
+      else                               setStatus('识别出错: ' + e.error, 'err');
+    };
+
+    recog.onend = () => {
+      listening = false;
+      btn.classList.remove('mic-listening');
+    };
+
+    recog.start();
+  }
+
+  function stopListening(){
+    if(recog){ try{ recog.stop(); }catch(e){} }
+    listening = false;
+    btn.classList.remove('mic-listening');
+    setStatus('');
+  }
+
+  /* FIX 1: guard click — ignore during active translation */
+  btn.addEventListener('click', () => {
+    if(translating) return;
+    if(listening) stopListening();
+    else startListening();
+  });
 })();
 </script>
 
