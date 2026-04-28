@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f7f6f3">
+<meta name="format-detection" content="telephone=no">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <title>HanziLens · 汉字精读 — أداة قراءة اللغة الصينية وتعلّمها</title>
 <!-- Hanzi Writer for animated stroke order (requires internet for first-time char data) -->
@@ -1816,8 +1821,7 @@
   }
 
   /* ---- mode-beginner: hide non-essential UI ---- */
-  /* Arabic translation row */
-  body.mode-beginner #arabicCollapse{ display: none !important; }
+  /* Arabic translation: always visible in all modes (AR-only) */
   /* Focus words / metrics / word deck */
   body.mode-beginner #focusCollapse{ display: none !important; }
   body.mode-beginner #sentenceMetrics{ display: none !important; }
@@ -1839,10 +1843,10 @@
   body.mode-beginner .analysis-reading-pinyin{ visibility: visible !important; }
   /* Always show English translation */
   body.mode-beginner .analysis-translations{ display: block !important; }
-  body.mode-beginner #arabicCollapse{ display: none !important; }
+  /* AR-only: Arabic always visible */
 
   /* ---- mode-practice: show word cards + echo, hide raw toggles ---- */
-  /* Arabic still hidden by default (collapsible, user can expand) */
+  /* Arabic — always open in AR-only mode (open attr set in HTML) */
   /* Focus words: show */
   /* Hide-pinyin/translation toggles: visible (learner tests themselves) */
   /* Stroke detail: visible */
@@ -2396,6 +2400,16 @@
     color:var(--accent);
   }
 
+  .sb-ar{
+    margin-top:5px;
+    font-size:14px;
+    line-height:1.8;
+    color:var(--text-main);
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: embed;
+    padding-right: 2px;
+  }
   .sb-en{
     margin-top:5px;
     font-size:13px;
@@ -4111,6 +4125,15 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .vocab-word-item .vw-ar{
+    font-size: 12px;
+    color: var(--text-soft);
+    direction: rtl;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .vocab-word-item .vocab-item-remove{
     position: absolute;
     top: 6px;
@@ -4151,6 +4174,18 @@
     color: var(--text);
   }
   .vocab-item .vi-en{
+    margin-top: 5px;
+    font-size: 10px;
+    color: var(--text-soft);
+    text-align: center;
+    line-height: 1.4;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: none;  /* AR-only: hide English in char cards */
+  }
+  .vocab-item .vi-ar{
     margin-top: 5px;
     font-size: 10px;
     color: var(--text-soft);
@@ -4732,7 +4767,7 @@
     textarea.editor {
       min-height: 100px !important;
       font-size: 20px !important;
-      padding: 14px 16px !important;
+      padding: 14px 54px 14px 16px !important;
       touch-action: pan-y;
     }
 
@@ -4984,6 +5019,1626 @@
     }
   }
 
+
+  /* ══════════════════════════════════════════════════════════════
+     RESPONSIVE + MOBILE POLISH — 全面手机/平板/电脑适配补丁
+     Appended after all existing rules. Only adds / overrides
+     where needed. Zero functional changes.
+  ══════════════════════════════════════════════════════════════ */
+
+  /* ── 1. Safe-area insets (iPhone X+ notch & home indicator) ── */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    body {
+      padding-left:   env(safe-area-inset-left);
+      padding-right:  env(safe-area-inset-right);
+    }
+    .floating-actions {
+      bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+    @media (max-width: 768px) {
+      #ctrlPanel:not(.docked-left):not(.docked-right) {
+        bottom: calc(70px + env(safe-area-inset-bottom)) !important;
+      }
+      .wrap {
+        padding-bottom: calc(76px + env(safe-area-inset-bottom)) !important;
+      }
+    }
+  }
+
+  /* ── 2. textarea: always reserve right space for mic button ── */
+  /*      The inline style="padding-right:54px" is overridden by  */
+  /*      the mobile !important rule — re-apply via CSS instead.  */
+  textarea.editor {
+    padding-right: 54px;                 /* desktop */
+  }
+  @media (max-width: 768px) {
+    textarea.editor {
+      padding: 14px 54px 14px 16px !important;   /* keep right padding for mic */
+      min-height: 100px !important;
+      font-size: 20px !important;
+    }
+  }
+  @media (max-width: 480px) {
+    textarea.editor {
+      padding: 12px 50px 12px 14px !important;
+      font-size: 18px !important;         /* still ≥16 px — no iOS zoom */
+    }
+  }
+
+  /* ── 3. Mic button — mobile: bigger touch target + adjusted pos ── */
+  @media (max-width: 768px) {
+    #btnMic {
+      width:  44px !important;
+      height: 44px !important;
+      bottom:  8px !important;
+      right:   8px !important;
+    }
+    #btnMic svg {
+      width:  20px !important;
+      height: 20px !important;
+    }
+  }
+  @media (max-width: 480px) {
+    #btnMic {
+      width:  42px !important;
+      height: 42px !important;
+      bottom:  6px !important;
+      right:   6px !important;
+    }
+  }
+
+  /* Remove hover glow from mic button on touch devices */
+  @media (hover: none) and (pointer: coarse) {
+    #btnMic:hover {
+      border-color: rgba(31,37,43,0.10) !important;
+      box-shadow: var(--shadow-xs) !important;
+      color: var(--text-soft) !important;
+      background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(249,247,243,0.94)) !important;
+    }
+    #btnMic:active {
+      opacity: 0.75 !important;
+      transform: scale(0.94) !important;
+    }
+  }
+
+  /* ── 4. micStatus — readable on all screens ── */
+  #micStatus {
+    font-size: 12px;
+    line-height: 1.4;
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: embed;
+    padding-left: 0;
+    padding-right: 2px;
+    min-height: 16px;
+    word-break: break-word;
+  }
+  @media (max-width: 480px) {
+    #micStatus {
+      font-size: 11px;
+    }
+  }
+
+  /* ── 5. Prevent horizontal overflow on every screen size ── */
+  html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  .wrap {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* ── 6. Word cards: prevent overflow on narrow screens ── */
+  .word-card {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .word-card .han {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .word-card .mean {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* ── 7. Analysis text: no overflow ── */
+  .analysis-reading-cn, .analysis-reading-pinyin {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+  }
+
+  /* ── 8. Char grid: no horizontal scroll ── */
+  .char-grid {
+    overflow: hidden;
+    flex-wrap: wrap;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* ── 9. Detail panel: no overflow on mobile ── */
+  @media (max-width: 768px) {
+    .detail-info {
+      min-width: 0;
+      overflow: hidden;
+    }
+    .meaning-block, .info-grid {
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .m-text {
+      word-break: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+    }
+  }
+
+  /* ── Arabic sentence block row ── */
+  .sb-ar {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-soft);
+    padding: 6px 0 2px;
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: embed;
+    word-break: break-word;
+    border-top: 1px solid rgba(31,37,43,0.06);
+    margin-top: 6px;
+  }
+  @media (max-width: 480px) {
+    .sb-ar { font-size: 13px; }
+  }
+
+  /* ── 10. Sentence blocks: no overflow ── */
+  .sentence-block {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .sb-cn {
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  /* ── 11. Control panel: scroll body on very short screens ── */
+  @media (max-width: 768px) {
+    #ctrlPanel .cp-body {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      max-height: calc(70vh - 54px);
+    }
+  }
+
+  /* ── 12. Vocab + progress drawers: full-screen on mobile ── */
+  @media (max-width: 540px) {
+    .vocab-drawer, .progress-drawer {
+      width: 100% !important;
+      max-width: 100% !important;
+      border-radius: 24px 24px 0 0 !important;
+      bottom: 0 !important;
+      right: 0 !important;
+      height: 88vh !important;
+      top: auto !important;
+    }
+  }
+
+  /* ── 13. Topbar: prevent right side overflow ── */
+  @media (max-width: 380px) {
+    .topbar-right {
+      gap: 4px !important;
+    }
+    #btnPanelToggle {
+      padding: 5px 8px !important;
+      font-size: 10px !important;
+      white-space: nowrap;
+    }
+    .topbar-status {
+      display: none !important;   /* hide status label on tiny screens */
+    }
+  }
+
+  /* ── 14. Presets horizontal scroll: touch-friendly ── */
+  @media (max-width: 768px) {
+    .presets {
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+    }
+    .preset-btn {
+      scroll-snap-align: start;
+    }
+  }
+
+  /* ── 15. Controls: ensure echo+clear don't overflow ── */
+  @media (max-width: 360px) {
+    .controls {
+      flex-wrap: wrap;
+    }
+    #btnFollow, #btnClear {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+  }
+
+  /* ── 16. Learning steps: fix arrow symbol on RTL ── */
+  .ls-arrow {
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  /* ── 17. Stroke controls: wrap on small screens ── */
+  @media (max-width: 420px) {
+    .stroke-controls {
+      flex-wrap: wrap !important;
+      gap: 6px !important;
+    }
+    .stroke-btn {
+      flex: 1 1 auto;
+      min-width: 70px;
+      text-align: center;
+      font-size: 11px !important;
+      padding: 8px 8px !important;
+    }
+  }
+
+  /* ── 18. Progress bar chart: prevent overflow ── */
+  .progress-week {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .progress-week::-webkit-scrollbar { display: none; }
+
+  /* ── 19. Engine panel: option text wraps gracefully ── */
+  .engine-options label {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  /* ── 20. Sentence nav buttons: min touch target ── */
+  .sn-btn {
+    min-height: 44px;
+    min-width: 80px;
+  }
+
+  /* ── 21. Translation copy buttons: min touch target ── */
+  .translation-copy {
+    min-height: 32px;
+    padding: 4px 10px;
+  }
+
+  /* ── 22. Tablet (768–1024px): two-column detail panel ── */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .detail.show {
+      grid-template-columns: 240px 1fr;
+    }
+    .stroke-stage {
+      width: 200px;
+      height: 200px;
+    }
+  }
+
+  /* ── 23. Large screens (≥1280px): comfortable max-width ── */
+  @media (min-width: 1280px) {
+    .wrap {
+      max-width: 980px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  /* ── 24. mic-pulse animation: respect reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    #btnMic.mic-listening {
+      animation: none !important;
+    }
+  }
+
+
+
+  /* ══════════════════════════════════════════════════════════════
+     MOBILE & TABLET FULL OPTIMIZATION PATCH v2
+     完美手机+平板+电脑三端适配补丁
+     • Pure additions — zero functional changes
+     • All Arabic RTL + Chinese LTR handled correctly
+     • iOS Safari, Android Chrome, iPad fully covered
+  ══════════════════════════════════════════════════════════════ */
+
+  /* ── A. Global box model & overflow guards ── */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior-y: none;
+    min-height: 100dvh;
+  }
+
+  /* ── B. Interactive element baseline (all screen sizes) ── */
+  button, input, select, textarea {
+    -webkit-tap-highlight-color: transparent;
+    tap-highlight-color: transparent;
+  }
+  button {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+  }
+  input[type="range"] {
+    touch-action: pan-x;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    cursor: pointer;
+  }
+
+  /* ── C. Textarea: ≥16px everywhere to stop iOS auto-zoom ── */
+  textarea.editor {
+    font-size: max(16px, 1em) !important;
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 54px !important;
+  }
+
+  /* ── D. Speed slider track & thumb: touch-friendly ── */
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(18,24,30,0.18);
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #fff;
+    cursor: pointer;
+  }
+
+  /* ── E. Minimum touch target 44×44px for all interactive elements ── */
+  @media (hover: none) and (pointer: coarse) {
+    .btn, .preset-btn, .utility-btn, .stroke-btn,
+    .sn-btn, .translation-copy, .cp-action-btn,
+    .cp-mode-pill, .cp-lv-pill, .cp-dock-btn,
+    .vocab-clear-btn, .vocab-drawer-close, .progress-drawer-close,
+    .progress-reset-btn, .ob-btn-next, .ob-btn-skip,
+    #btnPanelToggle, #btnDismissOverview, #btnMic {
+      min-height: 44px;
+    }
+    /* Char cards: bigger touch area */
+    .char-card {
+      min-width: 54px;
+      min-height: 70px;
+    }
+    /* Word stars and remove buttons */
+    .char-star, .vocab-item-remove, .word-star {
+      min-width: 36px;
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     BREAKPOINT: ≤ 768px  (phones + small tablets)
+  ══════════════════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+
+    /* Header: compact, no overflow */
+    header {
+      padding: 8px 14px;
+      border-radius: 18px;
+      gap: 6px;
+      grid-template-columns: auto 1fr auto;
+    }
+    .topbar-center {
+      text-align: center;
+      overflow: hidden;
+    }
+    .topbar-title {
+      font-size: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
+    }
+    .topbar-sub {
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
+    }
+    .topbar-right {
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    #btnPanelToggle {
+      font-size: 11px;
+      padding: 6px 10px;
+      white-space: nowrap;
+    }
+
+    /* Wrap: full-width with safe margins */
+    .wrap {
+      width: calc(100% - 24px) !important;
+      max-width: 100% !important;
+      padding-left: 0;
+      padding-right: 0;
+      overflow-x: hidden;
+    }
+
+    /* Sections */
+    .section {
+      padding: 14px;
+      border-radius: 18px;
+    }
+    .section-head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .section-label {
+      font-size: 11px;
+    }
+
+    /* Textarea + editor wrap */
+    .editor-wrap {
+      position: relative;
+    }
+    textarea.editor {
+      font-size: 20px !important;
+      min-height: 110px !important;
+      padding: 14px 54px 14px 16px !important;
+      line-height: 1.85 !important;
+      border-radius: 16px !important;
+    }
+
+    /* Controls layout */
+    .controls {
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    #btnPlayAll {
+      flex: 1 1 100%;
+      font-size: 15px;
+      padding: 13px 16px;
+    }
+    #btnFollow {
+      flex: 1 1 auto;
+      min-width: 0;
+      font-size: 12px;
+    }
+    #btnClear {
+      flex: 0 0 auto;
+      font-size: 12px;
+    }
+    .speed-group {
+      flex: 1 1 100%;
+      justify-content: space-between;
+      margin-left: 0;
+      padding: 8px 12px;
+    }
+    .speed-group input[type="range"] {
+      flex: 1;
+      min-width: 0;
+      max-width: 180px;
+    }
+
+    /* Utility bar */
+    .utility-bar {
+      padding: 10px 12px;
+      border-radius: 14px;
+    }
+    .utility-group {
+      flex-wrap: wrap;
+      gap: 6px;
+      width: 100%;
+    }
+    .utility-btn {
+      flex: 1 1 calc(50% - 6px);
+      min-width: 0;
+      text-align: center;
+      font-size: 11px;
+      padding: 8px 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Analysis card */
+    .analysis {
+      padding: 14px;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .analysis-reading-cn {
+      font-size: 22px;
+      word-break: break-all;
+    }
+    .analysis-reading-pinyin {
+      font-size: 13px;
+      word-break: break-word;
+    }
+    .analysis-translations {
+      gap: 10px;
+    }
+    .translation-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .translation-label {
+      min-width: 0;
+    }
+    .translation-content {
+      font-size: 14px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+    .translation-tools {
+      justify-content: flex-end;
+    }
+
+    /* Sentence metrics: 2 cols */
+    .sentence-metrics {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .metric-card {
+      padding: 10px 12px;
+    }
+    .metric-value {
+      font-size: 20px;
+    }
+
+    /* Sentence nav */
+    .sentence-nav {
+      gap: 8px;
+    }
+    .sn-btn {
+      min-width: 70px;
+      font-size: 12px;
+      padding: 8px 10px;
+    }
+
+    /* Word deck */
+    .word-deck {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .word-card {
+      padding: 12px 14px;
+      border-radius: 14px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .word-card .han {
+      font-size: 22px;
+    }
+    .word-card .mean {
+      font-size: 13px;
+      word-break: break-word;
+    }
+
+    /* Char grid */
+    .char-grid {
+      gap: 8px;
+      padding: 14px;
+      border-radius: 16px;
+      flex-wrap: wrap;
+      overflow: hidden;
+    }
+    .char-card {
+      min-width: 52px;
+      border-radius: 13px;
+    }
+    .char-card .char {
+      font-size: 26px;
+    }
+    .char-card .py {
+      font-size: 10px;
+    }
+
+    /* Detail panel: stacked on mobile */
+    .detail.show {
+      grid-template-columns: 1fr !important;
+    }
+    .detail-stroke {
+      border-right: none;
+      border-bottom: 1px solid rgba(31,37,43,0.06);
+      padding: 16px;
+    }
+    .stroke-stage {
+      width: 180px !important;
+      height: 180px !important;
+      margin: 0 auto;
+    }
+    .stroke-controls {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .stroke-btn {
+      font-size: 11px;
+      padding: 8px 10px;
+      flex: 1 1 auto;
+      min-width: 70px;
+      text-align: center;
+    }
+    .stroke-legend {
+      text-align: center;
+      font-size: 11px;
+    }
+    .detail-info {
+      padding: 16px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .detail-info .top {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .detail-info .top .ch {
+      font-size: 38px;
+    }
+    .info-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 8px;
+    }
+    .m-text {
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    /* Practice loop */
+    .pl-header {
+      padding: 12px 14px 10px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .pl-section {
+      padding: 12px 14px;
+    }
+    .pl-section-title {
+      font-size: 12px;
+    }
+    .pl-pinyin-item {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pl-pinyin-options {
+      width: 100%;
+    }
+    .pl-read-body {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pl-fill-sentence {
+      font-size: 18px;
+    }
+
+    /* Onboarding overlay */
+    .ob-card {
+      width: calc(100vw - 32px) !important;
+      max-width: 420px;
+      max-height: 90dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 20px 16px;
+      border-radius: 20px;
+    }
+    .ob-title {
+      font-size: 18px;
+    }
+    .ob-subtitle {
+      font-size: 12px;
+    }
+    .ob-body {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .ob-actions {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ob-btn-next, .ob-btn-skip {
+      width: 100%;
+      text-align: center;
+      padding: 12px 16px;
+    }
+
+    /* Overview */
+    .overview {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    /* Float buttons */
+    .floating-actions {
+      right: 12px;
+      bottom: 16px;
+      gap: 8px;
+    }
+    .float-btn {
+      width: 44px;
+      height: 44px;
+    }
+
+    /* Follow hint */
+    .follow-hint {
+      font-size: 13px;
+      padding: 12px 14px;
+      border-radius: 14px;
+    }
+
+    /* Toast */
+    .toast {
+      left: 12px;
+      right: 12px;
+      max-width: none;
+      transform: translateX(0) translateY(20px);
+    }
+    .toast.show {
+      transform: translateX(0) translateY(0);
+    }
+
+    /* Control panel: full-width bottom sheet on mobile */
+    #ctrlPanel:not(.docked-left):not(.docked-right) {
+      position: fixed !important;
+      left: 12px !important;
+      right: 12px !important;
+      top: auto !important;
+      bottom: 12px !important;
+      width: auto !important;
+      max-width: none !important;
+      border-radius: 20px !important;
+      max-height: 80dvh;
+    }
+    #ctrlPanel .cp-body {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      max-height: calc(80dvh - 54px);
+    }
+
+    /* Vocab + progress drawers */
+    .vocab-drawer, .progress-drawer {
+      width: 100% !important;
+      max-width: 100% !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      top: auto !important;
+      height: 88dvh !important;
+      border-radius: 22px 22px 0 0 !important;
+    }
+
+    /* Sentence blocks */
+    .sentence-block {
+      padding: 10px 12px;
+      border-radius: 12px;
+    }
+    .sb-cn {
+      font-size: 18px;
+    }
+    .sb-py {
+      font-size: 12px;
+    }
+
+    /* Learning steps strip */
+    .learning-steps {
+      font-size: 11px;
+      gap: 4px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .learning-steps::-webkit-scrollbar { display: none; }
+    .ls-step {
+      white-space: nowrap;
+    }
+    .ls-arrow {
+      flex-shrink: 0;
+    }
+
+    /* Section notes */
+    .section-note {
+      font-size: 11px;
+    }
+
+    /* Engine panel */
+    .engine-panel summary {
+      padding: 10px 12px;
+    }
+    .engine-title {
+      font-size: 12px;
+    }
+    .engine-body {
+      padding: 12px;
+    }
+    .engine-options .hint {
+      display: block;
+      margin-top: 3px;
+      margin-left: 0;
+    }
+
+    /* Focus collapse */
+    .focus-card {
+      padding: 12px 14px;
+    }
+    .focus-chips {
+      gap: 6px;
+    }
+
+    /* micStatus RTL alignment on mobile */
+    #micStatus {
+      font-size: 12px;
+      text-align: right;
+      direction: rtl;
+      padding-right: 4px;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     BREAKPOINT: ≤ 480px  (compact phones)
+  ══════════════════════════════════════════════════════════════ */
+  @media (max-width: 480px) {
+
+    header {
+      padding: 7px 10px;
+      border-radius: 14px;
+    }
+    .topbar-title {
+      font-size: 13px;
+    }
+    .topbar-sub {
+      font-size: 9px;
+    }
+    #btnPanelToggle {
+      font-size: 10px;
+      padding: 5px 8px;
+    }
+    .topbar-status {
+      display: none !important;
+    }
+
+    .wrap {
+      width: calc(100% - 20px) !important;
+      padding-top: 14px !important;
+      padding-bottom: 60px !important;
+    }
+
+    .section {
+      padding: 12px;
+      border-radius: 14px;
+    }
+
+    textarea.editor {
+      font-size: 18px !important;
+      min-height: 100px !important;
+      padding: 12px 50px 12px 14px !important;
+      border-radius: 14px !important;
+    }
+
+    #btnPlayAll {
+      font-size: 14px;
+      padding: 12px 14px;
+    }
+
+    .utility-btn {
+      font-size: 11px;
+      padding: 7px 6px;
+    }
+
+    .char-card .char {
+      font-size: 24px;
+    }
+    .char-card {
+      min-width: 48px;
+    }
+
+    .stroke-stage {
+      width: 160px !important;
+      height: 160px !important;
+    }
+
+    .info-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .analysis-reading-cn {
+      font-size: 20px;
+    }
+
+    .sentence-metrics {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+    .metric-card {
+      padding: 8px 10px;
+    }
+    .metric-value {
+      font-size: 18px;
+    }
+
+    .ob-card {
+      padding: 16px 14px;
+    }
+    .ob-title {
+      font-size: 16px;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     BREAKPOINT: ≤ 360px  (very small phones — e.g. SE, old Android)
+  ══════════════════════════════════════════════════════════════ */
+  @media (max-width: 360px) {
+
+    .topbar-title {
+      font-size: 12px;
+    }
+    .topbar-sub {
+      display: none !important;
+    }
+    #btnPanelToggle {
+      font-size: 10px;
+      padding: 5px 6px;
+    }
+
+    textarea.editor {
+      font-size: 16px !important;
+    }
+
+    .char-card {
+      min-width: 44px;
+    }
+    .char-card .char {
+      font-size: 22px;
+    }
+
+    .utility-btn {
+      flex: 1 1 100%;
+    }
+
+    .stroke-stage {
+      width: 140px !important;
+      height: 140px !important;
+    }
+
+    .metric-value {
+      font-size: 16px;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     BREAKPOINT: 481–768px  (large phones + small tablets)
+  ══════════════════════════════════════════════════════════════ */
+  @media (min-width: 481px) and (max-width: 768px) {
+    .utility-btn {
+      flex: 1 1 auto;
+    }
+    .word-deck {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     BREAKPOINT: 769–1024px  (tablets + small laptops)
+  ══════════════════════════════════════════════════════════════ */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .wrap {
+      width: min(1120px, calc(100% - 40px));
+    }
+    .detail.show {
+      grid-template-columns: 240px 1fr;
+    }
+    .stroke-stage {
+      width: 200px;
+      height: 200px;
+    }
+    .word-deck {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .sentence-metrics {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     Arabic (RTL) text — direction fixes
+  ══════════════════════════════════════════════════════════════ */
+  /* Ensure Arabic content is RTL, Chinese is LTR */
+  .translation-content.ar,
+  #analysisAr,
+  #dAr,
+  .m-text.ar {
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: plaintext;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  /* micStatus: Arabic status messages */
+  #micStatus {
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: embed;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     iOS Safari specific fixes
+  ══════════════════════════════════════════════════════════════ */
+  @supports (-webkit-touch-callout: none) {
+    /* iOS: prevent callout on long-press of char cards */
+    .char-card {
+      -webkit-touch-callout: none;
+    }
+    /* iOS: smooth momentum scrolling in drawers */
+    .vocab-drawer-body,
+    .progress-drawer-body,
+    #ctrlPanel .cp-body {
+      -webkit-overflow-scrolling: touch;
+    }
+    /* iOS: prevent double-tap zoom on buttons */
+    button, a {
+      touch-action: manipulation;
+    }
+    /* iOS safe area bottom for fixed elements */
+    .floating-actions {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    #ctrlPanel:not(.docked-left):not(.docked-right) {
+      bottom: max(12px, env(safe-area-inset-bottom, 12px)) !important;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     Mic button: voice input UX on mobile
+  ══════════════════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    #btnMic {
+      width: 42px !important;
+      height: 42px !important;
+      bottom: 8px !important;
+      right: 8px !important;
+      /* larger touch area via padding */
+    }
+    #btnMic svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+    /* listening state: more visible pulse on small screens */
+    #btnMic.mic-listening {
+      box-shadow: 0 0 0 6px rgba(180,79,79,0.18), var(--shadow-sm) !important;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     Prevent any element from causing horizontal scroll
+  ══════════════════════════════════════════════════════════════ */
+  html, body, .wrap, .section, .analysis,
+  .char-grid-wrap, .detail-wrap, .practice-loop {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     MOBILE PERFECTION PATCH v2 — 手机/平板/电脑完美适配
+     Injected after all existing rules. Pure overrides only.
+     No layout, color, or functional changes.
+  ══════════════════════════════════════════════════════════════ */
+
+  /* ── A. Global overflow guard ── */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { overflow-x: hidden; }
+  body { overflow-x: hidden; min-width: 0; }
+  .wrap { overflow-x: hidden; min-width: 0; }
+
+  /* ── B. iOS font-size zoom prevention on ALL inputs ──
+     iOS zooms when font-size < 16px. Force 16px on focus,
+     which we then scale back visually via transform. */
+  textarea, input, select {
+    font-size: max(16px, 1em) !important;   /* prevent iOS zoom */
+  }
+  /* But keep the visual appearance of smaller text for inputs
+     that are already large — only apply the 16px floor */
+  textarea.editor {
+    font-size: 20px !important;  /* intentionally large for CJK */
+  }
+  @media (max-width: 480px) {
+    textarea.editor { font-size: 18px !important; }
+  }
+
+  /* ── C. Safe area (iPhone X+ notch / home bar) ── */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    header {
+      padding-top: max(10px, env(safe-area-inset-top));
+    }
+    .floating-actions {
+      bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+      right:  calc(14px + env(safe-area-inset-right))  !important;
+    }
+    .vocab-drawer-overlay, .progress-drawer-overlay {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+
+  /* ── D. Touch targets: WCAG 2.1 minimum 44×44px ── */
+  @media (hover: none) and (pointer: coarse) {
+    .btn, .stroke-btn, .utility-btn, .preset-btn,
+    .sn-btn, .ob-btn-next, .ob-btn-skip,
+    .cp-action-btn, .cp-mode-pill, .cp-lv-pill, .cp-dock-btn,
+    .translation-copy, #btnPanelToggle,
+    .vocab-drawer-close, .progress-drawer-close,
+    .vocab-clear-btn, .progress-reset-btn {
+      min-height: 44px !important;
+      min-width:  44px !important;
+    }
+    /* Char cards: 44px height minimum */
+    .char-card {
+      min-height: 60px !important;
+    }
+    /* Mic button: already 44px from earlier rule */
+    /* Float buttons */
+    .float-btn {
+      width:  48px !important;
+      height: 48px !important;
+    }
+    /* Speed slider: taller track */
+    #speedSlider {
+      height: 28px !important;
+      cursor: pointer;
+    }
+    /* Collapsible summaries */
+    details > summary {
+      min-height: 44px !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+  }
+
+  /* ── E. Topbar: no overflow on any screen ── */
+  header {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .topbar-center {
+    min-width: 0;
+    overflow: hidden;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .topbar-title, .topbar-sub {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
+  }
+  .topbar-right {
+    flex-shrink: 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  @media (max-width: 380px) {
+    .topbar-status { display: none !important; }
+    #btnPanelToggle {
+      font-size: 10px !important;
+      padding: 5px 8px !important;
+      white-space: nowrap;
+    }
+  }
+
+  /* ── F. Controls row: flex-wrap on narrow screens ── */
+  @media (max-width: 480px) {
+    .controls {
+      flex-wrap: wrap;
+      gap: 8px !important;
+    }
+    .btn.primary {
+      flex: 1 1 100%;  /* full width on small phones */
+      text-align: center;
+    }
+    #btnFollow, #btnClear {
+      flex: 1 1 auto;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .speed-group {
+      flex: 1 1 100%;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+  }
+
+  /* ── G. Utility bar: wrap on narrow screens ── */
+  @media (max-width: 540px) {
+    .utility-group {
+      flex-wrap: wrap !important;
+      gap: 6px !important;
+    }
+    .utility-btn {
+      flex: 1 1 auto;
+      min-width: 0;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  /* ── H. Presets: horizontal scroll, no wrap ── */
+  @media (max-width: 768px) {
+    .presets {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      gap: 8px;
+      padding-bottom: 6px;
+    }
+    .presets::-webkit-scrollbar { display: none; }
+    .preset-btn {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      white-space: nowrap;
+    }
+  }
+
+  /* ── I. Char grid: always wrap, no horizontal scroll ── */
+  #charGrid.char-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    overflow: hidden !important;
+    max-width: 100% !important;
+  }
+
+  /* ── J. Detail panel: stack on mobile ── */
+  @media (max-width: 600px) {
+    .detail.show {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+    }
+    .detail-stroke {
+      width: 100% !important;
+    }
+    .stroke-stage {
+      width: min(200px, 50vw) !important;
+      height: min(200px, 50vw) !important;
+      margin: 0 auto !important;
+    }
+    .stroke-controls {
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+      gap: 6px !important;
+    }
+    .stroke-btn {
+      flex: 1 1 auto;
+      min-width: 60px;
+      text-align: center;
+      font-size: 11px !important;
+    }
+    .detail-info {
+      width: 100% !important;
+      min-width: 0 !important;
+    }
+    .info-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+  @media (max-width: 380px) {
+    .info-grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  /* ── K. Drawers: full-screen bottom sheet on mobile ── */
+  @media (max-width: 600px) {
+    .vocab-drawer-overlay, .progress-drawer-overlay {
+      align-items: flex-end !important;
+    }
+    .vocab-drawer, .progress-drawer {
+      width: 100%   !important;
+      max-width: 100% !important;
+      height: 90vh  !important;
+      border-radius: 20px 20px 0 0 !important;
+      bottom: 0 !important;
+      right:  0 !important;
+      top: auto !important;
+      left: 0 !important;
+    }
+  }
+
+  /* ── L. Control panel: always fits on screen ── */
+  @media (max-width: 768px) {
+    #ctrlPanel {
+      width:  min(320px, calc(100vw - 24px)) !important;
+      max-height: min(540px, 80vh) !important;
+      overflow: hidden !important;
+    }
+    #ctrlPanel .cp-body {
+      overflow-y: auto !important;
+      max-height: calc(min(540px, 80vh) - 54px) !important;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+  }
+  @media (max-width: 360px) {
+    #ctrlPanel {
+      width: calc(100vw - 16px) !important;
+    }
+  }
+
+  /* ── M. Overview cards: single column on mobile ── */
+  @media (max-width: 600px) {
+    .overview {
+      grid-template-columns: 1fr !important;
+    }
+    .overview-card {
+      padding: 16px !important;
+    }
+  }
+
+  /* ── N. Sentence metrics: 2-col → 1-col ── */
+  @media (max-width: 480px) {
+    .sentence-metrics {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 8px !important;
+    }
+  }
+  @media (max-width: 360px) {
+    .sentence-metrics {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  /* ── O. Practice loop: no overflow ── */
+  .practice-loop {
+    min-width: 0;
+    overflow: hidden;
+  }
+  @media (max-width: 480px) {
+    .pl-section-title { font-size: 13px !important; }
+    .pl-fill-actions {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    #plFillCheck { flex: 1 1 auto; text-align: center; }
+  }
+
+  /* ── P. Learning steps strip: scroll on tiny screens ── */
+  @media (max-width: 420px) {
+    .learning-steps {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      flex-wrap: nowrap !important;
+      padding-bottom: 4px;
+    }
+    .learning-steps::-webkit-scrollbar { display: none; }
+    .ls-step { flex-shrink: 0; white-space: nowrap; }
+    .ls-arrow { flex-shrink: 0; }
+  }
+
+  /* ── Q. Onboarding: compact on small screens ── */
+  @media (max-width: 400px) {
+    .ob-card {
+      padding: 24px 16px 18px !important;
+      border-radius: 20px !important;
+    }
+    .ob-title { font-size: 16px !important; }
+    .ob-subtitle { font-size: 12px !important; }
+    .ob-body { font-size: 12px !important; line-height: 1.6 !important; }
+    .ob-icon { font-size: 28px !important; margin-bottom: 10px !important; }
+    .ob-actions { flex-direction: column !important; gap: 8px !important; }
+    .ob-btn-next, .ob-btn-skip {
+      width: 100% !important;
+      text-align: center !important;
+      min-height: 44px !important;
+    }
+    .ob-demo { font-size: 18px !important; }
+  }
+
+  /* ── R. Translation rows: no overflow ── */
+  .translation-row {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .translation-content {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .analysis-translations {
+    overflow: hidden;
+  }
+
+  /* ── S. Word deck: horizontal scroll on mobile ── */
+  @media (max-width: 600px) {
+    .word-deck {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      gap: 10px;
+      padding-bottom: 6px;
+    }
+    .word-deck::-webkit-scrollbar { display: none; }
+    .word-card {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      width: min(220px, 75vw);
+    }
+  }
+
+  /* ── T. Footer: wrap on mobile ── */
+  footer {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* ── U. Reading Now banner: no overflow ── */
+  .reading-now {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .reading-now .text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 55vw;
+  }
+  @media (max-width: 480px) {
+    .reading-now { flex-wrap: wrap; }
+    .reading-now .text { max-width: 100%; white-space: normal; }
+  }
+
+  /* ── V. Mic button mobile polish ── */
+  @media (hover: none) and (pointer: coarse) {
+    #btnMic { -webkit-tap-highlight-color: transparent; }
+    #btnMic:active:not(.mic-loading) {
+      transform: scale(0.9) !important;
+      transition: transform 0.08s ease !important;
+    }
+  }
+
+  /* ── W. Reduce animation on low-end devices ── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ── X. Arabic text direction in UI elements ── */
+  #micStatus {
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: embed;
+  }
+  /* But Chinese inside analysis should stay LTR */
+  .analysis-reading-cn,
+  .analysis-reading-pinyin,
+  #analysisText, #analysisPinyin,
+  .char-grid, .char-card {
+    direction: ltr !important;
+    text-align: left !important;
+  }
+
+  /* ── Y. Sentence block layout: no overflow ── */
+  .sentence-blocks { overflow: hidden; }
+  .sentence-block { overflow: hidden; min-width: 0; }
+  .sb-cn, .sb-py, .sb-en { overflow-wrap: break-word; word-break: break-word; }
+
+  /* ── Z. Focus visible (accessibility) ── */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+
+  /* ══════════════════════════════════════════════════════════════
+     ARABIC-ONLY MODE — 纯阿语翻译模式
+     Hide all English translation rows and labels.
+     DOM kept intact; JS logic unchanged.
+  ══════════════════════════════════════════════════════════════ */
+
+  /* 1. Sentence analysis — English translation row */
+  .translation-row:has(#analysisEn),
+  .translation-row:has(#btnCopyEn) {
+    display: none !important;
+  }
+
+  /* Fallback for browsers without :has() support */
+  #analysisEn, #btnCopyEn, #analysisEnBadge {
+    display: none !important;
+  }
+  /* AR-only: English row hidden by individual element rules above */
+
+  /* 2. Word card English meaning (.wb-en span and .mean-en) */
+  .word-card .mean-en,
+  .word-card [class*="-en"]:not(.wb-cn):not(.han),
+  .wb-en {
+    display: none !important;
+  }
+
+  /* 3. Sentence block English row */
+  .sb-en,
+  .analysis-translations-en {
+    display: none !important;
+  }
+
+  /* 4. Character detail English meaning */
+  .m-en,
+  .meaning-en,
+  [id*="En"]:not(#analysisEn) {
+    /* only hide meaning-specific en spans, not all */
+  }
+
+  /* ══ ARABIC-ONLY: Comprehensive EN hiding ══
+     Hide dEn row in detail panel (now display:none in HTML but belt+suspenders) */
+  #dEn, #dArCollapse, .m-row-collapsible { display: none !important; }
+  /* Show dAr directly as a normal row */
+  .m-text.ar#dAr { display: block !important; }
+
+  /* ══ ARABIC-ONLY: Override "always show English" rule ══
+     The body.mode-beginner rule forces .analysis-translations
+     visible. We counter with maximum specificity on EN elements. */
+  body.mode-beginner #analysisEn,
+  body.mode-practice #analysisEn,
+  body.mode-advanced #analysisEn,
+  body #analysisEn,
+  body #btnCopyEn,
+  body #analysisEnBadge,
+  body .sb-en,
+  body .analysis-translations-en {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+  /* Hide the whole EN row in the translation panel */
+  body .translation-row:first-of-type {
+    display: none !important;
+  }
 
 </style>
 </head>
@@ -5389,23 +7044,16 @@
 
     <div class="analysis-translations">
       <div class="translation-row">
-        <div class="translation-label">الإنجليزية</div>
-        <div class="translation-content"><span id="analysisEn"></span></div>
-        <div class="translation-tools"><button type="button" class="translation-copy" id="btnCopyEn">نسخ</button><span class="q-badge" id="analysisEnBadge"></span></div>
+        <div class="translation-label" style="display:none">الإنجليزية</div>
+        <div class="translation-content" style="display:none"><span id="analysisEn"></span></div>
+        <div class="translation-tools" style="display:none"><button type="button" class="translation-copy" id="btnCopyEn">نسخ</button><span class="q-badge" id="analysisEnBadge"></span></div>
       </div>
-      <!-- ① Arabic 默认收起 -->
-      <details class="translation-row collapsible" id="arabicCollapse">
-        <summary>
-          <span class="chev">▸</span>
-          العربية
-          <span class="en-hint">العربية · 阿拉伯语 · انقر للتوسيع · 点击展开</span>
-        </summary>
-        <div class="collapsible-body">
-          <div class="translation-label">العربية</div>
-          <div class="translation-content ar" id="analysisAr" dir="rtl"></div>
-          <div class="translation-tools"><button type="button" class="translation-copy" id="btnCopyAr">نسخ</button><span class="q-badge" id="analysisArBadge"></span></div>
-        </div>
-      </details>
+      <!-- Arabic translation — always visible, non-collapsible -->
+      <div class="translation-row" id="arabicCollapse" style="display:grid;">
+        <div class="translation-label">العربية · 阿拉伯语</div>
+        <div class="translation-content ar" id="analysisAr" dir="rtl"></div>
+        <div class="translation-tools"><button type="button" class="translation-copy" id="btnCopyAr">نسخ</button><span class="q-badge" id="analysisArBadge"></span></div>
+      </div>
     </div>
 
     <!-- ① 重点词 Focus Words 默认收起 -->
@@ -5562,23 +7210,15 @@
       </div>
 
       <div class="meaning-block">
+        <!-- EN row hidden (AR-only mode) — keep id so JS can write without error -->
+        <span id="dEn" style="display:none;"></span>
+        <!-- ghost id for backward compat -->
+        <span id="dArCollapse" style="display:none;"></span>
+        <!-- AR: always visible, no collapsible -->
         <div class="m-row">
-          <span class="m-lang">EN</span>
-          <span class="m-text" id="dEn">—</span>
+          <span class="m-lang">AR</span>
+          <span class="m-text ar" id="dAr" dir="rtl">—</span>
         </div>
-        <!-- ① AR 默认收起 (but keep #dAr id intact so JS still writes into it) -->
-        <details class="collapsible m-row-collapsible" id="dArCollapse" style="padding:0;">
-          <summary style="padding:5px 10px; font-size:11.5px;">
-            <span class="chev">▸</span>
-            AR <span class="en-hint">العربية · 阿拉伯语 · انقر للتوسيع · 点击展开</span>
-          </summary>
-          <div class="collapsible-body" style="padding-top:6px;">
-            <div class="m-row">
-              <span class="m-lang">AR</span>
-              <span class="m-text ar" id="dAr" dir="rtl">—</span>
-            </div>
-          </div>
-        </details>
       </div>
     </div>
   </div>
@@ -5774,7 +7414,7 @@ function getAnalysisBundle(){
   const py   = (document.getElementById('analysisPinyin')?.textContent || '').trim();
   const en   = (document.getElementById('analysisEn')?.textContent || '').trim();
   const ar   = (document.getElementById('analysisAr')?.textContent || '').trim();
-  return [text, py ? ('Pinyin: ' + py) : '', en ? ('English: ' + en) : '', ar ? ('Arabic: ' + ar) : ''].filter(Boolean).join('\n');
+  return [text, py ? ('البينيين: ' + py) : '', ar ? ('العربية: ' + ar) : ''].filter(Boolean).join('\n');
 }
 
 const CHARS    = {"爱":{"pinyin":"ài","en":"to love; affection","ar":"يحب؛ حب","level":"1级"},"八":{"pinyin":"bā","en":"eight","ar":"ثمانية","level":"1级"},"爸":{"pinyin":"bà","en":"father; dad","ar":"أب؛ بابا","level":"1级"},"吧":{"pinyin":"ba","en":"(modal particle)","ar":"(أداة لهجة)","level":"1级"},"白":{"pinyin":"bái","en":"white; clear","ar":"أبيض؛ واضح","level":"1级"},"百":{"pinyin":"bǎi","en":"hundred","ar":"مائة","level":"1级"},"班":{"pinyin":"bān","en":"class; team","ar":"صف؛ فريق","level":"1级"},"半":{"pinyin":"bàn","en":"half","ar":"نصف","level":"1级"},"包":{"pinyin":"bāo","en":"bag; to wrap","ar":"حقيبة؛ يلف","level":"1级"},"杯":{"pinyin":"bēi","en":"cup; glass","ar":"كوب؛ فنجان","level":"1级"},"本":{"pinyin":"běn","en":"book; root","ar":"كتاب؛ أصل","level":"1级"},"边":{"pinyin":"biān","en":"side; edge","ar":"جانب؛ حافة","level":"1级"},"便":{"pinyin":"biàn","en":"convenient","ar":"مريح","level":"1级"},"病":{"pinyin":"bìng","en":"illness; sick","ar":"مرض؛ مريض","level":"1级"},"不":{"pinyin":"bù","en":"no; not","ar":"لا؛ ليس","level":"1级"},"菜":{"pinyin":"cài","en":"dish; vegetable","ar":"طبق؛ خضار","level":"1级"},"茶":{"pinyin":"chá","en":"tea","ar":"شاي","level":"1级"},"常":{"pinyin":"cháng","en":"often; common","ar":"غالباً؛ شائع","level":"1级"},"唱":{"pinyin":"chàng","en":"to sing","ar":"يغني","level":"1级"},"超":{"pinyin":"chāo","en":"to exceed; super","ar":"يتجاوز؛ فائق","level":"1级"},"车":{"pinyin":"chē","en":"vehicle; car","ar":"سيارة؛ مركبة","level":"1级"},"吃":{"pinyin":"chī","en":"to eat","ar":"يأكل","level":"1级"},"出":{"pinyin":"chū","en":"to go out; exit","ar":"يخرج؛ خروج","level":"1级"},"穿":{"pinyin":"chuān","en":"to wear; pass through","ar":"يلبس؛ يخترق","level":"1级"},"床":{"pinyin":"chuáng","en":"bed","ar":"سرير","level":"1级"},"打":{"pinyin":"dǎ","en":"to hit; to play","ar":"يضرب؛ يلعب","level":"1级"},"大":{"pinyin":"dà","en":"big; large","ar":"كبير","level":"1级"},"蛋":{"pinyin":"dàn","en":"egg","ar":"بيضة","level":"1级"},"到":{"pinyin":"dào","en":"to arrive","ar":"يصل","level":"1级"},"道":{"pinyin":"dào","en":"way; road","ar":"طريق","level":"1级"},"得":{"pinyin":"dé","en":"to obtain; must","ar":"يحصل؛ يجب","level":"1级"},"的":{"pinyin":"de","en":"(possessive particle)","ar":"(أداة ملكية)","level":"1级"},"弟":{"pinyin":"dì","en":"younger brother","ar":"أخ أصغر","level":"1级"},"第":{"pinyin":"dì","en":"(ordinal prefix)","ar":"(سابقة ترتيبية)","level":"1级"},"点":{"pinyin":"diǎn","en":"dot; o'clock","ar":"نقطة؛ الساعة","level":"1级"},"电":{"pinyin":"diàn","en":"electricity","ar":"كهرباء","level":"1级"},"东":{"pinyin":"dōng","en":"east","ar":"شرق","level":"1级"},"都":{"pinyin":"dōu","en":"all; already","ar":"الكل؛ بالفعل","level":"1级"},"读":{"pinyin":"dú","en":"to read","ar":"يقرأ","level":"1级"},"对":{"pinyin":"duì","en":"correct; right","ar":"صحيح","level":"1级"},"多":{"pinyin":"duō","en":"many; much","ar":"كثير","level":"1级"},"儿":{"pinyin":"ér","en":"son; child","ar":"ابن؛ طفل","level":"1级"},"二":{"pinyin":"èr","en":"two","ar":"اثنان","level":"1级"},"饭":{"pinyin":"fàn","en":"meal; cooked rice","ar":"وجبة؛ أرز","level":"1级"},"房":{"pinyin":"fáng","en":"house; room","ar":"بيت؛ غرفة","level":"1级"},"飞":{"pinyin":"fēi","en":"to fly","ar":"يطير","level":"1级"},"非":{"pinyin":"fēi","en":"not; Africa","ar":"ليس؛ أفريقيا","level":"1级"},"分":{"pinyin":"fēn","en":"to divide; minute","ar":"يقسم؛ دقيقة","level":"1级"},"服":{"pinyin":"fú","en":"clothes; to serve","ar":"ملابس؛ يخدم","level":"1级"},"高":{"pinyin":"gāo","en":"tall; high","ar":"طويل؛ عالٍ","level":"1级"},"哥":{"pinyin":"gē","en":"older brother","ar":"أخ أكبر","level":"1级"},"歌":{"pinyin":"gē","en":"song","ar":"أغنية","level":"1级"},"个":{"pinyin":"gè","en":"(measure word)","ar":"(أداة عد)","level":"1级"},"给":{"pinyin":"gěi","en":"to give","ar":"يعطي","level":"1级"},"工":{"pinyin":"gōng","en":"work; labor","ar":"عمل","level":"1级"},"公":{"pinyin":"gōng","en":"public; male","ar":"عام؛ ذكر","level":"1级"},"狗":{"pinyin":"gǒu","en":"dog","ar":"كلب","level":"1级"},"关":{"pinyin":"guān","en":"to close; concern","ar":"يغلق؛ يهتم","level":"1级"},"贵":{"pinyin":"guì","en":"expensive; noble","ar":"غالٍ؛ نبيل","level":"1级"},"国":{"pinyin":"guó","en":"country; nation","ar":"دولة؛ وطن","level":"1级"},"果":{"pinyin":"guǒ","en":"fruit; result","ar":"فاكهة؛ نتيجة","level":"1级"},"还":{"pinyin":"hái","en":"still; also","ar":"لا يزال؛ أيضاً","level":"1级"},"孩":{"pinyin":"hái","en":"child","ar":"طفل","level":"1级"},"汉":{"pinyin":"hàn","en":"Han (Chinese)","ar":"هان (صيني)","level":"1级"},"好":{"pinyin":"hǎo","en":"good; well","ar":"جيد؛ بخير","level":"1级"},"号":{"pinyin":"hào","en":"number; date","ar":"رقم؛ تاريخ","level":"1级"},"喝":{"pinyin":"hē","en":"to drink","ar":"يشرب","level":"1级"},"和":{"pinyin":"hé","en":"and; with","ar":"و؛ مع","level":"1级"},"很":{"pinyin":"hěn","en":"very","ar":"جداً","level":"1级"},"后":{"pinyin":"hòu","en":"after; behind","ar":"بعد؛ خلف","level":"1级"},"候":{"pinyin":"hou","en":"to wait; time","ar":"ينتظر؛ وقت","level":"1级"},"话":{"pinyin":"huà","en":"speech; words","ar":"كلام؛ كلمات","level":"1级"},"欢":{"pinyin":"huān","en":"joyful; happy","ar":"مبتهج؛ سعيد","level":"1级"},"回":{"pinyin":"huí","en":"to return","ar":"يعود","level":"1级"},"会":{"pinyin":"huì","en":"can; meeting","ar":"يستطيع؛ اجتماع","level":"1级"},"火":{"pinyin":"huǒ","en":"fire","ar":"نار","level":"1级"},"机":{"pinyin":"jī","en":"machine","ar":"آلة","level":"1级"},"鸡":{"pinyin":"jī","en":"chicken","ar":"دجاج","level":"1级"},"几":{"pinyin":"jǐ","en":"how many; several","ar":"كم؛ عدة","level":"1级"},"家":{"pinyin":"jiā","en":"home; family","ar":"بيت؛ عائلة","level":"1级"},"间":{"pinyin":"jiān","en":"between; room","ar":"بين؛ غرفة","level":"1级"},"见":{"pinyin":"jiàn","en":"to see; to meet","ar":"يرى؛ يقابل","level":"1级"},"件":{"pinyin":"jiàn","en":"(measure word for items)","ar":"(أداة عد للأشياء)","level":"1级"},"叫":{"pinyin":"jiào","en":"to call; to shout","ar":"يدعو؛ يصرخ","level":"1级"},"姐":{"pinyin":"jiě","en":"older sister","ar":"أخت كبرى","level":"1级"},"今":{"pinyin":"jīn","en":"today; now","ar":"اليوم؛ الآن","level":"1级"},"九":{"pinyin":"jiǔ","en":"nine","ar":"تسعة","level":"1级"},"觉":{"pinyin":"jué","en":"to feel; sleep","ar":"يشعر؛ ينام","level":"1级"},"开":{"pinyin":"kāi","en":"to open; to start","ar":"يفتح؛ يبدأ","level":"1级"},"看":{"pinyin":"kàn","en":"to look; to watch","ar":"ينظر؛ يشاهد","level":"1级"},"可":{"pinyin":"kě","en":"can; may","ar":"يمكن","level":"1级"},"客":{"pinyin":"kè","en":"guest; customer","ar":"ضيف؛ زبون","level":"1级"},"课":{"pinyin":"kè","en":"class; lesson","ar":"درس؛ حصة","level":"1级"},"口":{"pinyin":"kǒu","en":"mouth; opening","ar":"فم؛ فتحة","level":"1级"},"块":{"pinyin":"kuài","en":"piece; yuan","ar":"قطعة؛ يوان","level":"1级"},"来":{"pinyin":"lái","en":"to come","ar":"يأتي","level":"1级"},"老":{"pinyin":"lǎo","en":"old","ar":"قديم؛ عجوز","level":"1级"},"了":{"pinyin":"le","en":"(completed action)","ar":"(أداة إتمام)","level":"1级"},"冷":{"pinyin":"lěng","en":"cold","ar":"بارد","level":"1级"},"里":{"pinyin":"lǐ","en":"inside; li (unit)","ar":"داخل؛ لي","level":"1级"},"两":{"pinyin":"liǎng","en":"two; pair","ar":"اثنان؛ زوج","level":"1级"},"亮":{"pinyin":"liàng","en":"bright","ar":"ساطع","level":"1级"},"零":{"pinyin":"líng","en":"zero","ar":"صفر","level":"1级"},"六":{"pinyin":"liù","en":"six","ar":"ستة","level":"1级"},"妈":{"pinyin":"mā","en":"mother; mom","ar":"أم؛ ماما","level":"1级"},"吗":{"pinyin":"ma","en":"(question particle)","ar":"(أداة استفهام)","level":"1级"},"买":{"pinyin":"mǎi","en":"to buy","ar":"يشتري","level":"1级"},"卖":{"pinyin":"mài","en":"to sell","ar":"يبيع","level":"1级"},"忙":{"pinyin":"máng","en":"busy","ar":"مشغول","level":"1级"},"猫":{"pinyin":"māo","en":"cat","ar":"قطة","level":"1级"},"么":{"pinyin":"me","en":"(suffix)","ar":"(لاحقة)","level":"1级"},"没":{"pinyin":"méi","en":"not have; not","ar":"لا يملك؛ ليس","level":"1级"},"妹":{"pinyin":"mèi","en":"younger sister","ar":"أخت صغرى","level":"1级"},"们":{"pinyin":"men","en":"(plural marker)","ar":"(علامة جمع)","level":"1级"},"米":{"pinyin":"mǐ","en":"rice; meter","ar":"أرز؛ متر","level":"1级"},"面":{"pinyin":"miàn","en":"face; noodles","ar":"وجه؛ نودلز","level":"1级"},"名":{"pinyin":"míng","en":"name","ar":"اسم","level":"1级"},"明":{"pinyin":"míng","en":"bright; clear","ar":"مشرق؛ واضح","level":"1级"},"哪":{"pinyin":"nǎ","en":"which; where","ar":"أي؛ أين","level":"1级"},"那":{"pinyin":"nà","en":"that","ar":"ذلك","level":"1级"},"奶":{"pinyin":"nǎi","en":"milk; grandma","ar":"حليب؛ جدة","level":"1级"},"男":{"pinyin":"nán","en":"male; man","ar":"ذكر؛ رجل","level":"1级"},"脑":{"pinyin":"nǎo","en":"brain","ar":"دماغ","level":"1级"},"呢":{"pinyin":"ne","en":"(question particle)","ar":"(أداة استفهام)","level":"1级"},"能":{"pinyin":"néng","en":"can; able to","ar":"يستطيع؛ قادر","level":"1级"},"你":{"pinyin":"nǐ","en":"you","ar":"أنت","level":"1级"},"年":{"pinyin":"nián","en":"year","ar":"سنة","level":"1级"},"您":{"pinyin":"nín","en":"you (polite)","ar":"حضرتك","level":"1级"},"牛":{"pinyin":"niú","en":"cow; ox","ar":"بقرة؛ ثور","level":"1级"},"女":{"pinyin":"nǚ","en":"female; woman","ar":"أنثى؛ امرأة","level":"1级"},"朋":{"pinyin":"péng","en":"friend","ar":"صديق","level":"1级"},"漂":{"pinyin":"piào","en":"to float; pretty","ar":"يطفو؛ جميل","level":"1级"},"苹":{"pinyin":"píng","en":"apple","ar":"تفاحة","level":"1级"},"七":{"pinyin":"qī","en":"seven","ar":"سبعة","level":"1级"},"期":{"pinyin":"qī","en":"period; to expect","ar":"فترة؛ يتوقع","level":"1级"},"起":{"pinyin":"qǐ","en":"to rise; to get up","ar":"ينهض؛ يقوم","level":"1级"},"气":{"pinyin":"qì","en":"air; gas; anger","ar":"هواء؛ غاز؛ غضب","level":"1级"},"千":{"pinyin":"qiān","en":"thousand","ar":"ألف","level":"1级"},"前":{"pinyin":"qián","en":"front; before","ar":"أمام؛ قبل","level":"1级"},"钱":{"pinyin":"qián","en":"money","ar":"مال","level":"1级"},"请":{"pinyin":"qǐng","en":"please; to invite","ar":"من فضلك؛ يدعو","level":"1级"},"去":{"pinyin":"qù","en":"to go","ar":"يذهب","level":"1级"},"热":{"pinyin":"rè","en":"hot","ar":"حار","level":"1级"},"人":{"pinyin":"rén","en":"person; people","ar":"شخص؛ ناس","level":"1级"},"认":{"pinyin":"rèn","en":"to recognize","ar":"يتعرف","level":"1级"},"日":{"pinyin":"rì","en":"sun; day","ar":"شمس؛ يوم","level":"1级"},"三":{"pinyin":"sān","en":"three","ar":"ثلاثة","level":"1级"},"商":{"pinyin":"shāng","en":"commerce; to discuss","ar":"تجارة؛ يناقش","level":"1级"},"上":{"pinyin":"shàng","en":"up; on; above","ar":"فوق؛ على","level":"1级"},"少":{"pinyin":"shǎo","en":"few; little","ar":"قليل","level":"1级"},"谁":{"pinyin":"shuí","en":"who","ar":"من","level":"1级"},"什":{"pinyin":"shén","en":"what","ar":"ماذا","level":"1级"},"生":{"pinyin":"shēng","en":"to be born; life","ar":"يولد؛ حياة","level":"1级"},"师":{"pinyin":"shī","en":"teacher; master","ar":"معلم؛ أستاذ","level":"1级"},"十":{"pinyin":"shí","en":"ten","ar":"عشرة","level":"1级"},"时":{"pinyin":"shí","en":"time; hour","ar":"وقت؛ ساعة","level":"1级"},"识":{"pinyin":"shí","en":"to know; knowledge","ar":"يعرف؛ معرفة","level":"1级"},"士":{"pinyin":"shì","en":"scholar; soldier","ar":"عالم؛ جندي","level":"1级"},"市":{"pinyin":"shì","en":"city; market","ar":"مدينة؛ سوق","level":"1级"},"事":{"pinyin":"shì","en":"matter; affair","ar":"أمر؛ شأن","level":"1级"},"视":{"pinyin":"shì","en":"to look; vision","ar":"ينظر؛ رؤية","level":"1级"},"是":{"pinyin":"shì","en":"to be; yes","ar":"يكون؛ نعم","level":"1级"},"手":{"pinyin":"shǒu","en":"hand","ar":"يد","level":"1级"},"书":{"pinyin":"shū","en":"book","ar":"كتاب","level":"1级"},"水":{"pinyin":"shuǐ","en":"water","ar":"ماء","level":"1级"},"睡":{"pinyin":"shuì","en":"to sleep","ar":"ينام","level":"1级"},"说":{"pinyin":"shuō","en":"to speak","ar":"يتكلم","level":"1级"},"思":{"pinyin":"sī","en":"to think","ar":"يفكر","level":"2级"},"四":{"pinyin":"sì","en":"four","ar":"أربعة","level":"1级"},"岁":{"pinyin":"suì","en":"year (of age)","ar":"سنة (عمر)","level":"1级"},"他":{"pinyin":"tā","en":"he; him","ar":"هو","level":"1级"},"它":{"pinyin":"tā","en":"it","ar":"هو (للأشياء)","level":"1级"},"她":{"pinyin":"tā","en":"she; her","ar":"هي","level":"1级"},"太":{"pinyin":"tài","en":"too; very","ar":"جداً؛ أكثر","level":"1级"},"题":{"pinyin":"tí","en":"topic; question","ar":"موضوع؛ سؤال","level":"1级"},"天":{"pinyin":"tiān","en":"day; sky","ar":"يوم؛ سماء","level":"1级"},"条":{"pinyin":"tiáo","en":"strip; (measure word)","ar":"شريط؛ (أداة عد)","level":"1级"},"听":{"pinyin":"tīng","en":"to listen","ar":"يستمع","level":"1级"},"同":{"pinyin":"tóng","en":"same; together","ar":"نفس؛ معاً","level":"1级"},"外":{"pinyin":"wài","en":"outside; foreign","ar":"خارج؛ أجنبي","level":"1级"},"玩":{"pinyin":"wán","en":"to play","ar":"يلعب","level":"1级"},"晚":{"pinyin":"wǎn","en":"evening; late","ar":"مساء؛ متأخر","level":"1级"},"喂":{"pinyin":"wèi","en":"hello (phone); to feed","ar":"ألو؛ يطعم","level":"1级"},"文":{"pinyin":"wén","en":"writing; culture","ar":"كتابة؛ ثقافة","level":"1级"},"问":{"pinyin":"wèn","en":"to ask","ar":"يسأل","level":"1级"},"我":{"pinyin":"wǒ","en":"I; me","ar":"أنا","level":"1级"},"五":{"pinyin":"wǔ","en":"five","ar":"خمسة","level":"1级"},"午":{"pinyin":"wǔ","en":"noon","ar":"ظهر","level":"1级"},"西":{"pinyin":"xī","en":"west","ar":"غرب","level":"1级"},"息":{"pinyin":"xi","en":"to rest; breath","ar":"يستريح؛ نَفَس","level":"1级"},"习":{"pinyin":"xí","en":"to practice","ar":"يتمرن","level":"1级"},"喜":{"pinyin":"xǐ","en":"to like; happy","ar":"يحب؛ سعيد","level":"1级"},"系":{"pinyin":"xì","en":"department; to tie","ar":"قسم؛ يربط","level":"1级"},"下":{"pinyin":"xià","en":"down; below","ar":"تحت؛ أسفل","level":"1级"},"先":{"pinyin":"xiān","en":"first; earlier","ar":"أولاً؛ قبل","level":"1级"},"现":{"pinyin":"xiàn","en":"now; to appear","ar":"الآن؛ يظهر","level":"1级"},"想":{"pinyin":"xiǎng","en":"to think; to want","ar":"يفكر؛ يريد","level":"1级"},"小":{"pinyin":"xiǎo","en":"small; little","ar":"صغير","level":"1级"},"校":{"pinyin":"xiào","en":"school","ar":"مدرسة","level":"1级"},"些":{"pinyin":"xiē","en":"some; (plural)","ar":"بعض؛ (جمع)","level":"1级"},"写":{"pinyin":"xiě","en":"to write","ar":"يكتب","level":"1级"},"谢":{"pinyin":"xiè","en":"to thank","ar":"يشكر","level":"1级"},"新":{"pinyin":"xīn","en":"new","ar":"جديد","level":"1级"},"星":{"pinyin":"xīng","en":"star","ar":"نجم","level":"1级"},"兴":{"pinyin":"xìng","en":"prosper; interest","ar":"يزدهر؛ اهتمام","level":"1级"},"休":{"pinyin":"xiū","en":"to rest","ar":"يستريح","level":"1级"},"学":{"pinyin":"xué","en":"to study; learn","ar":"يدرس؛ يتعلم","level":"1级"},"雪":{"pinyin":"xuě","en":"snow","ar":"ثلج","level":"1级"},"样":{"pinyin":"yàng","en":"appearance; kind","ar":"مظهر؛ نوع","level":"1级"},"要":{"pinyin":"yào","en":"to want; need","ar":"يريد؛ يحتاج","level":"1级"},"也":{"pinyin":"yě","en":"also; too","ar":"أيضاً","level":"1级"},"一":{"pinyin":"yī","en":"one","ar":"واحد","level":"1级"},"衣":{"pinyin":"yī","en":"clothing","ar":"ملابس","level":"1级"},"医":{"pinyin":"yī","en":"medicine; doctor","ar":"طب؛ طبيب","level":"1级"},"宜":{"pinyin":"yí","en":"suitable","ar":"مناسب","level":"1级"},"以":{"pinyin":"yǐ","en":"with; by means of","ar":"بـ؛ بواسطة","level":"1级"},"椅":{"pinyin":"yǐ","en":"chair","ar":"كرسي","level":"1级"},"影":{"pinyin":"yǐng","en":"shadow; image","ar":"ظل؛ صورة","level":"1级"},"友":{"pinyin":"yǒu","en":"friend","ar":"صديق","level":"1级"},"有":{"pinyin":"yǒu","en":"to have","ar":"يملك","level":"1级"},"雨":{"pinyin":"yǔ","en":"rain","ar":"مطر","level":"1级"},"语":{"pinyin":"yǔ","en":"language","ar":"لغة","level":"1级"},"元":{"pinyin":"yuán","en":"yuan; first","ar":"يوان؛ الأول","level":"1级"},"院":{"pinyin":"yuàn","en":"courtyard; institute","ar":"فناء؛ معهد","level":"1级"},"月":{"pinyin":"yuè","en":"moon; month","ar":"قمر؛ شهر","level":"1级"},"再":{"pinyin":"zài","en":"again","ar":"مرة أخرى","level":"1级"},"在":{"pinyin":"zài","en":"at; in","ar":"في","level":"1级"},"早":{"pinyin":"zǎo","en":"early; morning","ar":"مبكر؛ صباح","level":"1级"},"怎":{"pinyin":"zěn","en":"how","ar":"كيف","level":"1级"},"找":{"pinyin":"zhǎo","en":"to look for","ar":"يبحث عن","level":"1级"},"这":{"pinyin":"zhè","en":"this","ar":"هذا","level":"1级"},"真":{"pinyin":"zhēn","en":"true; really","ar":"حقيقي؛ فعلاً","level":"1级"},"正":{"pinyin":"zhèng","en":"straight; just","ar":"مستقيم؛ بالضبط","level":"1级"},"知":{"pinyin":"zhī","en":"to know","ar":"يعرف","level":"1级"},"只":{"pinyin":"zhǐ","en":"only; (measure)","ar":"فقط؛ (أداة)","level":"1级"},"中":{"pinyin":"zhōng","en":"middle; China","ar":"وسط؛ الصين","level":"1级"},"钟":{"pinyin":"zhōng","en":"clock; bell","ar":"ساعة؛ جرس","level":"1级"},"住":{"pinyin":"zhù","en":"to live; to stay","ar":"يسكن؛ يبقى","level":"1级"},"桌":{"pinyin":"zhuō","en":"table; desk","ar":"طاولة؛ مكتب","level":"1级"},"子":{"pinyin":"zi","en":"child; (suffix)","ar":"طفل؛ (لاحقة)","level":"1级"},"字":{"pinyin":"zì","en":"character; word","ar":"حرف؛ كلمة","level":"1级"},"租":{"pinyin":"zū","en":"to rent","ar":"يستأجر","level":"1级"},"昨":{"pinyin":"zuó","en":"yesterday","ar":"أمس","level":"1级"},"作":{"pinyin":"zuò","en":"to do; work","ar":"يفعل؛ عمل","level":"1级"},"坐":{"pinyin":"zuò","en":"to sit","ar":"يجلس","level":"1级"},"做":{"pinyin":"zuò","en":"to do; to make","ar":"يفعل؛ يصنع","level":"1级"},"啊":{"pinyin":"ā","en":"(exclamation); ah","ar":"آه؛ يا","level":"2级"},"帮":{"pinyin":"bāng","en":"to help","ar":"يساعد","level":"2级"},"备":{"pinyin":"bèi","en":"to prepare","ar":"يستعد","level":"2级"},"比":{"pinyin":"bǐ","en":"to compare","ar":"يقارن","level":"2级"},"笔":{"pinyin":"bǐ","en":"pen; brush","ar":"قلم؛ فرشاة","level":"2级"},"表":{"pinyin":"biǎo","en":"watch; surface; chart","ar":"ساعة؛ سطح؛ جدول","level":"2级"},"别":{"pinyin":"bié","en":"don't; other","ar":"لا؛ آخر","level":"2级"},"步":{"pinyin":"bù","en":"step; pace","ar":"خطوة","level":"2级"},"场":{"pinyin":"chǎng","en":"field; venue","ar":"ساحة؛ مكان","level":"2级"},"词":{"pinyin":"cí","en":"word; phrase","ar":"كلمة؛ عبارة","level":"2级"},"次":{"pinyin":"cì","en":"time; occurrence","ar":"مرة؛ حدوث","level":"2级"},"从":{"pinyin":"cóng","en":"from; since","ar":"من؛ منذ","level":"2级"},"错":{"pinyin":"cuò","en":"wrong; mistake","ar":"خطأ","level":"2级"},"但":{"pinyin":"dàn","en":"but; however","ar":"لكن","level":"2级"},"地":{"pinyin":"de","en":"earth; ground","ar":"أرض","level":"2级"},"等":{"pinyin":"děng","en":"to wait; equal","ar":"ينتظر؛ متساوٍ","level":"2级"},"店":{"pinyin":"diàn","en":"shop; store","ar":"متجر؛ محل","level":"2级"},"懂":{"pinyin":"dǒng","en":"to understand","ar":"يفهم","level":"2级"},"动":{"pinyin":"dòng","en":"to move","ar":"يتحرك","level":"2级"},"咖":{"pinyin":"kā","en":"coffee (syllable)","ar":"قهوة (مقطع)","level":"2级"},"啡":{"pinyin":"fēi","en":"coffee (syllable)","ar":"قهوة (مقطع)","level":"2级"},"夫":{"pinyin":"fū","en":"husband; man","ar":"زوج؛ رجل","level":"2级"},"告":{"pinyin":"gào","en":"to tell; inform","ar":"يخبر؛ يبلغ","level":"2级"},"跟":{"pinyin":"gēn","en":"with; to follow","ar":"مع؛ يتبع","level":"2级"},"馆":{"pinyin":"guǎn","en":"hall; building","ar":"قاعة؛ مبنى","level":"2级"},"过":{"pinyin":"guò","en":"to pass; cross","ar":"يمر؛ يعبر","level":"2级"},"黑":{"pinyin":"hēi","en":"black; dark","ar":"أسود؛ مظلم","level":"2级"},"红":{"pinyin":"hóng","en":"red","ar":"أحمر","level":"2级"},"花":{"pinyin":"huā","en":"flower; to spend","ar":"زهرة؛ ينفق","level":"2级"},"画":{"pinyin":"huà","en":"to draw; painting","ar":"يرسم؛ لوحة","level":"2级"},"坏":{"pinyin":"huài","en":"bad; broken","ar":"سيء؛ معطوب","level":"2级"},"己":{"pinyin":"jǐ","en":"self; oneself","ar":"ذات؛ نفس","level":"2级"},"记":{"pinyin":"jì","en":"to remember","ar":"يتذكر","level":"2级"},"交":{"pinyin":"jiāo","en":"to hand over","ar":"يسلم","level":"2级"},"教":{"pinyin":"jiào","en":"to teach","ar":"يعلّم","level":"2级"},"介":{"pinyin":"jiè","en":"to introduce","ar":"يقدّم","level":"2级"},"进":{"pinyin":"jìn","en":"to enter","ar":"يدخل","level":"2级"},"近":{"pinyin":"jìn","en":"near; close","ar":"قريب","level":"2级"},"经":{"pinyin":"jīng","en":"to pass through","ar":"يمر عبر","level":"2级"},"睛":{"pinyin":"jing","en":"eyeball","ar":"حدقة","level":"2级"},"酒":{"pinyin":"jiǔ","en":"wine; alcohol","ar":"نبيذ؛ كحول","level":"2级"},"就":{"pinyin":"jiù","en":"then; just","ar":"إذن؛ فقط","level":"2级"},"喱":{"pinyin":"lí","en":"curry (syllable); jelly","ar":"كاري (مقطع)؛ جيلي","level":"2级"},"考":{"pinyin":"kǎo","en":"to test; exam","ar":"يمتحن؛ امتحان","level":"2级"},"裤":{"pinyin":"kù","en":"trousers; pants","ar":"بنطال","level":"2级"},"快":{"pinyin":"kuài","en":"fast; quick","ar":"سريع","level":"2级"},"篮":{"pinyin":"lán","en":"basket","ar":"سلة","level":"2级"},"乐":{"pinyin":"lè","en":"happy; music","ar":"سعيد؛ موسيقى","level":"2级"},"累":{"pinyin":"lèi","en":"tired","ar":"متعب","level":"2级"},"离":{"pinyin":"lí","en":"to leave; from","ar":"يغادر؛ من","level":"2级"},"留":{"pinyin":"liú","en":"to stay; to keep","ar":"يبقى؛ يحتفظ","level":"2级"},"楼":{"pinyin":"lóu","en":"building; floor","ar":"مبنى؛ طابق","level":"2级"},"路":{"pinyin":"lù","en":"road; path","ar":"طريق","level":"2级"},"旅":{"pinyin":"lǚ","en":"to travel","ar":"يسافر","level":"2级"},"绿":{"pinyin":"lǜ","en":"green","ar":"أخضر","level":"2级"},"慢":{"pinyin":"màn","en":"slow","ar":"بطيء","level":"2级"},"每":{"pinyin":"měi","en":"every; each","ar":"كل","level":"2级"},"门":{"pinyin":"mén","en":"door; gate","ar":"باب؛ بوابة","level":"2级"},"拿":{"pinyin":"ná","en":"to take; to hold","ar":"يأخذ؛ يمسك","level":"2级"},"鸟":{"pinyin":"niǎo","en":"bird","ar":"طائر","level":"2级"},"旁":{"pinyin":"páng","en":"side; beside","ar":"جانب؛ بجانب","level":"2级"},"跑":{"pinyin":"pǎo","en":"to run","ar":"يجري","level":"2级"},"票":{"pinyin":"piào","en":"ticket","ar":"تذكرة","level":"2级"},"妻":{"pinyin":"qī","en":"wife","ar":"زوجة","level":"2级"},"情":{"pinyin":"qíng","en":"feeling; situation","ar":"شعور؛ وضع","level":"2级"},"晴":{"pinyin":"qíng","en":"sunny; clear","ar":"مشمس؛ صافٍ","level":"2级"},"球":{"pinyin":"qiú","en":"ball; sphere","ar":"كرة","level":"2级"},"然":{"pinyin":"rán","en":"thus; so","ar":"هكذا","level":"2级"},"让":{"pinyin":"ràng","en":"to let; to allow","ar":"يسمح","level":"2级"},"肉":{"pinyin":"ròu","en":"meat","ar":"لحم","level":"2级"},"色":{"pinyin":"sè","en":"color","ar":"لون","level":"2级"},"绍":{"pinyin":"shào","en":"to introduce","ar":"يقدّم","level":"2级"},"身":{"pinyin":"shēn","en":"body","ar":"جسم","level":"2级"},"始":{"pinyin":"shǐ","en":"to begin","ar":"يبدأ","level":"2级"},"试":{"pinyin":"shì","en":"to try; to test","ar":"يحاول؛ يختبر","level":"2级"},"室":{"pinyin":"shì","en":"room","ar":"غرفة","level":"2级"},"舒":{"pinyin":"shū","en":"to relax; comfortable","ar":"يسترخي؛ مريح","level":"2级"},"送":{"pinyin":"sòng","en":"to send; to give","ar":"يرسل؛ يعطي","level":"2级"},"诉":{"pinyin":"sù","en":"to tell; to sue","ar":"يخبر؛ يشكو","level":"2级"},"虽":{"pinyin":"suī","en":"although","ar":"رغم","level":"2级"},"所":{"pinyin":"suǒ","en":"place; so","ar":"مكان؛ لذا","level":"2级"},"疼":{"pinyin":"téng","en":"to ache; pain","ar":"يؤلم؛ ألم","level":"2级"},"踢":{"pinyin":"tī","en":"to kick","ar":"يركل","level":"2级"},"体":{"pinyin":"tǐ","en":"body","ar":"جسد","level":"2级"},"跳":{"pinyin":"tiào","en":"to jump","ar":"يقفز","level":"2级"},"铁":{"pinyin":"tiě","en":"iron","ar":"حديد","level":"2级"},"头":{"pinyin":"tóu","en":"head","ar":"رأس","level":"2级"},"完":{"pinyin":"wán","en":"to finish; complete","ar":"ينهي؛ كامل","level":"2级"},"万":{"pinyin":"wàn","en":"ten thousand","ar":"عشرة آلاف","level":"2级"},"网":{"pinyin":"wǎng","en":"net; network","ar":"شبكة","level":"2级"},"往":{"pinyin":"wǎng","en":"toward; past","ar":"نحو؛ ماضٍ","level":"2级"},"忘":{"pinyin":"wàng","en":"to forget","ar":"ينسى","level":"2级"},"望":{"pinyin":"wàng","en":"to hope; to gaze","ar":"يأمل؛ يحدق","level":"2级"},"为":{"pinyin":"wèi","en":"for; because","ar":"لأجل؛ لأن","level":"2级"},"位":{"pinyin":"wèi","en":"position; (measure)","ar":"موضع؛ (أداة)","level":"2级"},"舞":{"pinyin":"wǔ","en":"to dance","ar":"يرقص","level":"2级"},"希":{"pinyin":"xī","en":"to hope","ar":"يأمل","level":"2级"},"洗":{"pinyin":"xǐ","en":"to wash","ar":"يغسل","level":"2级"},"笑":{"pinyin":"xiào","en":"to laugh; to smile","ar":"يضحك؛ يبتسم","level":"2级"},"姓":{"pinyin":"xìng","en":"surname","ar":"لقب العائلة","level":"2级"},"颜":{"pinyin":"yán","en":"face; color","ar":"وجه؛ لون","level":"2级"},"眼":{"pinyin":"yǎn","en":"eye","ar":"عين","level":"2级"},"药":{"pinyin":"yào","en":"medicine; drug","ar":"دواء","level":"2级"},"爷":{"pinyin":"yé","en":"grandfather","ar":"جد","level":"2级"},"已":{"pinyin":"yǐ","en":"already","ar":"بالفعل","level":"2级"},"意":{"pinyin":"yì","en":"meaning; idea","ar":"معنى؛ فكرة","level":"2级"},"因":{"pinyin":"yīn","en":"because; cause","ar":"لأن؛ سبب","level":"2级"},"阴":{"pinyin":"yīn","en":"cloudy; yin","ar":"غائم؛ يِن","level":"2级"},"泳":{"pinyin":"yǒng","en":"to swim","ar":"يسبح","level":"2级"},"游":{"pinyin":"yóu","en":"to swim; to tour","ar":"يسبح؛ يتجول","level":"2级"},"右":{"pinyin":"yòu","en":"right (side)","ar":"يمين","level":"2级"},"鱼":{"pinyin":"yú","en":"fish","ar":"سمكة","level":"2级"},"远":{"pinyin":"yuǎn","en":"far; distant","ar":"بعيد","level":"2级"},"运":{"pinyin":"yùn","en":"to transport; luck","ar":"ينقل؛ حظ","level":"2级"},"站":{"pinyin":"zhàn","en":"to stand; station","ar":"يقف؛ محطة","level":"2级"},"长":{"pinyin":"cháng","en":"long; to grow","ar":"طويل؛ ينمو","level":"2级"},"丈":{"pinyin":"zhàng","en":"zhang (length); husband","ar":"تشانغ؛ زوج","level":"2级"},"周":{"pinyin":"zhōu","en":"week; circumference","ar":"أسبوع؛ محيط","level":"2级"},"着":{"pinyin":"zhe","en":"(continuous aspect)","ar":"(أداة استمرار)","level":"2级"},"准":{"pinyin":"zhǔn","en":"accurate; to allow","ar":"دقيق؛ يسمح","level":"2级"},"自":{"pinyin":"zì","en":"self; from","ar":"ذات؛ من","level":"2级"},"走":{"pinyin":"zǒu","en":"to walk","ar":"يمشي","level":"2级"},"足":{"pinyin":"zú","en":"foot; enough","ar":"قدم؛ كافٍ","level":"2级"},"最":{"pinyin":"zuì","en":"most; -est","ar":"الأكثر","level":"2级"},"左":{"pinyin":"zuǒ","en":"left (side)","ar":"يسار","level":"2级"},"阿":{"pinyin":"ā","en":"(prefix for names); ah","ar":"(سابقة)؛ آه","level":"3级"},"矮":{"pinyin":"ǎi","en":"short (height); low","ar":"قصير؛ منخفض","level":"3级"},"安":{"pinyin":"ān","en":"safe; peace","ar":"آمن؛ سلام","level":"3级"},"把":{"pinyin":"bǎ","en":"to hold; handle","ar":"يمسك؛ مقبض","level":"3级"},"般":{"pinyin":"bān","en":"kind; sort","ar":"نوع","level":"3级"},"搬":{"pinyin":"bān","en":"to move; to carry","ar":"ينقل؛ يحمل","level":"3级"},"板":{"pinyin":"bǎn","en":"board; plank","ar":"لوح","level":"3级"},"办":{"pinyin":"bàn","en":"to handle; to do","ar":"يتعامل؛ يفعل","level":"3级"},"饱":{"pinyin":"bǎo","en":"full (stomach)","ar":"شبعان","level":"3级"},"报":{"pinyin":"bào","en":"to report; newspaper","ar":"يبلغ؛ جريدة","level":"3级"},"北":{"pinyin":"běi","en":"north","ar":"شمال","level":"3级"},"被":{"pinyin":"bèi","en":"by (passive); quilt","ar":"بواسطة؛ لحاف","level":"3级"},"必":{"pinyin":"bì","en":"must; certainly","ar":"يجب؛ بالتأكيد","level":"3级"},"变":{"pinyin":"biàn","en":"to change","ar":"يتغير","level":"3级"},"遍":{"pinyin":"biàn","en":"time (occurrence); all over","ar":"مرة؛ في كل مكان","level":"3级"},"宾":{"pinyin":"bīn","en":"guest","ar":"ضيف","level":"3级"},"冰":{"pinyin":"bīng","en":"ice","ar":"ثلج (جليد)","level":"3级"},"才":{"pinyin":"cái","en":"talent; just now","ar":"موهبة؛ الآن فقط","level":"3级"},"参":{"pinyin":"cān","en":"to participate","ar":"يشارك","level":"3级"},"草":{"pinyin":"cǎo","en":"grass","ar":"عشب","level":"3级"},"层":{"pinyin":"céng","en":"layer; floor","ar":"طبقة؛ طابق","level":"3级"},"查":{"pinyin":"chá","en":"to check; examine","ar":"يفحص","level":"3级"},"差":{"pinyin":"chà","en":"to differ; poor","ar":"يختلف؛ رديء","level":"3级"},"尝":{"pinyin":"cháng","en":"to taste","ar":"يتذوق","level":"3级"},"村":{"pinyin":"cūn","en":"village","ar":"قرية","level":"3级"},"成":{"pinyin":"chéng","en":"to become; success","ar":"يصبح؛ نجاح","level":"3级"},"城":{"pinyin":"chéng","en":"city; wall","ar":"مدينة؛ سور","level":"3级"},"迟":{"pinyin":"chí","en":"late; tardy","ar":"متأخر","level":"3级"},"持":{"pinyin":"chí","en":"to hold; maintain","ar":"يمسك؛ يحافظ","level":"3级"},"初":{"pinyin":"chū","en":"beginning; first","ar":"بداية؛ أول","level":"3级"},"除":{"pinyin":"chú","en":"to remove; besides","ar":"يزيل؛ عدا","level":"3级"},"楚":{"pinyin":"chǔ","en":"clear; distinct","ar":"واضح","level":"3级"},"处":{"pinyin":"chù","en":"place; to handle","ar":"مكان؛ يعالج","level":"3级"},"船":{"pinyin":"chuán","en":"boat; ship","ar":"قارب؛ سفينة","level":"3级"},"春":{"pinyin":"chūn","en":"spring (season)","ar":"ربيع","level":"3级"},"聪":{"pinyin":"cōng","en":"clever; acute","ar":"ذكي","level":"3级"},"答":{"pinyin":"dá","en":"to answer","ar":"يجيب","level":"3级"},"带":{"pinyin":"dài","en":"belt; to bring","ar":"حزام؛ يحضر","level":"3级"},"担":{"pinyin":"dān","en":"to carry; worry","ar":"يحمل؛ يقلق","level":"3级"},"单":{"pinyin":"dān","en":"single; list","ar":"فردي؛ قائمة","level":"3级"},"当":{"pinyin":"dāng","en":"to be; when","ar":"يكون؛ عندما","level":"3级"},"灯":{"pinyin":"dēng","en":"lamp; light","ar":"مصباح","level":"3级"},"典":{"pinyin":"diǎn","en":"canon; dictionary","ar":"قانون؛ قاموس","level":"3级"},"调":{"pinyin":"diào","en":"to adjust; tune","ar":"يضبط؛ لحن","level":"3级"},"定":{"pinyin":"dìng","en":"to set; certain","ar":"يحدد؛ مؤكد","level":"3级"},"丢":{"pinyin":"diū","en":"to lose; throw","ar":"يفقد؛ يرمي","level":"3级"},"冬":{"pinyin":"dōng","en":"winter","ar":"شتاء","level":"3级"},"短":{"pinyin":"duǎn","en":"short","ar":"قصير","level":"3级"},"段":{"pinyin":"duàn","en":"section; paragraph","ar":"قسم؛ فقرة","level":"3级"},"锻":{"pinyin":"duàn","en":"to forge; exercise","ar":"يصقل؛ يتمرن","level":"3级"},"朵":{"pinyin":"duǒ","en":"(measure for flowers)","ar":"(أداة عد للزهور)","level":"3级"},"饿":{"pinyin":"è","en":"hungry","ar":"جائع","level":"3级"},"而":{"pinyin":"ér","en":"and; yet","ar":"و؛ لكن","level":"3级"},"耳":{"pinyin":"ěr","en":"ear","ar":"أذن","level":"3级"},"发":{"pinyin":"fā","en":"to send; hair","ar":"يرسل؛ شعر","level":"3级"},"法":{"pinyin":"fǎ","en":"law; method","ar":"قانون؛ طريقة","level":"3级"},"方":{"pinyin":"fāng","en":"square; direction","ar":"مربع؛ اتجاه","level":"3级"},"放":{"pinyin":"fàng","en":"to put; release","ar":"يضع؛ يطلق","level":"3级"},"风":{"pinyin":"fēng","en":"wind","ar":"رياح","level":"3级"},"封":{"pinyin":"fēng","en":"to seal; envelope","ar":"يختم؛ ظرف","level":"3级"},"附":{"pinyin":"fù","en":"to attach; nearby","ar":"يلحق؛ قريب","level":"3级"},"复":{"pinyin":"fù","en":"to repeat; reply","ar":"يكرر؛ يرد","level":"3级"},"该":{"pinyin":"gāi","en":"should; that","ar":"ينبغي؛ ذلك","level":"3级"},"概":{"pinyin":"gài","en":"general; approximate","ar":"عام؛ تقريبي","level":"3级"},"感":{"pinyin":"gǎn","en":"to feel; sense","ar":"يشعر؛ إحساس","level":"3级"},"干":{"pinyin":"gàn","en":"dry; to do","ar":"جاف؛ يفعل","level":"3级"},"刚":{"pinyin":"gāng","en":"just now; firm","ar":"للتو؛ صلب","level":"3级"},"糕":{"pinyin":"gāo","en":"cake","ar":"كعكة","level":"3级"},"根":{"pinyin":"gēn","en":"root; (measure)","ar":"جذر؛ (أداة)","level":"3级"},"更":{"pinyin":"gèng","en":"more; even more","ar":"أكثر","level":"3级"},"共":{"pinyin":"gòng","en":"together; total","ar":"معاً؛ إجمالي","level":"3级"},"故":{"pinyin":"gù","en":"reason; old","ar":"سبب؛ قديم","level":"3级"},"顾":{"pinyin":"gù","en":"to look after","ar":"يعتني","level":"3级"},"瓜":{"pinyin":"guā","en":"melon; gourd","ar":"بطيخ؛ قرع","level":"3级"},"刮":{"pinyin":"guā","en":"to blow (wind); scrape","ar":"تهب؛ يكشط","level":"3级"},"怪":{"pinyin":"guài","en":"strange; blame","ar":"غريب؛ يلوم","level":"3级"},"惯":{"pinyin":"guàn","en":"habit; used to","ar":"عادة؛ معتاد","level":"3级"},"海":{"pinyin":"hǎi","en":"sea; ocean","ar":"بحر؛ محيط","level":"3级"},"害":{"pinyin":"hài","en":"harm; afraid","ar":"ضرر؛ خائف","level":"3级"},"合":{"pinyin":"hé","en":"to combine; fit","ar":"يجمع؛ يلائم","level":"3级"},"河":{"pinyin":"hé","en":"river","ar":"نهر","level":"3级"},"乎":{"pinyin":"hū","en":"(particle)","ar":"(أداة)","level":"3级"},"护":{"pinyin":"hù","en":"to protect; nurse","ar":"يحمي؛ ممرض","level":"3级"},"化":{"pinyin":"huà","en":"to change; -ize","ar":"يتحول؛ تحويل","level":"3级"},"环":{"pinyin":"huán","en":"ring; link","ar":"حلقة؛ رابط","level":"3级"},"换":{"pinyin":"huàn","en":"to exchange; change","ar":"يبدل؛ يغير","level":"3级"},"黄":{"pinyin":"huáng","en":"yellow","ar":"أصفر","level":"3级"},"婚":{"pinyin":"hūn","en":"marriage; wedding","ar":"زواج","level":"3级"},"活":{"pinyin":"huó","en":"to live; alive","ar":"يعيش؛ حي","level":"3级"},"或":{"pinyin":"huò","en":"or; perhaps","ar":"أو؛ ربما","level":"3级"},"激":{"pinyin":"jī","en":"to arouse; intense","ar":"يثير؛ شديد","level":"3级"},"级":{"pinyin":"jí","en":"level; grade","ar":"مستوى؛ درجة","level":"3级"},"极":{"pinyin":"jí","en":"extreme; pole","ar":"أقصى؛ قطب","level":"3级"},"急":{"pinyin":"jí","en":"urgent; anxious","ar":"عاجل؛ قلق","level":"3级"},"季":{"pinyin":"jì","en":"season; quarter","ar":"فصل؛ ربع","level":"3级"},"续":{"pinyin":"xù","en":"to continue","ar":"يستمر","level":"3级"},"加":{"pinyin":"jiā","en":"to add; plus","ar":"يضيف؛ زائد","level":"3级"},"假":{"pinyin":"jiǎ","en":"false; vacation","ar":"زائف؛ إجازة","level":"3级"},"坚":{"pinyin":"jiān","en":"firm; solid","ar":"راسخ؛ صلب","level":"3级"},"检":{"pinyin":"jiǎn","en":"to inspect","ar":"يفتش","level":"3级"},"简":{"pinyin":"jiǎn","en":"simple; brief","ar":"بسيط؛ مختصر","level":"3级"},"健":{"pinyin":"jiàn","en":"healthy; strong","ar":"صحي؛ قوي","level":"3级"},"讲":{"pinyin":"jiǎng","en":"to speak; explain","ar":"يتحدث؛ يشرح","level":"3级"},"蕉":{"pinyin":"jiāo","en":"banana (syllable)","ar":"موز (مقطع)","level":"3级"},"角":{"pinyin":"jiǎo","en":"corner; horn","ar":"زاوية؛ قرن","level":"3级"},"饺":{"pinyin":"jiǎo","en":"dumpling (syllable)","ar":"زلابية (مقطع)","level":"3级"},"脚":{"pinyin":"jiǎo","en":"foot","ar":"قدم","level":"3级"},"较":{"pinyin":"jiào","en":"comparatively; to compare","ar":"نسبياً؛ يقارن","level":"3级"},"接":{"pinyin":"jiē","en":"to receive; connect","ar":"يستقبل؛ يصل","level":"3级"},"街":{"pinyin":"jiē","en":"street","ar":"شارع","level":"3级"},"节":{"pinyin":"jié","en":"festival; section","ar":"عيد؛ قسم","level":"3级"},"结":{"pinyin":"jié","en":"to tie; conclude","ar":"يربط؛ يستنتج","level":"3级"},"解":{"pinyin":"jiě","en":"to untie; explain","ar":"يحل؛ يشرح","level":"3级"},"界":{"pinyin":"jiè","en":"boundary; world","ar":"حد؛ عالم","level":"3级"},"借":{"pinyin":"jiè","en":"to borrow; to lend","ar":"يستعير؛ يُقرض","level":"3级"},"斤":{"pinyin":"jīn","en":"catty (500g)","ar":"جين (500 غ)","level":"3级"},"净":{"pinyin":"jìng","en":"clean; net","ar":"نظيف؛ صافٍ","level":"3级"},"静":{"pinyin":"jìng","en":"quiet; still","ar":"هادئ؛ ساكن","level":"3级"},"境":{"pinyin":"jìng","en":"border; condition","ar":"حدود؛ حالة","level":"3级"},"久":{"pinyin":"jiǔ","en":"long time","ar":"وقت طويل","level":"3级"},"旧":{"pinyin":"jiù","en":"old; used","ar":"قديم؛ مستعمل","level":"3级"},"居":{"pinyin":"jū","en":"to reside; residence","ar":"يسكن؛ مسكن","level":"3级"},"句":{"pinyin":"jù","en":"sentence","ar":"جملة","level":"3级"},"据":{"pinyin":"jù","en":"according to; evidence","ar":"وفقاً لـ؛ دليل","level":"3级"},"决":{"pinyin":"jué","en":"to decide","ar":"يقرر","level":"3级"},"卡":{"pinyin":"kǎ","en":"card; to block","ar":"بطاقة؛ يحجز","level":"3级"},"康":{"pinyin":"kāng","en":"healthy; well-being","ar":"صحي؛ عافية","level":"3级"},"渴":{"pinyin":"kě","en":"thirsty","ar":"عطشان","level":"3级"},"刻":{"pinyin":"kè","en":"to carve; quarter hour","ar":"ينحت؛ ربع ساعة","level":"3级"},"空":{"pinyin":"kōng","en":"empty; sky","ar":"فارغ؛ سماء","level":"3级"},"哭":{"pinyin":"kū","en":"to cry","ar":"يبكي","level":"3级"},"筷":{"pinyin":"kuài","en":"chopsticks","ar":"عيدان الأكل","level":"3级"},"矿":{"pinyin":"kuàng","en":"mine; mineral","ar":"منجم؛ معدن","level":"3级"},"蓝":{"pinyin":"lán","en":"blue","ar":"أزرق","level":"3级"},"礼":{"pinyin":"lǐ","en":"gift; ceremony","ar":"هدية؛ مراسم","level":"3级"},"李":{"pinyin":"lǐ","en":"plum; surname Li","ar":"خوخ؛ لقب لي","level":"3级"},"理":{"pinyin":"lǐ","en":"reason; to manage","ar":"سبب؛ يدير","level":"3级"},"力":{"pinyin":"lì","en":"power; strength","ar":"قوة","level":"3级"},"历":{"pinyin":"lì","en":"calendar; history","ar":"تقويم؛ تاريخ","level":"3级"},"脸":{"pinyin":"liǎn","en":"face","ar":"وجه","level":"3级"},"练":{"pinyin":"liàn","en":"to practice; train","ar":"يتدرب","level":"3级"},"炼":{"pinyin":"liàn","en":"to smelt; temper","ar":"يصهر؛ يقوّي","level":"3级"},"凉":{"pinyin":"liáng","en":"cool; cold","ar":"بارد","level":"3级"},"辆":{"pinyin":"liàng","en":"(measure for vehicles)","ar":"(أداة عد للمركبات)","level":"3级"},"聊":{"pinyin":"liáo","en":"to chat","ar":"يدردش","level":"3级"},"料":{"pinyin":"liào","en":"material; to expect","ar":"مادة؛ يتوقع","level":"3级"},"邻":{"pinyin":"lín","en":"neighbor","ar":"جار","level":"3级"},"凌":{"pinyin":"líng","en":"to approach; insult","ar":"يقترب؛ يهين","level":"3级"},"马":{"pinyin":"mǎ","en":"horse","ar":"حصان","level":"3级"},"码":{"pinyin":"mǎ","en":"code; yard","ar":"رمز؛ ياردة","level":"3级"},"满":{"pinyin":"mǎn","en":"full; satisfied","ar":"ممتلئ؛ راضٍ","level":"3级"},"毛":{"pinyin":"máo","en":"hair; fur; mao","ar":"شعر؛ فراء؛ ماو","level":"3级"},"帽":{"pinyin":"mào","en":"hat; cap","ar":"قبعة","level":"3级"},"末":{"pinyin":"mò","en":"end; tip","ar":"نهاية","level":"3级"},"目":{"pinyin":"mù","en":"eye; item","ar":"عين؛ بند","level":"3级"},"南":{"pinyin":"nán","en":"south","ar":"جنوب","level":"3级"},"难":{"pinyin":"nán","en":"difficult","ar":"صعب","level":"3级"},"怒":{"pinyin":"nù","en":"anger; furious","ar":"غضب؛ غاضب","level":"3级"},"爬":{"pinyin":"pá","en":"to climb","ar":"يتسلق","level":"3级"},"怕":{"pinyin":"pà","en":"to fear","ar":"يخاف","level":"3级"},"拍":{"pinyin":"pāi","en":"to clap; photograph","ar":"يصفق؛ يصور","level":"3级"},"盘":{"pinyin":"pán","en":"plate; dish","ar":"طبق","level":"3级"},"胖":{"pinyin":"pàng","en":"fat; plump","ar":"سمين","level":"3级"},"啤":{"pinyin":"pí","en":"beer (syllable)","ar":"بيرة (مقطع)","level":"3级"},"片":{"pinyin":"piàn","en":"slice; piece","ar":"شريحة؛ قطعة","level":"3级"},"平":{"pinyin":"píng","en":"flat; peace","ar":"مسطح؛ سلام","level":"3级"},"瓶":{"pinyin":"píng","en":"bottle","ar":"زجاجة","level":"3级"},"其":{"pinyin":"qí","en":"his; her; its","ar":"له؛ لها","level":"3级"},"奇":{"pinyin":"qí","en":"strange; odd","ar":"غريب","level":"3级"},"骑":{"pinyin":"qí","en":"to ride","ar":"يركب","level":"3级"},"汽":{"pinyin":"qì","en":"steam; vapor","ar":"بخار","level":"3级"},"铅":{"pinyin":"qiān","en":"lead (metal)","ar":"رصاص","level":"3级"},"且":{"pinyin":"qiě","en":"and; moreover","ar":"و؛ علاوة","level":"3级"},"轻":{"pinyin":"qīng","en":"light (weight)","ar":"خفيف","level":"3级"},"清":{"pinyin":"qīng","en":"clear; clean","ar":"صافٍ؛ نظيف","level":"3级"},"秋":{"pinyin":"qiū","en":"autumn","ar":"خريف","level":"3级"},"求":{"pinyin":"qiú","en":"to seek; beg","ar":"يسعى؛ يتوسل","level":"3级"},"区":{"pinyin":"qū","en":"area; district","ar":"منطقة","level":"3级"},"趣":{"pinyin":"qù","en":"interest; fun","ar":"اهتمام؛ مرح","level":"3级"},"全":{"pinyin":"quán","en":"complete; whole","ar":"كامل","level":"3级"},"泉":{"pinyin":"quán","en":"spring (water)","ar":"نبع","level":"3级"},"裙":{"pinyin":"qún","en":"skirt","ar":"تنورة","level":"3级"},"容":{"pinyin":"róng","en":"to contain; appearance","ar":"يحتوي؛ مظهر","level":"3级"},"如":{"pinyin":"rú","en":"as; if","ar":"مثل؛ إذا","level":"3级"},"赛":{"pinyin":"sài","en":"to compete; match","ar":"يتنافس؛ مباراة","level":"3级"},"伞":{"pinyin":"sǎn","en":"umbrella","ar":"مظلة","level":"3级"},"扫":{"pinyin":"sǎo","en":"to sweep","ar":"يكنس","level":"3级"},"沙":{"pinyin":"shā","en":"sand","ar":"رمل","level":"3级"},"山":{"pinyin":"shān","en":"mountain","ar":"جبل","level":"3级"},"衫":{"pinyin":"shān","en":"shirt; gown","ar":"قميص؛ ثوب","level":"3级"},"烧":{"pinyin":"shāo","en":"to burn; cook","ar":"يحرق؛ يطبخ","level":"3级"},"勺":{"pinyin":"sháo","en":"spoon; ladle","ar":"ملعقة","level":"3级"},"声":{"pinyin":"shēng","en":"sound; voice","ar":"صوت","level":"3级"},"实":{"pinyin":"shí","en":"real; solid","ar":"حقيقي؛ صلب","level":"3级"},"史":{"pinyin":"shǐ","en":"history","ar":"تاريخ","level":"3级"},"世":{"pinyin":"shì","en":"world; era","ar":"عالم؛ عصر","level":"3级"},"适":{"pinyin":"shì","en":"suitable; fit","ar":"مناسب","level":"3级"},"收":{"pinyin":"shōu","en":"to receive; collect","ar":"يتلقى؛ يجمع","level":"3级"},"受":{"pinyin":"shòu","en":"to receive; suffer","ar":"يتلقى؛ يعاني","level":"3级"},"瘦":{"pinyin":"shòu","en":"thin; lean","ar":"نحيف","level":"3级"},"叔":{"pinyin":"shū","en":"uncle","ar":"عم؛ خال","level":"3级"},"束":{"pinyin":"shù","en":"bundle; to bind","ar":"حزمة؛ يربط","level":"3级"},"树":{"pinyin":"shù","en":"tree","ar":"شجرة","level":"3级"},"数":{"pinyin":"shù","en":"number; to count","ar":"عدد؛ يعد","level":"3级"},"刷":{"pinyin":"shuā","en":"to brush","ar":"يفرش","level":"3级"},"双":{"pinyin":"shuāng","en":"pair; double","ar":"زوج؛ مزدوج","level":"3级"},"算":{"pinyin":"suàn","en":"to calculate; count","ar":"يحسب؛ يعد","level":"3级"},"糖":{"pinyin":"táng","en":"sugar; candy","ar":"سكر؛ حلوى","level":"3级"},"特":{"pinyin":"tè","en":"special; unique","ar":"خاص؛ فريد","level":"3级"},"梯":{"pinyin":"tī","en":"ladder; stairs","ar":"سلم؛ درج","level":"3级"},"提":{"pinyin":"tī","en":"to lift; mention","ar":"يرفع؛ يذكر","level":"3级"},"甜":{"pinyin":"tián","en":"sweet","ar":"حلو","level":"3级"},"挺":{"pinyin":"tǐng","en":"quite; to stick out","ar":"جداً؛ يبرز","level":"3级"},"突":{"pinyin":"tū","en":"suddenly; to dash","ar":"فجأة؛ يندفع","level":"3级"},"图":{"pinyin":"tú","en":"picture; map","ar":"صورة؛ خريطة","level":"3级"},"腿":{"pinyin":"tuǐ","en":"leg","ar":"ساق","level":"3级"},"碗":{"pinyin":"wǎn","en":"bowl","ar":"وعاء","level":"3级"},"卫":{"pinyin":"wèi","en":"to guard; hygiene","ar":"يحرس؛ نظافة","level":"3级"},"闻":{"pinyin":"wén","en":"to hear; smell","ar":"يسمع؛ يشم","level":"3级"},"屋":{"pinyin":"wū","en":"house; room","ar":"بيت؛ غرفة","level":"3级"},"务":{"pinyin":"wù","en":"affair; service","ar":"شأن؛ خدمة","level":"3级"},"物":{"pinyin":"wù","en":"thing; object","ar":"شيء؛ غرض","level":"3级"},"戏":{"pinyin":"xì","en":"play; drama","ar":"مسرحية؛ دراما","level":"3级"},"夏":{"pinyin":"xià","en":"summer","ar":"صيف","level":"3级"},"鲜":{"pinyin":"xiān","en":"fresh; delicious","ar":"طازج؛ لذيذ","level":"3级"},"相":{"pinyin":"xiāng","en":"mutual; photo","ar":"متبادل؛ صورة","level":"3级"},"香":{"pinyin":"xiāng","en":"fragrant; incense","ar":"عطر؛ بخور","level":"3级"},"箱":{"pinyin":"xiāng","en":"box; case","ar":"صندوق","level":"3级"},"响":{"pinyin":"xiǎng","en":"sound; to echo","ar":"صوت؛ يتردد","level":"3级"},"向":{"pinyin":"xiàng","en":"toward; direction","ar":"نحو؛ اتجاه","level":"3级"},"像":{"pinyin":"xiàng","en":"to resemble; image","ar":"يشبه؛ صورة","level":"3级"},"鞋":{"pinyin":"xié","en":"shoe","ar":"حذاء","level":"3级"},"心":{"pinyin":"xīn","en":"heart; mind","ar":"قلب؛ عقل","level":"3级"},"信":{"pinyin":"xìn","en":"letter; to trust","ar":"رسالة؛ يثق","level":"3级"},"行":{"pinyin":"xíng","en":"to walk; OK","ar":"يمشي؛ موافق","level":"3级"},"熊":{"pinyin":"xióng","en":"bear","ar":"دب","level":"3级"},"须":{"pinyin":"xū","en":"must; beard","ar":"يجب؛ لحية","level":"3级"},"需":{"pinyin":"xū","en":"to need","ar":"يحتاج","level":"3级"},"选":{"pinyin":"xuǎn","en":"to choose","ar":"يختار","level":"3级"},"牙":{"pinyin":"yá","en":"tooth","ar":"سن","level":"3级"},"言":{"pinyin":"yán","en":"speech; word","ar":"كلام؛ كلمة","level":"3级"},"演":{"pinyin":"yǎn","en":"to perform; act","ar":"يؤدي؛ يمثل","level":"3级"},"羊":{"pinyin":"yáng","en":"sheep; goat","ar":"خروف؛ ماعز","level":"3级"},"阳":{"pinyin":"yáng","en":"sun; yang","ar":"شمس؛ يانغ","level":"3级"},"养":{"pinyin":"yǎng","en":"to raise; nourish","ar":"يربي؛ يغذي","level":"3级"},"业":{"pinyin":"yè","en":"trade; profession","ar":"مهنة؛ حرفة","level":"3级"},"页":{"pinyin":"yè","en":"page; leaf","ar":"صفحة؛ ورقة","level":"3级"},"姨":{"pinyin":"yí","en":"aunt (maternal)","ar":"خالة","level":"3级"},"议":{"pinyin":"yì","en":"to discuss; opinion","ar":"يناقش؛ رأي","level":"3级"},"易":{"pinyin":"yì","en":"easy; to change","ar":"سهل؛ يتبادل","level":"3级"},"音":{"pinyin":"yīn","en":"sound; tone","ar":"صوت؛ نغمة","level":"3级"},"银":{"pinyin":"yín","en":"silver","ar":"فضة","level":"3级"},"饮":{"pinyin":"yǐn","en":"to drink; beverage","ar":"يشرب؛ شراب","level":"3级"},"应":{"pinyin":"yīng","en":"should; to respond","ar":"ينبغي؛ يرد","level":"3级"},"迎":{"pinyin":"yíng","en":"to welcome","ar":"يرحب","level":"3级"},"用":{"pinyin":"yòng","en":"to use","ar":"يستخدم","level":"3级"},"邮":{"pinyin":"yóu","en":"mail; post","ar":"بريد","level":"3级"},"又":{"pinyin":"yòu","en":"again; also","ar":"مرة أخرى؛ أيضاً","level":"3级"},"于":{"pinyin":"yú","en":"in; at; regarding","ar":"في؛ عند","level":"3级"},"羽":{"pinyin":"yǔ","en":"feather; plume","ar":"ريشة","level":"3级"},"育":{"pinyin":"yù","en":"to nurture; educate","ar":"يربي؛ يعلم","level":"3级"},"遇":{"pinyin":"yù","en":"to meet; encounter","ar":"يلاقي؛ يصادف","level":"3级"},"园":{"pinyin":"yuán","en":"garden; park","ar":"حديقة","level":"3级"},"员":{"pinyin":"yuán","en":"member; staff","ar":"عضو؛ موظف","level":"3级"},"愿":{"pinyin":"yuàn","en":"to wish; willing","ar":"يتمنى؛ راغب","level":"3级"},"越":{"pinyin":"yuè","en":"to exceed; more","ar":"يتجاوز؛ أكثر","level":"3级"},"咱":{"pinyin":"zán","en":"we (inclusive)","ar":"نحن (شامل)","level":"3级"},"脏":{"pinyin":"zāng","en":"dirty; organ","ar":"قذر؛ عضو","level":"3级"},"择":{"pinyin":"zé","en":"to choose; select","ar":"يختار","level":"3级"},"展":{"pinyin":"zhǎn","en":"to unfold; exhibit","ar":"يفتح؛ يعرض","level":"3级"},"张":{"pinyin":"zhāng","en":"(measure for flat); open","ar":"(أداة للمسطحات)؛ يفتح","level":"3级"},"照":{"pinyin":"zhào","en":"to shine; photo","ar":"يضيء؛ صورة","level":"3级"},"者":{"pinyin":"zhě","en":"(one who); person","ar":"(فاعل)؛ شخص","level":"3级"},"直":{"pinyin":"zhí","en":"straight; direct","ar":"مستقيم؛ مباشر","level":"3级"},"纸":{"pinyin":"zhǐ","en":"paper","ar":"ورق","level":"3级"},"终":{"pinyin":"zhōng","en":"end; finally","ar":"نهاية؛ أخيراً","level":"3级"},"种":{"pinyin":"zhǒng","en":"kind; species; to plant","ar":"نوع؛ يزرع","level":"3级"},"重":{"pinyin":"zhòng","en":"heavy; important","ar":"ثقيل؛ مهم","level":"3级"},"主":{"pinyin":"zhǔ","en":"main; owner","ar":"رئيسي؛ مالك","level":"3级"},"助":{"pinyin":"zhù","en":"to help","ar":"يساعد","level":"3级"},"注":{"pinyin":"zhù","en":"to note; concentrate","ar":"يلاحظ؛ يركز","level":"3级"},"总":{"pinyin":"zǒng","en":"always; general","ar":"دائماً؛ عام","level":"3级"},"嘴":{"pinyin":"zuǐ","en":"mouth","ar":"فم","level":"3级"}};
@@ -6586,7 +8226,7 @@ function updateEngineStatus(){
   if(googleKeyRow) googleKeyRow.style.display = (e === 'google') ? 'flex' : 'none';
 
   if(e === 'dict'){
-    el.textContent = '词典模式 · Dictionary Only';
+    el.textContent = 'وضع القاموس · 词典模式';
     el.className = 'engine-status';
     if(note) note.style.display = 'none';
   }else if(e === 'mymemory'){
@@ -7014,9 +8654,9 @@ function getCoverageForText(text){
 function getWordCardData(item){
   const wordEntry = getWordEntry(item.text) || null;
   const pinyin = item.pinyin || (wordEntry && wordEntry.pinyin) || buildPinyinForText(item.text);
-  const en = wordEntry?.en || buildGlossEN(item.text);
+  const en = ''; /* AR-ONLY: EN suppressed */
   const ar = wordEntry?.ar || buildGlossAR(item.text);
-  const tag = item.text.length === 1 ? 'Character · 单字' : (item.text.length <= 2 ? 'Core Word' : 'Phrase · 短语');
+  const tag = item.text.length === 1 ? '单字 · حرف' : (item.text.length <= 2 ? 'كلمة · 单词' : 'عبارة · 短语');
   return { text:item.text, pinyin, en, ar, tag };
 }
 
@@ -7048,16 +8688,15 @@ function renderWordDeck(words){
         </div>
         <div style="display:flex;align-items:flex-start;gap:4px;">
           <div class="tag">${data.tag}</div>
-          <span class="word-star js-word-star" role="button" tabindex="0" title="Save word · 加入生词本">★</span>
+          <span class="word-star js-word-star" role="button" tabindex="0" title="حفظ الكلمة · 加入生词本">★</span>
         </div>
       </div>
       <div class="mean">
-        <div><strong>EN</strong> · ${data.en || '—'}</div>
-        <div class="ar"><strong style="direction:ltr; display:inline-block;">AR</strong> · ${data.ar || '—'}</div>
+        <div class="ar" dir="rtl" style="font-size:13px; line-height:1.6;">${data.ar || '—'}</div>
       </div>
       <div class="actions">
-        <button type="button" class="word-btn" data-action="speak"><span class="wb-icon">🔊</span><span class="wb-cn">朗读</span><span class="wb-en">استمع</span></button>
-        <button type="button" class="word-btn" data-action="inspect"><span class="wb-icon">🔍</span><span class="wb-cn">首字</span><span class="wb-en">استكشف</span></button>
+        <button type="button" class="word-btn" data-action="speak"><span class="wb-icon">🔊</span><span class="wb-cn">استمع · 朗读</span></button>
+        <button type="button" class="word-btn" data-action="inspect"><span class="wb-icon">🔍</span><span class="wb-cn">استكشف · 首字</span></button>
       </div>
     `;
 
@@ -7066,14 +8705,14 @@ function renderWordDeck(words){
     if(wstar){
       if(vocabWordHas(data.text)){
         wstar.className = 'word-star js-word-star saved';
-        wstar.title = 'Remove from vocab · 从生词本移除';
+        wstar.title = 'إزالة من المفردات · 从生词本移除';
       }
       wstar.addEventListener('click', (ev) => {
         ev.stopPropagation();
-        vocabWordToggle(data.text, data.pinyin || '', data.en || '', wstar);
+        vocabWordToggle(data.text, data.pinyin || '', '', data.ar || '', wstar);
       });
       wstar.addEventListener('keydown', (ev) => {
-        if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); ev.stopPropagation(); vocabWordToggle(data.text, data.pinyin || '', data.en || '', wstar); }
+        if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); ev.stopPropagation(); vocabWordToggle(data.text, data.pinyin || '', '', data.ar || '', wstar); }
       });
     }
 
@@ -7101,9 +8740,9 @@ function renderWordDeck(words){
 function getSuggestedNextStep(label, text){
   const stripped = stripPunct(String(text || '').trim());
   const charCount = Array.from(stripped).filter(isCJK).length;
-  if(label.includes('单字')) return 'Single character — tap the card below to see stroke order, radical and structure.';
-  if(charCount <= 4) return 'Short word — listen first, then tap each character to check pronunciation and structure.';
-  return 'Full sentence — play the audio, then tap key characters: sentence → word → character.';
+  if(label.includes('单字')) return 'حرف منفرد — انقر على البطاقة أدناه لترى ترتيب الخطوط والجذر والبنية · 单字：点击下方字卡查看笔顺和部首';
+  if(charCount <= 4) return 'كلمة قصيرة — استمع أولًا، ثم انقر على كل حرف للتحقق من النطق والبنية · 短词：先听，再点击各字';
+  return 'جملة كاملة — شغّل الصوت، ثم انقر على الحروف الأساسية · 整句：播放音频，再点击重点字';
 }
 
 function renderLearningFocus(label, sourceText){
@@ -7112,8 +8751,8 @@ function renderLearningFocus(label, sourceText){
   focusWords.innerHTML = '';
   if(focusSummary){
     focusSummary.textContent = words.length
-      ? 'Found ' + words.length + ' key words in this text.'
-      : 'Text is short — go straight to the character grid below.';
+      ? 'وُجدت ' + words.length + ' كلمة أساسية في هذا النص · 共 ' + words.length + ' 个重点词'
+      : 'النص قصير — انتقل مباشرةً إلى شبكة الحروف أدناه · 文本较短，请直接查看下方字卡';
   }
   if(!words.length){
     focusWords.innerHTML = '<div class="focus-empty">لا توجد كلمات أساسية — انقر على أي حرف أدناه.</div>';
@@ -7280,8 +8919,8 @@ function renderSentenceBlocks(sentences){
     /* ---- 拼音 ---- */
     const pyText = buildPinyinForText(sent);
 
-    /* ---- 英文（离线词典优先）---- */
-    const enResult = translateSentence(sent, 'en');
+    /* AR-ONLY: EN translation skipped */
+    const enResult = { text: '', quality: 'skip' };
 
     /* ---- DOM ---- */
     const cnEl = document.createElement('div');
@@ -7292,9 +8931,12 @@ function renderSentenceBlocks(sentences){
     pyEl.className = 'sb-py analysis-reading-pinyin';
     pyEl.textContent = pyText;
 
-    const enEl = document.createElement('div');
-    enEl.className = 'sb-en analysis-translations-en';
-    enEl.textContent = enResult.text || '';
+    /* AR-ONLY: enEl removed — replaced with Arabic row */
+    const arSbEl = document.createElement('div');
+    arSbEl.className = 'sb-ar';
+    const arSbResult = translateSentence(sent, 'ar');
+    arSbEl.textContent = arSbResult.text || '';
+    arSbEl.dir = 'rtl';
 
     /* ---- 操作按钮 ---- */
     const actEl = document.createElement('div');
@@ -7304,7 +8946,7 @@ function renderSentenceBlocks(sentences){
     const playBtn = document.createElement('button');
     playBtn.type = 'button';
     playBtn.className = 'sb-btn';
-    playBtn.innerHTML = '🔊 Play · 播放';
+    playBtn.innerHTML = '🔊 استمع · 播放';
     playBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       speechSynthesis.cancel();
@@ -7316,7 +8958,7 @@ function renderSentenceBlocks(sentences){
     const echoBtn = document.createElement('button');
     echoBtn.type = 'button';
     echoBtn.className = 'sb-btn';
-    echoBtn.innerHTML = '🎤 Repeat · 跟读';
+    echoBtn.innerHTML = '🎤 كرّر · 跟读';
     echoBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       startFollowAlong(idx);
@@ -7326,14 +8968,14 @@ function renderSentenceBlocks(sentences){
     const charBtn = document.createElement('button');
     charBtn.type = 'button';
     charBtn.className = 'sb-btn';
-    charBtn.innerHTML = '🔍 Study · 学习单字';
+    charBtn.innerHTML = '🔍 ادرس · 学习单字';
     charBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       setActiveSentence(idx);
       /* 只把该句的字渲染到 charGrid —— 不重建整个 charGrid，
          而是先高亮已有字卡中属于本句的那些 */
       highlightSentenceChars(sent);
-      showToast('Focused · 已聚焦该句单字');
+      showToast('تم التركيز · 已聚焦该句单字');
     });
 
     actEl.appendChild(playBtn);
@@ -7342,7 +8984,7 @@ function renderSentenceBlocks(sentences){
 
     block.appendChild(cnEl);
     block.appendChild(pyEl);
-    block.appendChild(enEl);
+    block.appendChild(arSbEl);
     block.appendChild(actEl);
 
     /* 点击整行 → 高亮并调用 analyzeInput 仅分析该句 */
@@ -7354,21 +8996,11 @@ function renderSentenceBlocks(sentences){
 
     wrap.appendChild(block);
 
-    /* 异步云翻译升级 en */
+    /* 异步云翻译升级 AR */
     if(TRANSLATION_STATE.engine !== 'dict'){
-      const loadEl = document.createElement('div');
-      loadEl.className = 'sb-loading';
-      loadEl.textContent = 'Translating…';
-      enEl.appendChild(loadEl);
-      cachedCloudTranslate(sent, 'en')
-        .then(r => {
-          if(r && r.text){
-            enEl.textContent = r.text;
-          } else {
-            enEl.textContent = enResult.text || '';
-          }
-        })
-        .catch(() => { enEl.textContent = enResult.text || ''; });
+      cachedCloudTranslate(sent, 'ar')
+        .then(r => { if(r && r.text) arSbEl.textContent = r.text; })
+        .catch(() => {});
     }
   });
 
@@ -7418,7 +9050,7 @@ function highlightSentenceChars(sent){
  */
 async function _analyzeSingleSentenceInBlock(sent){
   const pinyin = buildPinyinForText(sent);
-  const enResult = translateSentence(sent, 'en');
+  /* AR-ONLY: EN skipped */ const enResult = { text: '', quality: 'skip' };
   const arResult = translateSentence(sent, 'ar');
 
   const analysisTextEl = document.getElementById('analysisText');
@@ -7427,7 +9059,7 @@ async function _analyzeSingleSentenceInBlock(sent){
   if(analysisTextEl) analysisTextEl.textContent = sent;
   if(analysisPinyinEl) analysisPinyinEl.textContent = pinyin;
 
-  setMeaningWithBadge('analysisEn', 'analysisEnBadge', enResult);
+  /* AR-ONLY: EN hidden */
   setMeaningWithBadge('analysisAr', 'analysisArBadge', arResult);
 
   /* 高亮该句的字 */
@@ -7436,15 +9068,14 @@ async function _analyzeSingleSentenceInBlock(sent){
   /* 云端升级 */
   if(TRANSLATION_STATE.engine !== 'dict'){
     const reqId = ++TRANSLATION_STATE.currentRequest;
-    setMeaningWithBadge('analysisEn', 'analysisEnBadge', { text: enResult.text, quality: 'loading' });
+    /* AR-ONLY: EN loading skipped */
     setMeaningWithBadge('analysisAr', 'analysisArBadge', { text: arResult.text, quality: 'loading' });
     const [enCloud, arCloud] = await Promise.all([
-      cachedCloudTranslate(sent, 'en').catch(() => null),
+      Promise.resolve(null) /* AR-ONLY: EN cloud removed */,
       cachedCloudTranslate(sent, 'ar').catch(() => null),
     ]);
     if(reqId !== TRANSLATION_STATE.currentRequest) return;
-    if(enCloud && enCloud.text) setMeaningWithBadge('analysisEn', 'analysisEnBadge', enCloud);
-    else setMeaningWithBadge('analysisEn', 'analysisEnBadge', enResult);
+    /* AR-ONLY: EN cloud skipped */
     if(arCloud && arCloud.text) setMeaningWithBadge('analysisAr', 'analysisArBadge', arCloud);
     else setMeaningWithBadge('analysisAr', 'analysisArBadge', arResult);
   }
@@ -7514,7 +9145,7 @@ async function analyzeInput(text){
       enResult = { text: e.en, quality: 'verified' };
       arResult = { text: e.ar, quality: 'verified' };
     }else{
-      enResult = { text: buildGlossEN(ch) || '—', quality: 'gloss' };
+      enResult = { text: '', quality: 'skip' }; /* AR-ONLY */
       arResult = { text: buildGlossAR(ch) || '—', quality: 'gloss' };
     }
   }
@@ -7533,7 +9164,7 @@ async function analyzeInput(text){
     label = 'كلمة · 词语';
     displayText = trimmed;
     pinyin = buildPinyinForText(trimmed);
-    enResult = translateSegment(trimmed, 'en');
+    enResult = { text: '', quality: 'skip' }; /* AR-ONLY */
     arResult = translateSegment(trimmed, 'ar');
   }
   /* Otherwise → sentence */
@@ -7541,7 +9172,7 @@ async function analyzeInput(text){
     label = 'جملة · 句子';
     displayText = trimmed.length > 60 ? trimmed.slice(0,60)+'…' : trimmed;
     pinyin = buildPinyinForText(trimmed);
-    enResult = translateSentence(trimmed, 'en');
+    enResult = { text: '', quality: 'skip' }; /* AR-ONLY */
     arResult = translateSentence(trimmed, 'ar');
   }
 
@@ -7550,7 +9181,7 @@ async function analyzeInput(text){
   document.getElementById('analysisText').innerHTML = renderAnnotatedTextHTML(displayText);
   document.getElementById('analysisPinyin').textContent = pinyin;
   renderLearningFocus(label, trimmed);
-  setMeaningWithBadge('analysisEn', 'analysisEnBadge', enResult);
+  /* AR-ONLY: EN hidden */
   setMeaningWithBadge('analysisAr', 'analysisArBadge', arResult);
   analysis.classList.add('show');
 
@@ -7568,12 +9199,12 @@ async function analyzeInput(text){
   if(!needsCloud) return;
   
 
-  const needsCloudEn = true;
+  const needsCloudEn = false; /* AR-ONLY */
   const needsCloudAr = true;
   if(!needsCloudEn && !needsCloudAr) return;
 
   /* Show loading badges on the fields that will be cloud-translated */
-  if(needsCloudEn) setMeaningWithBadge('analysisEn', 'analysisEnBadge', { text: enResult.text, quality: 'loading' });
+  /* AR-ONLY: needsCloudEn=false */
   if(needsCloudAr) setMeaningWithBadge('analysisAr', 'analysisArBadge', { text: arResult.text, quality: 'loading' });
 
   /* Track request so stale responses don't overwrite newer input */
@@ -7581,10 +9212,12 @@ async function analyzeInput(text){
 
   const tasks = [];
   if(needsCloudEn){
+    /* AR-ONLY: dead code — needsCloudEn=false, never reached */
     tasks.push(
-      cachedCloudTranslate(trimmed, 'en')
-        .then(r => ({ lang: 'en', ok: true, result: r }))
-        .catch(e => ({ lang: 'en', ok: false, error: e, fallback: enResult }))
+      Promise.resolve(null) /* was cachedCloudTranslate(trimmed,'en') */
+        /* AR-ONLY: EN cloud fetch removed */
+        .then(r => ({ lang: 'en_skip', ok: false }))
+        .catch(e => ({ lang: 'en_skip', ok: false }))
     );
   }
   if(needsCloudAr){
@@ -7602,6 +9235,7 @@ async function analyzeInput(text){
 
   for(const r of results){
     if(r.ok){
+      if(r.lang === 'en' || r.lang === 'en_skip') return; /* AR-ONLY */
       const badgeId = r.lang === 'en' ? 'analysisEnBadge' : 'analysisArBadge';
       const textId  = r.lang === 'en' ? 'analysisEn'      : 'analysisAr';
       setMeaningWithBadge(textId, badgeId, r.result);
@@ -7623,24 +9257,24 @@ function setMeaningWithBadge(textId, badgeId, result){
     badgeEl.className = 'q-badge q-' + result.quality;
     if(result.quality === 'verified'){
       badgeEl.textContent = 'موثّق';
-      badgeEl.title = '整体释义来自经过校对的词典 · Translation from curated dictionary';
+      badgeEl.title = 'المعنى من القاموس المُدقَّق · 整体释义来自经过校对的词典';
     }else if(result.quality === 'partial'){
       badgeEl.textContent = 'جزئي';
-      badgeEl.title = '部分词语来自词典，其余为逐字拼接 · Some words from dictionary, rest are per-character glosses';
+      badgeEl.title = 'بعض الكلمات من القاموس والباقي ترجمة حرفية · 部分词语来自词典，其余为逐字拼接';
     }else if(result.quality === 'machine'){
       const engine = result.engineName || (TRANSLATION_STATE.engine === 'google' ? (getYoudaoCredentials().appKey ? 'Youdao' : 'Google') :
                      TRANSLATION_STATE.engine === 'mymemory' ? 'Google' : 'Cloud');
       badgeEl.textContent = 'سحابي · ' + engine;
-      badgeEl.title = '由真实翻译接口提供 · Machine translation via ' + engine;
+      badgeEl.title = 'ترجمة آلية عبر · 由翻译接口提供 ' + engine;
     }else if(result.quality === 'loading'){
       badgeEl.textContent = 'جارٍ الترجمة…';
-      badgeEl.title = '正在调用云端翻译 · Calling cloud translation…';
+      badgeEl.title = 'جارٍ استدعاء الترجمة السحابية · 正在调用云端翻译';
     }else if(result.quality === 'error'){
       badgeEl.textContent = 'فشل السحابي';
       badgeEl.title = '云端翻译失败（已回退至离线结果）: ' + (result.errorMsg || '') + ' · Cloud translation failed, showing offline fallback';
     }else{
       badgeEl.textContent = 'حرفي';
-      badgeEl.title = '字面对照，非完整翻译 · Per-character gloss, not a full translation';
+      badgeEl.title = 'مقابلة حرفية، ليست ترجمة كاملة · 字面对照，非完整翻译';
     }
   }
 }
@@ -7824,7 +9458,7 @@ function showDetail(ch, entry){
   if(TRANSLATION_STATE.engine !== 'dict'){
     const token = ch + '::' + Date.now();
     showDetail._token = token;
-    cachedCloudTranslate(ch, 'en').then(r => {
+    Promise.resolve(null) /* AR-ONLY */.then(r => {
       if(showDetail._token === token && currentDetailChar === ch && r && r.text) document.getElementById('dEn').textContent = r.text;
     }).catch(() => {});
     cachedCloudTranslate(ch, 'ar').then(r => {
@@ -8392,7 +10026,7 @@ function buildChoosePinyin(cjkChars, text){
           btn.classList.remove('disabled');
           btn.classList.add('correct');
           feedback.className = 'pl-feedback ok show';
-          feedback.textContent = '✓ Correct! · 正确！';
+          feedback.textContent = '✓ صحيح! · 正确！';
           PRACTICE_STATE.donePinyin = true;
           checkPracticeCompletion();
         } else {
@@ -8506,15 +10140,15 @@ function buildFillChar(cjkChars, text){
         setTimeout(() => { el.value = char; el.classList.remove('wrong'); el.classList.add('correct'); }, 900);
       }
     });
-    if(!anyFilled){ resultEl.textContent = 'Please fill in the blanks · 请先填写'; resultEl.className = 'pl-fill-result no'; return; }
+    if(!anyFilled){ resultEl.textContent = 'يرجى ملء الفراغات · 请先填写'; resultEl.className = 'pl-fill-result no'; return; }
 
     PRACTICE_STATE.doneFill = true;
     if(allCorrect){
       resultEl.className = 'pl-fill-result ok';
-      resultEl.textContent = '✓ All correct! · 全对！';
+      resultEl.textContent = '✓ كل الإجابات صحيحة! · 全对！';
     } else {
       resultEl.className = 'pl-fill-result no';
-      resultEl.textContent = '✗ Errors · 有错误，已显示正确答案';
+      resultEl.textContent = '✗ توجد أخطاء — الإجابات الصحيحة معروضة · 有错误，已显示正确答案';
     }
     checkPracticeCompletion();
   });
@@ -8564,7 +10198,7 @@ function checkPracticeCompletion(){
   const badge = document.getElementById('plBadge');
   if(done){
     if(complete) complete.classList.add('show');
-    if(badge){ badge.textContent = '✓ Done · 完成'; badge.className = 'pl-badge done'; }
+    if(badge){ badge.textContent = '✓ اكتمل · 完成'; badge.className = 'pl-badge done'; }
   }
 }
 
@@ -8761,12 +10395,12 @@ if(btnKeyTest){
       const result = getYoudaoCredentials().appKey
         ? await callYoudaoTranslate('你好', 'en')
         : (await cloudTranslate('你好', 'en')).text;
-      showToast('✓ Translation test passed: ' + result, 'Translation test OK');
+      showToast('✓ نجح اختبار الترجمة: ' + result, 'نجح');
     }catch(err){
-      showToast('✗ Translation test failed: ' + (err.message || err), 'Translation test failed');
+      showToast('✗ فشل اختبار الترجمة: ' + (err.message || err), 'فشل');
     }finally{
       btnKeyTest.disabled = false;
-      btnKeyTest.textContent = '测试 Test';
+      btnKeyTest.textContent = 'اختبار · 测试';
     }
   });
 }
@@ -8868,16 +10502,16 @@ function vocabHas(ch){
 function vocabWordHas(text){
   return vocabLoad().some(item => item.ch === text && item.type === 'word');
 }
-function vocabWordToggle(text, py, en, starEl){
+function vocabWordToggle(text, py, en, ar, starEl){
   const list = vocabLoad();
   const idx = list.findIndex(item => item.ch === text && item.type === 'word');
   if(idx >= 0){
     list.splice(idx, 1);
     vocabSave(list);
     if(starEl){ starEl.className = 'word-star js-word-star'; starEl.title = 'حفظ الكلمة · 加入生词本'; }
-    showToast('تمت الإزالة من المفردات · 已从生词本移除', 'تمت الإزالة');
+    showToast('تمت الإزالة من المفردات · 已من生词本移除', 'تمت الإزالة');
   }else{
-    list.push({ ch: text, py, en, ts: Date.now(), type: 'word' });
+    list.push({ ch: text, py, en, ar: ar || '', ts: Date.now(), type: 'word' });
     vocabSave(list);
     if(starEl){ starEl.className = 'word-star js-word-star saved'; starEl.title = 'إزالة من المفردات · 从生词本移除'; }
     showToast('تم حفظ الكلمة · 词语已加入生词本 ⭐', 'تم الحفظ');
@@ -8894,13 +10528,14 @@ function vocabToggle(ch, starEl){
     list.splice(idx, 1);
     vocabSave(list);
     if(starEl){ starEl.className = 'char-star'; starEl.title = 'حفظ في المفردات · 加入生词本'; }
-    showToast('Removed from vocab · 已从生词本移除', 'Removed');
+    showToast('تمت الإزالة من المفردات · 已从生词本移除', 'تمت الإزالة');
   }else{
     /* add */
     const entry = getCharEntry(ch);
     const py = (entry && entry.pinyin) ? entry.pinyin : (getPinyinProForChar(ch) || '');
     const en = (entry && entry.en) ? entry.en : '';
-    list.push({ ch, py, en, ts: Date.now(), type: 'char' });
+    const ar = (entry && entry.ar) ? entry.ar : (buildGlossAR(ch) || '');
+    list.push({ ch, py, en, ar, ts: Date.now(), type: 'char' });
     vocabSave(list);
     if(starEl){ starEl.className = 'char-star saved'; starEl.title = 'إزالة من المفردات · 从生词本移除'; }
     showToast('تم الحفظ في المفردات · 已加入生词本 ⭐', 'تم الحفظ');
@@ -8960,7 +10595,7 @@ function vocabRenderDrawer(){
     words.forEach(item => {
       const row = document.createElement('div');
       row.className = 'vocab-word-item';
-      row.title = item.ch + (item.py ? ' · ' + item.py : '') + (item.en ? ' · ' + item.en : '');
+      row.title = item.ch + (item.py ? ' · ' + item.py : '') + (item.ar ? ' · ' + item.ar : '');
 
       const rmBtn = document.createElement('span');
       rmBtn.className = 'vocab-item-remove';
@@ -8995,7 +10630,7 @@ function vocabRenderDrawer(){
       const info = document.createElement('div');
       info.className = 'vw-info';
       info.innerHTML = '<div class="vw-py">' + (item.py || '') + '</div>'
-                     + '<div class="vw-en">' + (item.en || '') + '</div>';
+                     + '<div class="vw-ar" dir="rtl">' + (item.ar || '') + '</div>';
       row.appendChild(info);
 
       grid.appendChild(row);
@@ -9020,12 +10655,12 @@ function vocabRenderDrawer(){
     chars.forEach(item => {
       const cell = document.createElement('div');
       cell.className = 'vocab-item';
-      cell.title = item.ch + (item.py ? ' · ' + item.py : '') + (item.en ? ' · ' + item.en : '');
+      cell.title = item.ch + (item.py ? ' · ' + item.py : '') + (item.ar ? ' · ' + item.ar : (item.en ? ' · ' + item.en : ''));
 
       const rmBtn = document.createElement('span');
       rmBtn.className = 'vocab-item-remove';
       rmBtn.textContent = '✕';
-      rmBtn.title = 'Remove · 移除';
+      rmBtn.title = 'إزالة · 移除';
       rmBtn.setAttribute('role', 'button');
       rmBtn.setAttribute('tabindex', '0');
       rmBtn.addEventListener('click', (ev) => {
@@ -9045,7 +10680,7 @@ function vocabRenderDrawer(){
         }
         vocabUpdateEntryBtn();
         vocabRenderDrawer();
-        showToast('Removed · 已移除', 'Removed');
+        showToast('تمت الإزالة · 已移除', 'تمت الإزالة');
       });
       cell.appendChild(rmBtn);
 
@@ -9059,10 +10694,12 @@ function vocabRenderDrawer(){
       chEl.textContent = item.ch;
       cell.appendChild(chEl);
 
-      const enEl = document.createElement('div');
-      enEl.className = 'vi-en';
-      enEl.textContent = item.en || '';
-      cell.appendChild(enEl);
+      const arEl = document.createElement('div');
+      arEl.className = 'vi-ar';
+      arEl.textContent = item.ar || (item.en || '');
+      arEl.dir = 'rtl';
+      arEl.style.textAlign = 'center';
+      cell.appendChild(arEl);
 
       cell.addEventListener('click', () => {
         vocabCloseDrawer();
@@ -9115,7 +10752,7 @@ if(btnVocabClear){
     document.querySelectorAll('.js-word-star.saved').forEach(s => { s.className = 'word-star js-word-star'; });
     /* update detail panel button */
     const dBtn = document.getElementById('dVocabBtn');
-    if(dBtn){ dBtn.textContent = '☆ Save · 加入生词本'; dBtn.className = 'stroke-btn'; }
+    if(dBtn){ dBtn.textContent = '☆ حفظ · 加入生词本'; dBtn.className = 'stroke-btn'; }
     vocabUpdateEntryBtn();
     vocabRenderDrawer();
     showToast('تم مسح المفردات · 生词本已清空', 'تم المسح');
@@ -9704,32 +11341,50 @@ progressUpdatePill();
 })();
 
 /* ============================================================
-   ARABIC VOICE INPUT — 阿拉伯语语音识别 + 翻译
+   ARABIC VOICE INPUT v3 — 阿拉伯语语音识别 + 翻译
+   Mobile-optimised: iOS Safari + Android Chrome + Desktop
    ============================================================ */
 (function(){
+  'use strict';
+
   const btn      = document.getElementById('btnMic');
   const editor   = document.getElementById('editor');
   const statusEl = document.getElementById('micStatus');
-  if(!btn || !editor) return;
+  if(!btn || !editor || !statusEl) return;
 
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SpeechRecognition){
+  /* ── Device / browser detection ── */
+  const ua        = navigator.userAgent || '';
+  const isIOS     = /iPhone|iPad|iPod/i.test(ua) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isSafari  = /Safari/i.test(ua) && !/Chrome/i.test(ua);
+
+  /* ── SpeechRecognition availability ── */
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if(!SR){
     btn.title         = 'المتصفح لا يدعم التعرف على الصوت · 不支持';
-    btn.style.opacity = '0.35';
+    btn.style.opacity = '0.40';
     btn.style.cursor  = 'not-allowed';
+    btn.setAttribute('aria-disabled', 'true');
+    statusEl.textContent = (isIOS && isSafari)
+      ? 'يتطلب iOS 14.5+ وSafari · iOS 14.5+ required'
+      : 'المتصفح لا يدعم الميكروفون · 不支持';
+    statusEl.className = 'mic-err';
     return;
   }
 
-  let recog     = null;
-  let listening = false;
-  let translating = false;   /* FIX 1: guard flag — prevents double-start during translation */
-  let clearTimer = null;
+  /* ── State ── */
+  let recog       = null;
+  let listening   = false;
+  let translating = false;
+  let clearTimer  = null;
+  let langRetried = false;
 
+  /* ── Status helper ── */
   function setStatus(msg, type){
     clearTimeout(clearTimer);
     statusEl.textContent = msg;
     statusEl.className   = type ? 'mic-' + type : '';
-    /* FIX 5: auto-clear success message after 3 s */
     if(type === 'ok'){
       clearTimer = setTimeout(() => {
         statusEl.textContent = '';
@@ -9738,7 +11393,7 @@ progressUpdatePill();
     }
   }
 
-  /* ── 超时 fetch ── */
+  /* ── Timeout-aware fetch ── */
   function micFetch(url, opts, ms){
     const ctrl = new AbortController();
     const t    = setTimeout(() => ctrl.abort(), ms || 7000);
@@ -9746,136 +11401,224 @@ progressUpdatePill();
       .finally(() => clearTimeout(t));
   }
 
-  /* ── 验证结果是否含汉字 (FIX 3 + FIX 4) ── */
+  /* ── Chinese validation ── */
   function isValidChinese(str){
     if(!str) return false;
     const s = str.trim();
-    /* reject empty, Arabic residue, MyMemory "NULL", pure Latin/pinyin */
-    if(!s) return false;
-    if(/^NULL$/i.test(s)) return false;                    /* FIX 4: MyMemory NULL */
-    if(/[؀-ۿ]/.test(s)) return false;            /* still Arabic */
-    if(/^[A-Za-z0-9\s\p{P}]+$/u.test(s)) return false;    /* pure Latin – likely pinyin */
-    if(!/[一-鿿㐀-䶿]/.test(s)) return false; /* FIX 3: must contain CJK */
+    if(!s || /^NULL$/i.test(s)) return false;
+    if(/[؀-ۿ]/.test(s)) return false;
+    if(!/[一-鿿㐀-䶿]/.test(s)) return false;
     return true;
   }
 
-  /* ── Google 免费接口：ar → zh-CN ── */
+  /* ── Google free endpoint: ar → zh-CN ── */
   async function googleArToZh(text){
-    const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=zh-CN&dt=t&dj=1&q='
-              + encodeURIComponent(text);
-    const res  = await micFetch(url, {}, 6000);
-    if(!res.ok) throw new Error('Google HTTP ' + res.status);
+    const url = 'https://translate.googleapis.com/translate_a/single'
+      + '?client=gtx&sl=ar&tl=zh-CN&dt=t&dj=1&q=' + encodeURIComponent(text);
+    const res  = await micFetch(url, {}, 7000);
+    if(!res.ok) throw new Error('Google ' + res.status);
     const data = await res.json();
-    const out  = (data.sentences || []).map(s => (s && s.trans) || '').join('').trim();
-    if(!isValidChinese(out)) throw new Error('Google invalid result');
+    const out  = (data.sentences || []).map(s => s && s.trans || '').join('').trim();
+    if(!isValidChinese(out)) throw new Error('Google: invalid result');
     return out;
   }
 
-  /* ── MyMemory fallback：ar → zh-CN ── */
+  /* ── MyMemory fallback: ar → zh-CN ── */
   async function myMemoryArToZh(text){
     const url = 'https://api.mymemory.translated.net/get?q='
-              + encodeURIComponent(text)
-              + '&langpair=ar|zh-CN&de=webapp@example.com';
-    const res  = await micFetch(url, {}, 7000);
-    if(!res.ok) throw new Error('MyMemory HTTP ' + res.status);
+      + encodeURIComponent(text) + '&langpair=ar|zh-CN&de=webapp@example.com';
+    const res  = await micFetch(url, {}, 8000);
+    if(!res.ok) throw new Error('MyMemory ' + res.status);
     const data = await res.json();
     let out = (data.responseData && data.responseData.translatedText) || '';
-    /* FIX 4: reject NULL string, Arabic residue, MyMemory warnings */
     if(!isValidChinese(out) || /MYMEMORY WARNING/i.test(out)){
       const best = (data.matches || [])
         .filter(m => m && m.translation && isValidChinese(m.translation))
-        .sort((a, b) => Number(b.quality || 0) - Number(a.quality || 0))[0];
+        .sort((a, b) => Number(b.quality||0) - Number(a.quality||0))[0];
       out = best ? best.translation : '';
     }
     out = (out || '').trim();
-    if(!isValidChinese(out)) throw new Error('MyMemory invalid result');
+    if(!isValidChinese(out)) throw new Error('MyMemory: invalid result');
     return out;
   }
 
+  /* ── Translation pipeline ── */
   async function translateArabicToChinese(arabicText){
-    translating = true;        /* FIX 1: block concurrent starts */
+    translating = true;
     setStatus('جارٍ الترجمة… · 正在翻译', '');
     btn.classList.remove('mic-listening');
     btn.classList.add('mic-loading');
+    btn.disabled = true;
 
     try {
       let chinese = '';
       try       { chinese = await googleArToZh(arabicText); }
       catch(e1) {
         try     { chinese = await myMemoryArToZh(arabicText); }
-        catch(e2){ throw new Error('All providers failed'); }
+        catch(e2){ throw new Error('all-failed'); }
       }
-      if(chinese){
+      if(isValidChinese(chinese)){
         editor.value = chinese;
         editor.dispatchEvent(new Event('input', { bubbles: true }));
         setStatus('✓ اكتملت الترجمة · 翻译完成', 'ok');
       } else {
-        setStatus('نتيجة الترجمة فارغة · 结果为空', 'err');
+        setStatus('نتيجة فارغة، حاول مجددًا · 结果为空', 'err');
       }
-    } catch(e) {
-      setStatus('فشلت الترجمة، حاول مجددًا · 翻译失败', 'err');
+    } catch(err) {
+      setStatus(
+        err.message === 'all-failed'
+          ? 'فشلت الترجمة، تحقق من الإنترنت · 请检查网络'
+          : 'خطأ في الترجمة · 翻译出错',
+        'err'
+      );
     } finally {
       btn.classList.remove('mic-loading');
-      translating = false;     /* FIX 1: allow new starts */
+      btn.disabled   = false;
+      translating    = false;
     }
   }
 
-  function startListening(){
-    /* FIX 7: try ar-SA first, fall back to generic 'ar' on error */
-    recog = new SpeechRecognition();
-    recog.lang           = 'ar-SA';
-    recog.interimResults = false;
-    recog.maxAlternatives = 1;
-    recog.continuous     = false;
+  /* ── Build a SpeechRecognition instance ──
+     CRITICAL on iOS: .start() MUST be called synchronously
+     inside the click handler — no await/async before it. */
+  function buildRecog(lang){
+    const r = new SR();
+    r.lang            = lang || 'ar-SA';
+    r.interimResults  = false;
+    r.maxAlternatives = 1;
+    r.continuous      = false;
 
-    recog.onstart = () => {
+    r.onstart = () => {
       listening = true;
       btn.classList.add('mic-listening');
-      setStatus('🎙 جارٍ الاستماع للعربية… · 正在收听', '');
+      setStatus('🎙 تحدّث الآن بالعربية… · 正在收听', '');
     };
 
-    recog.onresult = (e) => {
-      const arabic = e.results[0][0].transcript.trim();
-      if(arabic) translateArabicToChinese(arabic);
-      else setStatus('لم يُتعرَّف على شيء · 未识别', 'err');
+    r.onresult = (e) => {
+      const t = (e.results && e.results[0] && e.results[0][0])
+        ? e.results[0][0].transcript.trim() : '';
+      if(t) translateArabicToChinese(t);
+      else  setStatus('لم يُتعرَّف على صوت · 未识别', 'err');
     };
 
-    recog.onerror = (e) => {
+    r.onerror = (ev) => {
       listening = false;
       btn.classList.remove('mic-listening');
-      /* FIX 7: if ar-SA language not supported, retry with generic 'ar' */
-      if(e.error === 'language-not-supported' && recog.lang === 'ar-SA'){
-        recog.lang = 'ar';
-        try{ recog.start(); return; }catch(ex){}
+      const code = ev.error || '';
+
+      /* language-not-supported: retry with generic 'ar' once */
+      if(code === 'language-not-supported' && !langRetried){
+        langRetried = true;
+        try{ recog = buildRecog('ar'); recog.start(); return; }catch(ex){}
       }
-      if(e.error === 'no-speech')        setStatus('لم يُكتشف صوت، حاول مجددًا · 未检测到语音', 'err');
-      else if(e.error === 'not-allowed') setStatus('تم رفض إذن الميكروفون · 麦克风权限被拒绝', 'err');
-      else if(e.error === 'language-not-supported') setStatus('الجهاز لا يدعم التعرف على العربية · 不支持阿语识别', 'err');
-      else                               setStatus('خطأ في التعرف: ' + e.error, 'err');
+
+      if(code === 'not-allowed'){
+        setStatus('تم رفض إذن الميكروفون · 麦克风权限被拒绝', 'err');
+      } else if(code === 'no-speech'){
+        setStatus('لم يُكتشف صوت · 未检测到语音', 'err');
+      } else if(code === 'network'){
+        setStatus('خطأ في الشبكة · 网络错误', 'err');
+      } else if(code === 'audio-capture'){
+        setStatus('تعذّر الوصول إلى الميكروفون · 麦克风不可用', 'err');
+      } else if(code === 'aborted'){
+        setStatus('', '');
+      } else {
+        setStatus('خطأ: ' + code + ' · 识别出错', 'err');
+      }
     };
 
-    recog.onend = () => {
-      listening = false;
+    r.onend = () => {
+      listening   = false;
+      langRetried = false;
       btn.classList.remove('mic-listening');
     };
 
-    recog.start();
+    return r;
   }
 
+  /* ── Start ── */
+  function startListening(){
+    langRetried = false;
+    try {
+      recog = buildRecog('ar-SA');
+      recog.start();   /* synchronous — required on iOS Safari */
+    } catch(ex) {
+      setStatus('تعذّر بدء التعرف · 无法启动识别', 'err');
+      listening = false;
+      btn.classList.remove('mic-listening');
+    }
+  }
+
+  /* ── Stop ── */
   function stopListening(){
-    if(recog){ try{ recog.stop(); }catch(e){} }
     listening = false;
     btn.classList.remove('mic-listening');
     setStatus('');
+    if(recog){ try{ recog.abort(); }catch(e){} recog = null; }
   }
 
-  /* FIX 1: guard click — ignore during active translation */
-  btn.addEventListener('click', () => {
+  /* ── Click handler ──
+     Keep synchronous: do NOT add async/await or Promises
+     before recog.start() — this would break iOS Safari. */
+  btn.addEventListener('click', function(){
     if(translating) return;
-    if(listening) stopListening();
-    else startListening();
+    if(listening)   stopListening();
+    else            startListening();
+  });
+
+  /* ── Pointer feedback: instant visual on mobile ── */
+  btn.addEventListener('pointerdown',   () => { if(!listening && !translating) btn.style.transform = 'scale(0.92)'; });
+  btn.addEventListener('pointerup',     () => { btn.style.transform = ''; });
+  btn.addEventListener('pointercancel', () => { btn.style.transform = ''; });
+
+})();
+
+/* ============================================================
+   MOBILE VOICE INPUT ENHANCER
+   iOS / Android specific improvements for Arabic ASR
+   ============================================================ */
+(function(){
+  var isMobileDevice = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent);
+  if(!isMobileDevice) return;
+
+  /* iOS Safari: SpeechRecognition can be stopped by keyboard appearance.
+     When mic is active, blur any focused input to close keyboard first,
+     then start recognition — prevents immediate abort. */
+  var origBtnMic = document.getElementById('btnMic');
+  if(!origBtnMic) return;
+
+  origBtnMic.addEventListener('touchstart', function(e){
+    /* Close any open keyboard before starting mic */
+    var active = document.activeElement;
+    if(active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT')){
+      active.blur();
+    }
+  }, { passive: true });
+
+  /* Android: wake lock request (prevents screen sleep during long dictation) */
+  var wakeLock = null;
+  origBtnMic.addEventListener('click', async function(){
+    if('wakeLock' in navigator){
+      try{
+        if(!wakeLock || wakeLock.released){
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', function(){
+            wakeLock = null;
+          });
+        }
+      }catch(e){ /* wake lock not critical */ }
+    }
+  });
+
+  /* Release wake lock when page hides */
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'hidden' && wakeLock){
+      wakeLock.release().catch(function(){});
+      wakeLock = null;
+    }
   });
 })();
+
 </script>
 
 </body>
