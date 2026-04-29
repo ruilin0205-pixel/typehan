@@ -9,6 +9,9 @@
 <meta name="theme-color" content="#f7f6f3">
 <meta name="format-detection" content="telephone=no">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
 <title>HanziLens · 汉字精读 — أداة قراءة اللغة الصينية وتعلّمها</title>
 <!-- Hanzi Writer for animated stroke order (requires internet for first-time char data) -->
 <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.0/dist/hanzi-writer.min.js"></script>
@@ -79,6 +82,16 @@
 
     --tracking-han: 0.012em;
     --leading-han: 1.8;
+
+    /* ── Arabic UX Enhancement tokens ── */
+    --font-ar: "Noto Naskh Arabic","Noto Sans Arabic","Scheherazade New",
+               "Traditional Arabic","Arabic Typesetting",
+               "Amiri","Cairo","Segoe UI","Helvetica Neue",sans-serif;
+    --ar-primary:       #1c3a50;
+    --ar-surface:       #eef6fb;
+    --ar-border:        rgba(70,111,142,0.28);
+    --ar-accent:        #2a5f80;
+    --ar-accent-light:  rgba(70,111,142,0.12);
   }
 
   *{
@@ -1136,7 +1149,7 @@
   }
 
   .char-grid.empty::before{
-    content: '👆 输入文字后，点击任意汉字可听发音、看笔顺  ·  Enter text above, then tap any character';
+    content: '👆 أدخل نصًّا ثم انقر على أي حرف لسماع نطقه ورؤية ترتيب خطوطه · 输入文字后点击汉字';
     width: 100%;
     text-align: center;
     font-size: 13px;
@@ -1831,8 +1844,13 @@
   /* Hide-pinyin / hide-translation toggles */
   body.mode-beginner #btnTogglePy{ display: none !important; }
   body.mode-beginner #btnToggleTr{ display: none !important; }
-  /* Compact step guide above analysis */
+  /* Compact step guide above analysis — hidden in beginner (keeps UI clean) */
   body.mode-beginner .learning-steps.compact{ display: none !important; }
+  /* Step ⑤ 复习词卡 is N/A in beginner (word deck is hidden) — dim it permanently */
+  body.mode-beginner .learning-steps .ls-step[data-step-num="5"]{
+    opacity: 0.28 !important;
+    pointer-events: none;
+  }
   /* Note: detail-wrap is intentionally kept visible so beginners can tap a character and see stroke order. */
   /* Engine panel */
   body.mode-beginner #enginePanel{ display: none !important; }
@@ -1858,6 +1876,153 @@
   /* ---- mode-advanced: show everything (no extra hiding) ---- */
   /* Intentionally empty — advanced = default display */
 
+  /* ================================================================
+     BEGINNER MODE ENHANCED — إخفاء العناصر المعقدة · 初学模式增强隐藏
+     هذا القسم يُخفي العناصر المعقدة في وضع المبتدئ فقط.
+     جميع الوظائف محفوظة — الإخفاء عبر CSS فقط.
+     ================================================================ */
+
+  /* 1. إخفاء شريط الأزرار المساعدة · 隐藏实用工具栏 */
+  body.mode-beginner .utility-bar { display: none !important; }
+
+  /* 2. إخفاء شريط الحفظ التلقائي · 隐藏自动保存状态 */
+  body.mode-beginner .helper-strip { display: none !important; }
+
+  /* 3. إخفاء زر المسح · 隐藏清空按钮
+     تم استعادة عرضه بناءً على طلب المستخدم — يظهر بجانب زر التشغيل
+     Restored per user request — shown next to play button */
+  /* body.mode-beginner #btnClear { display: none !important; } — REMOVED */
+
+  /* تخطيط منطقة التحكم في وضع المبتدئ:
+     زر التشغيل (يمتد) + زر المسح (مدمج) — بدون跟读 وبدون منزلق السرعة
+     Beginner controls layout: play btn (flex-grow) + clear btn (compact)
+     flex-wrap: nowrap ensures both buttons stay on ONE row at all sizes. */
+  body.mode-beginner .controls {
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+  }
+  body.mode-beginner #btnPlayAll {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+  }
+  body.mode-beginner #btnClear {
+    flex: 0 0 auto !important;
+    padding: 10px 16px !important;
+    white-space: nowrap !important;
+  }
+
+  /* 4. إخفاء مؤشر خطوات التعلّم الطويل · 隐藏顶部学习步骤条 */
+  /* 4. إخفاء مؤشر خطوات التعلّم داخل بطاقة الفهم (compact) · 隐藏分析卡内紧凑步骤条 */
+  /* ملاحظة: الشريط الرئيسي #learningSteps مرئي في وضع المبتدئ — هو دليله الأساسي
+     Note: the main #learningSteps strip IS shown in beginner mode — it guides the learner */
+
+  /* 5. إخفاء تلميح التنقل السريع في لوحة التفاصيل · 隐藏详情面板导航提示 */
+  body.mode-beginner .detail-quicknav { display: none !important; }
+
+  /* 6. إخفاء أزرار النسخ في قسم الترجمة · 隐藏翻译复制按钮 */
+  body.mode-beginner .translation-copy { display: none !important; }
+  body.mode-beginner .translation-tools { display: none !important; }
+
+  /* 7. إخفاء زر النسخ وشارة الجودة في قسم الترجمة · 隐藏翻译质量徽章 */
+  body.mode-beginner .q-badge { display: none !important; }
+
+  /* 8. إخفاء نوع التحليل (حرف/كلمة/جملة) · 隐藏分析类型标签 */
+  body.mode-beginner .analysis-kicker { display: none !important; }
+  body.mode-beginner .analysis-hint { display: none !important; }
+
+  /* 9. إخفاء أزرار دوكينج لوحة التحكم · 隐藏控制面板停靠按钮 */
+  body.mode-beginner #cpDockLeft,
+  body.mode-beginner #cpDockFloat,
+  body.mode-beginner #cpDockRight { display: none !important; }
+
+  /* 10. إخفاء قسم الأدوات (المفردات/التقدّم) من لوحة التحكم · 从面板隐藏工具区 */
+  /* ملاحظة: نُبقيه مرئياً لأنه مفيد حتى للمبتدئين */
+
+  /* 11. عرض رسالة ترحيب مبسَّطة في وضع المبتدئ · 初学模式欢迎提示 */
+  body.mode-beginner .beginner-hint { display: flex !important; }
+  body:not(.mode-beginner) .beginner-hint { display: none !important; }
+
+  /* 12. إخفاء حاوية عنوان قسم التحليل كاملةً (محتواها مخفي بالكامل) · 隐藏空的分析标题容器 */
+  body.mode-beginner .analysis-head { display: none !important; }
+
+  /* 13. إخفاء أزرار التنقل بين الجمل (التعقيد غير مناسب للمبتدئ) · 隐藏句子导航按钮 */
+  body.mode-beginner #sentenceNav { display: none !important; }
+
+  /* 14. إخفاء ملاحظات الأقسام الثانوية (المبتدئ لديه بنر الترحيب بدلًا منها) · 隐藏次要区域说明 */
+  body.mode-beginner .section-note { display: none !important; }
+
+  /* 15. تكبير حجم بطاقات الحروف على الشاشات الكبيرة فقط
+       (على الموبايل: قواعد الميديا كويري تتحكم بالحجم لتجنب التعارض)
+       · 仅在桌面端放大字卡，移动端由媒体查询控制避免冲突 */
+  @media (min-width: 721px) {
+    body.mode-beginner .char-card { min-width: 68px !important; padding: 12px 14px !important; }
+    body.mode-beginner .char-card .char { font-size: 34px !important; }
+    body.mode-beginner .char-card .py { font-size: 12px !important; min-height: 16px !important; }
+  }
+
+  /* 16. تبسيط شريط معلومات الحرف المفصَّل في لوحة التفاصيل · 简化详情面板信息 */
+  body.mode-beginner .detail-info .top .level { display: none !important; }
+
+  /* 17. إخفاء تلميح الصدى إذا بقي مرئيًا عند التبديل من وضع التدريب · 切换时隐藏跟读提示 */
+  body.mode-beginner .follow-hint { display: none !important; }
+
+  /* ── 初学者模式响应式覆盖 ──────────────────────────────────
+     在所有断点下保持 ▶开始 和 🗑清空 并排显示。
+     默认响应式规则给 #btnPlayAll 设了 flex:1 1 100%（独占一行），
+     初学者模式下需要覆盖，让两个按钮保持在同一行。
+     Keep ▶play and 🗑clear side-by-side on all screen sizes in beginner.
+  ────────────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    body.mode-beginner .controls {
+      gap: 8px !important;
+      flex-wrap: nowrap !important;
+    }
+    body.mode-beginner #btnPlayAll {
+      flex: 1 1 auto !important;
+      width: auto !important;
+      font-size: 14px;
+      padding: 12px 14px;
+    }
+    body.mode-beginner #btnClear {
+      flex: 0 0 auto !important;
+      width: auto !important;
+      font-size: 13px;
+      padding: 12px 14px;
+    }
+  }
+  @media (max-width: 480px) {
+    body.mode-beginner #btnPlayAll { font-size: 13px; padding: 11px 12px; }
+    body.mode-beginner #btnClear   { font-size: 12px; padding: 11px 10px; }
+  }
+
+  /* 19. حماية البينيين في لوحة التفاصيل من الإخفاء بـ hide-pinyin
+       (إذا فعّل المستخدم إخفاء البينيين في وضع سابق ثم انتقل للمبتدئ)
+       · 保护详情面板拼音不被hide-pinyin隐藏 */
+  body.mode-beginner .detail-info .top .py { visibility: visible !important; }
+  body.mode-beginner #dPyCell { visibility: visible !important; }
+
+  /* 20. حماية الترجمة في لوحة التفاصيل من الإخفاء بـ hide-translation
+       · 保护详情面板翻译不被hide-translation隐藏 */
+  body.mode-beginner .meaning-block { display: flex !important; flex-direction: column !important; }
+
+  /* 21. إخفاء زر الصدى (🎤 كرّر) داخل بلوكات الجمل في وضع المبتدئ
+       · 隐藏句子块内的跟读按钮（仅限初学模式） */
+  body.mode-beginner .sb-btn-echo { display: none !important; }
+
+  /* ملاحظة — في وضع المبتدئ تُعرض:
+     ✓ النص الصيني
+     ✓ البينيين (دائمًا مرئي — محمي من hide-pinyin)
+     ✓ الترجمة العربية (محمية من hide-translation)
+     ✓ زر التشغيل فقط (عريض وواضح)
+     ✓ النقر على الحرف يعرض لوحة الخطوط الكاملة
+     ✓ أزرار الجمل: 🔊 استمع + 🔍 ادرس (بدون 🎤 الصدى)
+     ✗ مخفي: sentence-nav · section-note · utility-bar · enginePanel ·
+              speed-group · follow-hint · analysis-head · statistics ·
+              echo btn · detail-level · detail-py محمي · meaning-block محمي
+  */
+
   /* =====================================================================
      === INCREMENTAL UX OPTIMIZATIONS (additive — does NOT change layout)
      =====================================================================
@@ -1869,69 +2034,198 @@
   ===================================================================== */
 
   /* --- ① 学习提示条 Learning Steps --- */
+  /* ══════════════════════════════════════════════════════
+     LEARNING STEPS STRIP — شريط خطوات التعلّم
+     5-step bilingual (AR + ZH) progress indicator.
+     Horizontal scroll on mobile; grid on desktop.
+  ══════════════════════════════════════════════════════ */
   .learning-steps{
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    gap:6px 10px;
-    padding:10px 14px;
-    margin:0 0 12px;
-    border:1px dashed rgba(70,111,142,0.22);
-    border-radius:14px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(246,250,252,0.85));
-    font-size:13px;
-    color:var(--text-soft, var(--text-faint));
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    margin: 0 0 14px;
+    border: 1px solid rgba(70,111,142,0.14);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,249,252,0.96));
+    box-shadow: 0 2px 12px rgba(70,111,142,0.07);
+    overflow-x: hidden;
+    overflow-y: hidden;
+    position: relative;
   }
+
+  /* Step item */
   .learning-steps .ls-step{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    padding:4px 10px;
-    border-radius:999px;
-    background:rgba(70,111,142,0.07);
-    color:var(--text);
-    font-weight:500;
-    white-space:nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 9px 6px 8px;
+    border: none;
+    border-right: 1px solid rgba(70,111,142,0.10);
+    background: transparent;
+    cursor: default;
+    user-select: none;
+    position: relative;
+    transition: background 0.22s ease, color 0.22s ease;
   }
+  .learning-steps .ls-step:last-child{
+    border-right: none;
+  }
+
+  /* Step number badge */
   .learning-steps .ls-step .num{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    width:18px; height:18px;
-    border-radius:50%;
-    background:linear-gradient(180deg,#4c7996 0%,#355974 100%);
-    color:#fff;
-    font-size:11px;
-    font-weight:700;
-    line-height:1;
-  }
-  .learning-steps .ls-arrow{
-    color:var(--text-faint);
-    font-size:13px;
-    user-select:none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(70,111,142,0.12);
+    color: var(--accent-strong);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: background 0.22s ease, color 0.22s ease;
   }
 
-  /* A compact variant used above the 理解卡 (inline inside analysis) */
-  .learning-steps.compact{
-    margin:4px 0 14px;
-    padding:8px 12px;
-    font-size:12px;
+  /* Arabic label (primary) */
+  .learning-steps .ls-step .ls-ar{
+    font-family: var(--font-ar);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    transition: color 0.22s ease;
   }
-  .learning-steps.compact .ls-step{ padding:3px 9px; }
-  .learning-steps.compact .ls-step .num{ width:16px; height:16px; font-size:10px; }
 
-  /* === 学习流程高亮 · active step highlight === */
+  /* Chinese label (secondary) */
+  .learning-steps .ls-step .ls-zh{
+    font-family: var(--font-han);
+    font-size: 10px;
+    color: var(--text-faint);
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    transition: color 0.22s ease;
+  }
+
+  /* Completed steps (before active) */
+  .learning-steps .ls-step.done{
+    background: rgba(63,119,93,0.05);
+  }
+  .learning-steps .ls-step.done .num{
+    background: rgba(63,119,93,0.18);
+    color: var(--success);
+  }
+  .learning-steps .ls-step.done .ls-ar{
+    color: var(--text-soft);
+  }
+  .learning-steps .ls-step.done::after{
+    content: '✓';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 9px;
+    color: var(--success);
+    opacity: 0.7;
+  }
+
+  /* Active step — primary highlight */
   .learning-steps .ls-step.active{
-    background: linear-gradient(180deg, #4c7996 0%, #355974 100%);
-    color: #fff;
-    box-shadow: 0 6px 14px rgba(70,111,142,0.22);
+    background: linear-gradient(160deg, #4c7996 0%, #355974 100%);
+    border-right-color: rgba(53,89,116,0.20);
   }
   .learning-steps .ls-step.active .num{
     background: rgba(255,255,255,0.28);
     color: #fff;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.22);
   }
-  .learning-steps[data-step] .ls-step:not(.active){
-    opacity: 0.48;
+  .learning-steps .ls-step.active .ls-ar{
+    color: #fff;
+    font-weight: 700;
+  }
+  .learning-steps .ls-step.active .ls-zh{
+    color: rgba(255,255,255,0.78);
+  }
+  /* Pulsing indicator dot on active step */
+  .learning-steps .ls-step.active::before{
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.80);
+    animation: ls-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes ls-pulse{
+    0%,100%{ opacity: 0.5; transform: translateX(-50%) scale(0.8); }
+    50%{ opacity: 1; transform: translateX(-50%) scale(1.2); }
+  }
+
+  /* Future (inactive) steps */
+  .learning-steps[data-step] .ls-step:not(.active):not(.done){
+    opacity: 0.52;
+  }
+
+  /* Compact variant — above 理解卡 inside analysis section */
+  .learning-steps.compact{
+    margin: 4px 0 14px;
+    border-radius: 12px;
+  }
+  .learning-steps.compact .ls-step{
+    padding: 6px 4px 5px;
+    gap: 2px;
+  }
+  .learning-steps.compact .ls-step .num{
+    width: 16px; height: 16px;
+    font-size: 9px;
+  }
+  .learning-steps.compact .ls-step .ls-ar{
+    font-size: 10px;
+  }
+  .learning-steps.compact .ls-step .ls-zh{
+    font-size: 9px;
+  }
+  .learning-steps.compact .ls-step.active::before{
+    display: none;
+  }
+
+  /* Mobile: horizontal scroll if steps too narrow */
+  @media (max-width: 540px){
+    .learning-steps{
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      border-radius: 14px;
+    }
+    .learning-steps::-webkit-scrollbar{ display: none; }
+    .learning-steps .ls-step{
+      min-width: 64px;
+      flex: 0 0 64px;
+      padding: 8px 4px 7px;
+    }
+    .learning-steps .ls-step .ls-ar{ font-size: 10px; }
+    .learning-steps .ls-step .ls-zh{ font-size: 9px; }
+  }
+  @media (max-width: 380px){
+    .learning-steps .ls-step{ min-width: 56px; flex: 0 0 56px; }
+    .learning-steps .ls-step .ls-ar{ font-size: 9px; }
   }
 
   /* --- ② 可折叠信息 (Arabic + Focus Words) --- */
@@ -2314,26 +2608,37 @@
   }
 
   .analysis-reading{
-    padding:16px 16px 14px;
-    border:1px solid rgba(31,37,43,0.05);
-    border-radius:18px;
-    background:rgba(255,255,255,0.75);
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    padding:20px 18px 18px;
+    border:1px solid rgba(31,37,43,0.06);
+    border-radius:20px;
+    background:rgba(255,255,255,0.82);
     box-shadow:var(--shadow-xs);
   }
 
+  /* ── Layer 1 · 中文原文 — 最大最重 ── */
   .analysis-reading-cn{
     font-family:var(--font-han);
-    font-size:24px;
-    line-height:1.9;
+    font-size:28px;
+    font-weight:600;
+    line-height:1.85;
+    letter-spacing:0.04em;
     color:var(--text);
+    order:1;
   }
 
+  /* ── Layer 2 · 拼音 — 辅助，淡化 ── */
   .analysis-reading-pinyin{
-    margin-top:8px;
+    margin-top:5px;
     font-family:var(--font-mono);
-    font-size:13px;
-    line-height:1.8;
-    color:var(--accent-strong);
+    font-size:12px;
+    line-height:1.6;
+    letter-spacing:0.03em;
+    color:var(--text-faint);
+    opacity:0.72;
+    order:2;
   }
 
   /* ============================================================
@@ -2380,11 +2685,13 @@
     background:linear-gradient(180deg, #4c7996 0%, #355974 100%);
   }
 
+  /* ── sb Layer 1 · 分句中文 ── */
   .sb-cn{
     font-family:var(--font-han);
-    font-size:18px;
-    font-weight:500;
+    font-size:20px;
+    font-weight:600;
     line-height:var(--lh-normal);
+    letter-spacing:0.03em;
     color:var(--text);
   }
 
@@ -2392,23 +2699,35 @@
     color:var(--accent-strong);
   }
 
+  /* ── sb Layer 2 · 分句拼音 — 辅助淡化 ── */
   .sb-py{
-    margin-top:4px;
+    margin-top:3px;
     font-family:var(--font-mono);
-    font-size:12px;
-    line-height:1.7;
-    color:var(--accent);
+    font-size:11px;
+    line-height:1.55;
+    letter-spacing:0.02em;
+    color:var(--text-faint);
+    opacity:0.68;
   }
 
+  /* ── sb Layer 3 · 分句阿语释义 — 突出易读 ── */
   .sb-ar{
-    margin-top:5px;
-    font-size:14px;
-    line-height:1.8;
-    color:var(--text-main);
+    margin-top:10px;
+    font-size:17px;
+    line-height:2.0;
+    color:var(--ar-primary);
+    font-weight:500;
+    font-family:var(--font-ar);
     direction: rtl;
     text-align: right;
-    unicode-bidi: embed;
-    padding-right: 2px;
+    unicode-bidi: plaintext;
+    background: linear-gradient(90deg, transparent, var(--ar-accent-light) 5%, var(--ar-accent-light) 95%, transparent);
+    border-radius: 10px;
+    padding: 9px 14px 9px 8px;
+    border-right: 3px solid rgba(70,111,142,0.24);
+  }
+  .sentence-block.active .sb-ar {
+    color: var(--ar-accent);
   }
   .sb-en{
     margin-top:5px;
@@ -2573,6 +2892,268 @@
   .translation-content.ar{
     direction:rtl;
     font-size:15px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     ARABIC UX ENHANCEMENTS — أولوية المستخدم العربي
+     Target: Arabic-native learners of Chinese.
+     Arabic = primary comprehension language, styled accordingly.
+     ══════════════════════════════════════════════════════════════ */
+
+  /* ── 1. Arabic font stack: proper Naskh/Sans for all AR text ── */
+  [lang="ar"], [dir="rtl"],
+  .translation-content.ar,
+  #analysisAr,
+  #dAr,
+  .m-text.ar,
+  .sb-ar,
+  .word-card .mean .ar,
+  .vw-ar, .vi-ar,
+  .focus-chip .chip-ar {
+    font-family: var(--font-ar) !important;
+  }
+
+  /* ── 2. Arabic translation ROW — visually elevated ── */
+  /* The Arabic row is the primary understanding area; give it
+     a distinct tinted surface, stronger border, and more space. */
+  /* ── Layer 3 · 阿语翻译行 — 主理解区 ── */
+  #arabicCollapse.translation-row {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+    background: linear-gradient(160deg, var(--ar-surface) 0%, rgba(238,246,251,0.92) 100%) !important;
+    border-color: var(--ar-border) !important;
+    border-width: 1.5px !important;
+    box-shadow: 0 6px 22px rgba(70,111,142,0.12), var(--shadow-xs) !important;
+    padding: 18px 18px 16px !important;
+    position: relative;
+  }
+  #arabicCollapse.translation-row::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    border-radius: 4px 0 0 4px;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--ar-accent) 100%);
+  }
+
+  /* ── 3. Arabic translation LABEL ── */
+  /* 阿语翻译标签 — 小字元信息，不抢重点 */
+  #arabicCollapse .translation-label {
+    font-family: var(--font-ar) !important;
+    font-size: 10px !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    color: var(--ar-accent) !important;
+    font-weight: 600 !important;
+    padding-top: 0 !important;
+    line-height: 1.5 !important;
+    direction: rtl !important;
+    text-align: right !important;
+    opacity: 0.65;
+    align-self: flex-end;
+  }
+
+  /* ── 4. Layer 3 · Arabic translation TEXT — 主要内容，大字清晰 ── */
+  #analysisAr {
+    font-size: 19px !important;
+    line-height: 2.15 !important;
+    font-weight: 500 !important;
+    color: var(--ar-primary) !important;
+    direction: rtl !important;
+    text-align: right !important;
+    unicode-bidi: plaintext !important;
+    word-spacing: 0.08em;
+  }
+
+  /* ── 5. Arabic copy button ── */
+  #arabicCollapse .translation-tools {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    align-self: stretch;
+  }
+  #btnCopyAr {
+    border-color: rgba(70,111,142,0.20) !important;
+    color: var(--ar-accent) !important;
+  }
+  #btnCopyAr:hover {
+    background: var(--ar-accent-light) !important;
+  }
+
+  /* ── 7. Char detail: Arabic meaning — primary visual weight ── */
+  .meaning-block .m-row {
+    padding: 8px 0 !important;
+    border-bottom: 1px solid rgba(31,37,43,0.05);
+  }
+  .meaning-block .m-row:last-child {
+    border-bottom: none;
+  }
+  .meaning-block .m-lang {
+    font-family: var(--font-ar) !important;
+    font-size: 11px !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    background: var(--ar-accent-light);
+    border-radius: 6px;
+    padding: 2px 6px;
+    color: var(--ar-accent) !important;
+    font-weight: 700;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+  #dAr {
+    font-size: 18px !important;
+    line-height: 2.05 !important;
+    color: var(--ar-primary) !important;
+    font-weight: 500 !important;
+    direction: rtl !important;
+    text-align: right !important;
+    unicode-bidi: plaintext !important;
+  }
+
+  /* ── 8. Word cards: Arabic meaning — clearly primary ── */
+  .word-card .mean .ar {
+    font-size: 15px !important;
+    line-height: 1.85 !important;
+    color: var(--ar-primary) !important;
+    font-weight: 500 !important;
+    direction: rtl !important;
+    text-align: right !important;
+    background: var(--ar-accent-light);
+    border-radius: 8px;
+    padding: 4px 8px;
+    margin-top: 2px;
+  }
+
+  /* ── 9. Vocab drawer: Arabic labels larger + clearer ── */
+  .vi-ar {
+    font-size: 11px !important;
+    color: var(--ar-primary) !important;
+    font-weight: 500 !important;
+    direction: rtl !important;
+    text-align: center !important;
+    white-space: normal !important;
+    line-height: 1.5 !important;
+    max-width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .vw-ar {
+    font-size: 14px !important;
+    color: var(--ar-primary) !important;
+    font-weight: 500 !important;
+    direction: rtl !important;
+    text-align: right !important;
+    white-space: normal !important;
+    line-height: 1.6 !important;
+  }
+
+  /* ── 10. Mic status (Arabic voice input feedback) ── */
+  #micStatus {
+    font-family: var(--font-ar) !important;
+    font-size: 13px !important;
+    direction: rtl !important;
+    text-align: right !important;
+    color: var(--ar-primary) !important;
+    padding: 3px 4px 0 !important;
+    min-height: 20px;
+  }
+  #micStatus.mic-ok  { color: var(--success) !important; }
+  #micStatus.mic-err { color: var(--danger)  !important; }
+
+  /* ── 11. Analysis AR badge source tag ── */
+  #analysisArBadge {
+    font-family: var(--font-ar) !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+  }
+
+  /* ── 12. Info-cell k labels (strokes, radical, structure, pinyin) ─
+     Keep uppercase labels but use Arabic-friendly size              ── */
+  .info-cell .k {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+  }
+  /* Arabic text inside info cells */
+  .info-cell-structure .structure-en {
+    font-family: var(--font-ar) !important;
+    font-size: 12px !important;
+    color: var(--ar-primary) !important;
+    direction: rtl;
+    letter-spacing: 0 !important;
+    line-height: 1.5;
+  }
+
+  /* ── 13. Practice loop: Arabic-friendly feedback text ── */
+  .pl-fill-result,
+  .pl-feedback {
+    font-family: var(--font-ar) !important;
+    font-size: 13px !important;
+    direction: rtl;
+    text-align: right;
+  }
+
+  /* ── 14. Focus-next (learning suggestion text) ── */
+  .focus-next {
+    font-family: var(--font-ar) !important;
+    direction: rtl;
+    text-align: right;
+    font-size: 14px !important;
+    line-height: 1.9 !important;
+    color: var(--ar-primary) !important;
+  }
+
+  /* ── 15. Focus-summary ── */
+  .focus-summary {
+    font-family: var(--font-ar) !important;
+    direction: rtl;
+    text-align: right;
+  }
+
+  /* ── 16. Mic button: pulse ring when listening — Arabic-branded color ── */
+  #btnMic.mic-listening {
+    box-shadow: 0 0 0 6px rgba(70,111,142,0.18), 0 0 0 12px rgba(70,111,142,0.08) !important;
+    background: linear-gradient(180deg, #4c7996, #355974) !important;
+    color: #fff !important;
+  }
+
+  /* ── 17. Overview card desc — rtl for Arabic text inside ── */
+  .overview-desc {
+    direction: rtl;
+    text-align: right;
+    font-family: var(--font-ar) !important;
+    font-size: 13px !important;
+    line-height: 1.9 !important;
+    color: var(--ar-primary) !important;
+  }
+
+  /* ── 18. Section notes and helper strips — rtl ── */
+  .section-note,
+  .analysis-hint,
+  .save-status,
+  .detail-quicknav {
+    direction: rtl;
+    text-align: right;
+    font-family: var(--font-ar) !important;
+  }
+
+  /* ── 19. Follow-hint paragraph — rtl ── */
+  .follow-hint {
+    direction: rtl;
+    text-align: right;
+    font-family: var(--font-ar) !important;
+  }
+
+  /* ── 20. Toast — slightly larger Arabic text ── */
+  .toast {
+    font-family: var(--font-ar) !important;
+    direction: rtl;
+    font-size: 14px !important;
   }
 
   .learning-focus{
@@ -4754,13 +5335,13 @@
     .learning-steps {
       flex-wrap: nowrap !important;
       overflow-x: auto !important;
+      overflow-y: hidden !important;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      padding: 8px 12px !important;
-      gap: 6px !important;
+      padding: 0 !important;
+      gap: 0 !important;
     }
     .learning-steps::-webkit-scrollbar { display: none; }
-    .learning-steps .ls-arrow { flex-shrink: 0; }
     .learning-steps .ls-step { flex-shrink: 0; }
 
     /* ─── 6. TEXTAREA ─── */
@@ -5177,22 +5758,8 @@
     }
   }
 
-  /* ── Arabic sentence block row ── */
-  .sb-ar {
-    font-family: var(--font-ui);
-    font-size: 14px;
-    line-height: 1.65;
-    color: var(--text-soft);
-    padding: 6px 0 2px;
-    direction: rtl;
-    text-align: right;
-    unicode-bidi: embed;
-    word-break: break-word;
-    border-top: 1px solid rgba(31,37,43,0.06);
-    margin-top: 6px;
-  }
   @media (max-width: 480px) {
-    .sb-ar { font-size: 13px; }
+    .sb-ar { font-size: 14px; }
   }
 
   /* ── 10. Sentence blocks: no overflow ── */
@@ -5850,12 +6417,12 @@
     /* Learning steps strip */
     .learning-steps {
       font-size: 11px;
-      gap: 4px;
+      gap: 0;
       flex-wrap: nowrap;
       overflow-x: auto;
+      overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      padding-bottom: 2px;
     }
     .learning-steps::-webkit-scrollbar { display: none; }
     .ls-step {
@@ -6079,8 +6646,6 @@
     direction: rtl;
     text-align: right;
     unicode-bidi: plaintext;
-    font-size: 15px;
-    line-height: 1.75;
   }
   /* micStatus: Arabic status messages */
   #micStatus {
@@ -6442,10 +7007,12 @@
   @media (max-width: 420px) {
     .learning-steps {
       overflow-x: auto;
+      overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       flex-wrap: nowrap !important;
-      padding-bottom: 4px;
+      padding: 0 !important;
+      gap: 0 !important;
     }
     .learning-steps::-webkit-scrollbar { display: none; }
     .ls-step { flex-shrink: 0; white-space: nowrap; }
@@ -6635,9 +7202,426 @@
     height: 0 !important;
     overflow: hidden !important;
   }
-  /* Hide the whole EN row in the translation panel */
-  body .translation-row:first-of-type {
+  /* Hide the whole EN row in the translation panel (精确 ID 选择器，避免误隐藏阿语行) */
+  body .translation-row:not(#arabicCollapse) {
     display: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     ARABIC UX — Mobile responsive extras
+     层级在移动端保持：中文 > 拼音 > 阿语（均按比例缩小）
+  ══════════════════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    /* Layer 1: 中文 */
+    .analysis-reading-cn { font-size: 23px !important; font-weight: 600 !important; }
+    /* Layer 2: 拼音 */
+    .analysis-reading-pinyin { font-size: 11px !important; opacity: 0.68 !important; color: var(--text-faint) !important; }
+    /* Layer 3: 阿语 */
+    #analysisAr {
+      font-size: 17px !important;
+      line-height: 2.0 !important;
+    }
+    #dAr {
+      font-size: 16px !important;
+    }
+    .sb-cn { font-size: 18px !important; font-weight: 600 !important; }
+    .sb-py { font-size: 10px !important; opacity: 0.65 !important; }
+    .sb-ar {
+      font-size: 15px !important;
+      line-height: 1.9 !important;
+      padding: 7px 12px 7px 6px !important;
+    }
+    .word-card .mean .ar {
+      font-size: 14px !important;
+    }
+    /* Arabic translation row: maintain flex layout + tighter padding */
+    #arabicCollapse.translation-row {
+      padding: 14px 14px 12px !important;
+      gap: 5px !important;
+    }
+    /* Mic status more visible on mobile */
+    #micStatus {
+      font-size: 12px !important;
+      padding: 2px 2px 0 !important;
+    }
+    /* Focus-next RTL on mobile */
+    .focus-next, .focus-summary {
+      font-size: 13px !important;
+    }
+  }
+  @media (max-width: 480px) {
+    .analysis-reading-cn { font-size: 20px !important; }
+    .analysis-reading-pinyin { font-size: 10px !important; }
+    #analysisAr { font-size: 15px !important; line-height: 1.9 !important; }
+    .sb-cn { font-size: 17px !important; }
+    .sb-ar { font-size: 14px !important; line-height: 1.85 !important; }
+    #arabicCollapse.translation-row { padding: 12px 12px 10px !important; }
+  }
+
+  /* Prevent Arabic text from ever going LTR by accident */
+  #analysisAr, #dAr, .sb-ar,
+  .word-card .mean .ar, .vw-ar, .vi-ar,
+  .translation-content.ar, .m-text.ar {
+    direction: rtl !important;
+    text-align: right !important;
+    unicode-bidi: plaintext !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     MOBILE OPTIMIZATIONS v3 — تحسينات شاملة للهاتف المحمول
+     ▸ Scope: CSS-only, no desktop layout change
+     ▸ Targets: input area, buttons, char cards, control panel,
+                Arabic text readability, beginner mode UX
+  ══════════════════════════════════════════════════════════════ */
+
+  /* ─── 1. 输入框触摸区域 · Editor touch target ─────────────────
+     iOS/Android: keep at least 16px font to prevent auto-zoom.
+     Larger tap area via min-height. Ensure clear placeholder.     */
+  @media (hover: none) and (pointer: coarse) {
+    textarea.editor {
+      min-height: 96px !important;
+      caret-color: var(--accent);
+    }
+    textarea.editor::placeholder {
+      font-size: 13px !important;
+      line-height: 1.6 !important;
+    }
+    /* Preset buttons: larger touch area */
+    .preset-btn {
+      min-height: 40px !important;
+      padding: 9px 14px !important;
+    }
+  }
+
+  /* ─── 2. 按钮间距 · Button spacing ───────────────────────────
+     On phones, controls must never wrap in beginner mode.
+     In other modes, buttons get taller for easier tapping.       */
+  @media (max-width: 480px) {
+    /* Beginner: keep play + clear on ONE row always */
+    body.mode-beginner .controls {
+      flex-wrap: nowrap !important;
+      gap: 8px !important;
+    }
+    body.mode-beginner #btnPlayAll {
+      flex: 1 1 auto !important;
+      width: auto !important;
+      font-size: 14px !important;
+      padding: 12px 10px !important;
+    }
+    body.mode-beginner #btnClear {
+      flex: 0 0 auto !important;
+      width: auto !important;
+      font-size: 13px !important;
+      padding: 12px 10px !important;
+      white-space: nowrap !important;
+    }
+    /* Non-beginner: primary button full-width, others share row */
+    body:not(.mode-beginner) .controls {
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+    }
+    body:not(.mode-beginner) #btnPlayAll {
+      flex: 1 1 100% !important;
+      text-align: center !important;
+    }
+    body:not(.mode-beginner) #btnFollow,
+    body:not(.mode-beginner) #btnClear {
+      flex: 1 1 auto !important;
+    }
+  }
+
+  /* ─── 3. 汉字卡片触摸 · Char-card touch UX ──────────────────
+     Larger, more tappable cards; good visual feedback.          */
+  @media (hover: none) and (pointer: coarse) {
+    .char-card {
+      min-width: 54px !important;
+      min-height: 64px !important;
+      padding: 10px 10px !important;
+      border-radius: 15px !important;
+      /* Prevent text selection on tap */
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .char-card .char {
+      font-size: 28px !important;
+    }
+    .char-card .py {
+      font-size: 10.5px !important;
+      min-height: 15px !important;
+    }
+    /* Active state: clear feedback on touch */
+    .char-card:active {
+      transform: scale(0.95) !important;
+      transition: transform 0.08s ease !important;
+    }
+    /* Beginner mode: even larger cards */
+    body.mode-beginner .char-card {
+      min-width: 64px !important;
+      min-height: 70px !important;
+      padding: 11px 12px !important;
+    }
+  }
+
+  /* ─── 4. 控制面板 · Control panel mobile backdrop ────────────
+     On phones, the panel becomes a bottom sheet with a semi-
+     transparent backdrop so it doesn't visually float over        
+     content unnoticed. Backdrop is a CSS :before on body.show.   */
+  @media (max-width: 768px) {
+    /* Panel itself: true bottom sheet, not floating */
+    #ctrlPanel:not(.docked-left):not(.docked-right) {
+      position: fixed !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      top: auto !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      border-radius: 22px 22px 0 0 !important;
+      max-height: 82dvh !important;
+      box-shadow: 0 -4px 32px rgba(18,24,30,0.16), 0 -1px 0 rgba(31,37,43,0.06) !important;
+      /* Drag indicator strip */
+    }
+    #ctrlPanel:not(.docked-left):not(.docked-right) .cp-head {
+      border-radius: 22px 22px 0 0 !important;
+      cursor: default !important;
+      position: relative;
+    }
+    /* Drag handle indicator */
+    #ctrlPanel:not(.docked-left):not(.docked-right) .cp-head::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(31,37,43,0.14);
+    }
+    #ctrlPanel:not(.docked-left):not(.docked-right) .cp-body {
+      max-height: calc(82dvh - 56px) !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      overscroll-behavior: contain !important;
+      padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important;
+    }
+    /* Dock buttons: hide on mobile (not useful in bottom sheet) */
+    #cpDockLeft, #cpDockFloat, #cpDockRight {
+      display: none !important;
+    }
+    /* Backdrop: CSS-only using #ctrlPanel.show ~ pseudo */
+    #ctrlPanel.show:not(.docked-left):not(.docked-right) {
+      z-index: 3010 !important;
+    }
+  }
+
+  /* ─── 5. 控制面板遮罩 · Panel backdrop overlay ───────────────
+     Pure CSS backdrop via a separate div #cpBackdrop (added JS). */
+  #cpBackdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 3005;
+    background: rgba(18,24,30,0.36);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+  #cpBackdrop.show { display: block; }
+
+  /* ─── 6. wrap底部留白 · Body padding for bottom panel ────────
+     768px: ensure content doesn't hide under the bottom panel.  */
+  @media (max-width: 768px) {
+    .wrap {
+      padding-bottom: 32px !important;
+    }
+  }
+  @media (max-width: 480px) {
+    .wrap {
+      padding-bottom: 24px !important;
+    }
+  }
+
+  /* ─── 7. 阿语翻译可读性 · Arabic text readability ────────────
+     Ensure Arabic translation block is clearly distinguished
+     and easy to read on small screens.                          */
+  @media (max-width: 768px) {
+    #arabicCollapse.translation-row {
+      background: rgba(70,111,142,0.04) !important;
+      border-radius: 12px !important;
+      padding: 14px !important;
+    }
+    #analysisAr {
+      font-family: var(--font-ar) !important;
+      font-size: 17px !important;
+      line-height: 2.05 !important;
+      letter-spacing: 0.01em !important;
+    }
+    .translation-label {
+      font-size: 10px !important;
+      letter-spacing: 0.08em !important;
+      padding-top: 2px !important;
+    }
+  }
+  @media (max-width: 480px) {
+    #analysisAr {
+      font-size: 16px !important;
+      line-height: 2.0 !important;
+    }
+    #arabicCollapse.translation-row {
+      padding: 12px !important;
+    }
+  }
+  @media (max-width: 360px) {
+    #analysisAr {
+      font-size: 15px !important;
+      line-height: 1.95 !important;
+    }
+  }
+
+  /* ─── 8. beginner-hint 手机适配 · Beginner banner mobile ─────
+     Stack to column on tiny screens; shrink fonts.              */
+  @media (max-width: 540px) {
+    .beginner-hint {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 8px !important;
+      padding: 10px 12px !important;
+    }
+    .beginner-hint > span:first-child {
+      font-size: 20px !important;
+    }
+  }
+  @media (max-width: 380px) {
+    .beginner-hint {
+      padding: 8px 10px !important;
+      font-size: 12px !important;
+    }
+    .beginner-hint div > div:first-child {
+      font-size: 13px !important;
+    }
+    .beginner-hint div > div:last-child {
+      font-size: 11px !important;
+    }
+  }
+
+  /* ─── 9. 步骤条手机 · Learning steps mobile polish ───────────
+     Ensure step text doesn't get too small; active step clearly
+     pops even when others are shrunk.                           */
+  @media (max-width: 480px) {
+    .ls-step { min-width: 58px !important; flex: 0 0 58px !important; }
+    .ls-step .ls-ar { font-size: 9.5px !important; }
+    .ls-step .ls-zh { font-size: 8.5px !important; }
+    .ls-step .num { width: 18px !important; height: 18px !important; font-size: 10px !important; }
+    /* Active step: slightly larger than others even on small screens */
+    .ls-step.active { background: linear-gradient(160deg, #4c7996, #355974) !important; }
+    .ls-step.active .ls-ar { font-size: 10px !important; font-weight: 700 !important; }
+  }
+  @media (max-width: 380px) {
+    .ls-step { min-width: 50px !important; flex: 0 0 50px !important; }
+    .ls-step .ls-ar { font-size: 8.5px !important; }
+    .ls-step .ls-zh { font-size: 7.5px !important; display: none !important; }
+    .ls-step .num { width: 16px !important; height: 16px !important; font-size: 9px !important; }
+  }
+
+  /* ─── 10. 句子块按钮 · Sentence block buttons mobile ─────────
+     Sentence action buttons (🔊 استمع · 🔍 ادرس) need more space. */
+  @media (max-width: 480px) {
+    .sb-actions {
+      flex-wrap: wrap !important;
+      gap: 6px !important;
+    }
+    .sb-btn {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      font-size: 12px !important;
+      padding: 8px 10px !important;
+      text-align: center !important;
+      justify-content: center !important;
+    }
+  }
+
+  /* ─── 11. 详情面板 · Detail panel touch polish ───────────────
+     Stroke control buttons get proper spacing for touch.        */
+  @media (hover: none) and (pointer: coarse) {
+    .stroke-btn {
+      min-height: 40px !important;
+      flex: 1 1 auto !important;
+      justify-content: center !important;
+      padding: 9px 12px !important;
+    }
+    /* Detail Arabic text */
+    #dAr {
+      font-size: 16px !important;
+      line-height: 2.0 !important;
+      padding: 4px 0 !important;
+    }
+    /* Info grid cells: taller for touch */
+    .info-cell {
+      padding: 12px 12px !important;
+    }
+  }
+
+  /* ─── 12. 词汇抽屉 · Vocab drawer mobile ─────────────────────
+     Ensure drawer items are finger-friendly.                    */
+  @media (max-width: 480px) {
+    .vocab-entry {
+      padding: 10px 14px !important;
+      min-height: 52px !important;
+    }
+    .vocab-entry .vw-cn {
+      font-size: 18px !important;
+    }
+    .vocab-entry .vw-ar {
+      font-size: 13px !important;
+    }
+  }
+
+  /* ─── 13. 安全区域 · Safe area (notch / home bar) ────────────
+     Ensure nothing hides behind iPhone notch or home bar.       */
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    @media (max-width: 768px) {
+      #ctrlPanel:not(.docked-left):not(.docked-right) {
+        padding-bottom: env(safe-area-inset-bottom) !important;
+      }
+    }
+  }
+
+  /* ─── 14. 键盘弹出时布局稳定 · Layout stability on keyboard ──
+     When virtual keyboard opens, prevent fixed elements from
+     overlapping the text input area.                            */
+  @media (max-width: 768px) {
+    textarea.editor:focus ~ .controls,
+    .editor-wrap:focus-within ~ .controls {
+      /* Controls remain visible but don't jump */
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  /* ─── 15. 手指操作模式整体 · Coarse pointer global polish ────
+     Slightly larger default border-radius for touch-friendly feel,
+     increased hit areas for all interactive elements.           */
+  @media (hover: none) and (pointer: coarse) {
+    /* Collapsible summary tap area */
+    .collapsible > summary,
+    .engine-panel > summary {
+      padding: 14px 16px !important;
+      min-height: 48px !important;
+    }
+    /* Focus words in the learning card */
+    .focus-chip {
+      min-height: 36px !important;
+      padding: 6px 12px !important;
+      font-size: 13px !important;
+    }
+    /* Word deck: larger card touch area */
+    .word-btn {
+      min-height: 40px !important;
+      padding: 8px 12px !important;
+    }
+    /* Prevent 300ms tap delay globally */
+    * { touch-action: manipulation; }
+    textarea, input { touch-action: auto; }  /* restore scrolling for inputs */
   }
 
 </style>
@@ -6784,18 +7768,21 @@
     <div class="topbar-left"><!-- spacer --></div>
     <div class="topbar-center">
       <span class="topbar-title">HanziLens · 汉字精读</span>
-      <span class="topbar-sub">Chinese Reading &amp; Learning Tool</span>
+      <span class="topbar-sub">أداة تعلّم اللغة الصينية · 中文学习工具</span>
     </div>
     <div class="topbar-right">
       <span class="topbar-status" id="topbarStatus">دراسة · مبتدئ</span>
-      <button id="btnPanelToggle" type="button" title="Control panel · 控制面板">
+      <button id="btnPanelToggle" type="button" title="لوحة التحكم · 控制面板">
         ⚙ الإعدادات · 设置
       </button>
     </div>
   </header>
 
   <!-- ============ FLOATING CONTROL PANEL ============ -->
-  <div id="ctrlPanel" role="dialog" aria-label="Control panel">
+  <!-- Control panel backdrop — shown on mobile when panel opens -->
+  <div id="cpBackdrop" aria-hidden="true"></div>
+
+  <div id="ctrlPanel" role="dialog" aria-label="لوحة التحكم">
     <div class="cp-head" id="cpDragHandle">
       <span class="cp-head-title">لوحة التحكم · 控制面板</span>
       <div class="cp-dock">
@@ -6834,10 +7821,10 @@
           <ul>
             <li>النص الصيني · 原文</li>
             <li>البينيين · 拼音</li>
-            <li>الترجمة الإنجليزية · 英文翻译</li>
+            <li>الترجمة العربية · 阿语翻译</li>
             <li>ترتيب الخطوط · 笔顺</li>
-            <li class="off">بدون عربي · 无阿语</li>
             <li class="off">بدون بطاقات الكلمات · 无词语卡</li>
+            <li class="off">بدون إحصائيات · 无统计数据</li>
           </ul>
         </div>
       </div>
@@ -6908,26 +7895,57 @@
   </script>
 
   <!-- ============ EDITOR ============ -->
+  <!-- بنر ترحيب المبتدئ — يظهر فقط في وضع المبتدئ · 初学提示横幅 -->
+  <div class="beginner-hint" style="display:none; align-items:center; gap:12px; margin-bottom:14px; padding:12px 16px; border:1.5px solid rgba(70,111,142,0.18); border-radius:var(--radius-md); background:linear-gradient(135deg, rgba(70,111,142,0.07), rgba(70,111,142,0.03)); font-size:14px; color:var(--ar-primary); direction:rtl; font-family:var(--font-ar); line-height:1.8;">
+    <span style="font-size:24px; flex-shrink:0;">🏮</span>
+    <div>
+      <div style="font-weight:700; font-size:15px; margin-bottom:2px;">وضع المبتدئ · 初学模式</div>
+      <div style="color:var(--text-soft); font-size:13px;">
+        ① أدخل نصًّا صينيًّا أو اختر مثالًا أدناه &nbsp;·&nbsp;
+        ② اضغط <strong>▶ ابدأ</strong> للاستماع &nbsp;·&nbsp;
+        ③ انقر على أي حرف لرؤية نطقه وترتيب خطوطه
+      </div>
+    </div>
+  </div>
+
   <div class="section">
     <div class="section-head">
       <div class="section-label"><span class="cn">الخطوة 1 · 输入文字</span> · أدخل النص الصيني</div>
       <div class="section-note learning-only">أدخل النص ← افهم ← ادرس الحروف · 输入 → 理解 → 精读</div>
     </div>
 
-    <!-- Learning Steps strip -->
-    <div class="learning-steps learning-only" id="learningSteps" data-step="1" aria-label="Learning steps">
-      <span class="ls-step active" data-step-num="1"><span class="num">1</span>إدخال · 输入</span>
-      <span class="ls-arrow">→</span>
-      <span class="ls-step" data-step-num="2"><span class="num">2</span>فهم · 理解</span>
-      <span class="ls-arrow">→</span>
-      <span class="ls-step" data-step-num="3"><span class="num">3</span>استمع وكرّر · 跟读</span>
-      <span class="ls-arrow">→</span>
-      <span class="ls-step" data-step-num="4"><span class="num">4</span>الحروف · 单字</span>
+    <!-- Learning Steps strip — 5-step bilingual guide · 五步中阿双语引导条 -->
+    <div class="learning-steps learning-only" id="learningSteps" data-step="1" aria-label="خطوات التعلّم · 学习步骤">
+      <div class="ls-step active" data-step-num="1">
+        <span class="num">①</span>
+        <span class="ls-ar">أدخل النص</span>
+        <span class="ls-zh">输入中文</span>
+      </div>
+      <div class="ls-step" data-step-num="2">
+        <span class="num">②</span>
+        <span class="ls-ar">استمع</span>
+        <span class="ls-zh">听发音</span>
+      </div>
+      <div class="ls-step" data-step-num="3">
+        <span class="num">③</span>
+        <span class="ls-ar">اقرأ المعنى</span>
+        <span class="ls-zh">看阿语解释</span>
+      </div>
+      <div class="ls-step" data-step-num="4">
+        <span class="num">④</span>
+        <span class="ls-ar">اضغط الحرف</span>
+        <span class="ls-zh">点汉字学习</span>
+      </div>
+      <div class="ls-step" data-step-num="5">
+        <span class="num">⑤</span>
+        <span class="ls-ar">راجع الكلمات</span>
+        <span class="ls-zh">复习词卡</span>
+      </div>
     </div>
 
     <div class="editor-wrap">
       <textarea class="editor" id="editor" placeholder="الصق أو اكتب أي نص صيني هنا — حرفًا أو كلمةً أو جملةً كاملة&#10;مثال: 你好 · 好好学习 · 春天来了，花儿开了。" style="padding-right:54px;"></textarea>
-      <button id="btnMic" title="انقر وتحدّث بالعربية، يُترجم تلقائيًا للصينية · 点击说阿语" aria-label="Arabic voice input">
+      <button id="btnMic" title="انقر وتحدّث بالعربية، يُترجم تلقائيًا للصينية · 点击说阿语" aria-label="إدخال صوتي بالعربية">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
           <rect x="9" y="2" width="6" height="12" rx="3"/>
           <path d="M5 10a7 7 0 0 0 14 0"/>
@@ -7017,15 +8035,33 @@
       <div class="analysis-hint">افهم الجملة كاملةً أولًا · 先理解整句，再查单字</div>
     </div>
 
-    <!-- ⑤ 理解卡上方：学习路径提示 -->
-    <div class="learning-steps compact learning-only" aria-label="Understand sentence steps">
-      <span class="ls-step"><span class="num">1</span>فهم · 理解</span>
-      <span class="ls-arrow">→</span>
-      <span class="ls-step"><span class="num">2</span>الكلمات الأساسية · 重点词</span>
-      <span class="ls-arrow">→</span>
-      <span class="ls-step"><span class="num">3</span>انقر · 点击</span>
-      <span class="ls-arrow">→</span>
-      <span class="ls-step"><span class="num">4</span>أعد القراءة · 再读</span>
+    <!-- 理解卡上方：学习路径提示 (compact 版) -->
+    <div class="learning-steps compact learning-only" id="learningStepsCompact" aria-label="خطوات التعلّم · 学习步骤">
+      <div class="ls-step" data-step-num="1">
+        <span class="num">①</span>
+        <span class="ls-ar">أدخل</span>
+        <span class="ls-zh">输入</span>
+      </div>
+      <div class="ls-step" data-step-num="2">
+        <span class="num">②</span>
+        <span class="ls-ar">استمع</span>
+        <span class="ls-zh">听发音</span>
+      </div>
+      <div class="ls-step active" data-step-num="3">
+        <span class="num">③</span>
+        <span class="ls-ar">اقرأ المعنى</span>
+        <span class="ls-zh">看阿语解释</span>
+      </div>
+      <div class="ls-step" data-step-num="4">
+        <span class="num">④</span>
+        <span class="ls-ar">اضغط</span>
+        <span class="ls-zh">点汉字</span>
+      </div>
+      <div class="ls-step" data-step-num="5">
+        <span class="num">⑤</span>
+        <span class="ls-ar">راجع</span>
+        <span class="ls-zh">复习</span>
+      </div>
     </div>
 
     <div class="analysis-reading">
@@ -7049,8 +8085,8 @@
         <div class="translation-tools" style="display:none"><button type="button" class="translation-copy" id="btnCopyEn">نسخ</button><span class="q-badge" id="analysisEnBadge"></span></div>
       </div>
       <!-- Arabic translation — always visible, non-collapsible -->
-      <div class="translation-row" id="arabicCollapse" style="display:grid;">
-        <div class="translation-label">العربية · 阿拉伯语</div>
+      <div class="translation-row" id="arabicCollapse" style="display:flex;flex-direction:column;">
+        <div class="translation-label" dir="rtl">المعنى · الترجمة</div>
         <div class="translation-content ar" id="analysisAr" dir="rtl"></div>
         <div class="translation-tools"><button type="button" class="translation-copy" id="btnCopyAr">نسخ</button><span class="q-badge" id="analysisArBadge"></span></div>
       </div>
@@ -7216,7 +8252,7 @@
         <span id="dArCollapse" style="display:none;"></span>
         <!-- AR: always visible, no collapsible -->
         <div class="m-row">
-          <span class="m-lang">AR</span>
+          <span class="m-lang" dir="rtl">المعنى</span>
           <span class="m-text ar" id="dAr" dir="rtl">—</span>
         </div>
       </div>
@@ -7235,13 +8271,13 @@
      PROGRESS DRAWER — 学习进度抽屉
      ============================================================ -->
 <div class="progress-drawer-overlay" id="progressDrawerOverlay">
-  <div class="progress-drawer" id="progressDrawer" role="dialog" aria-modal="true" aria-label="Learning Progress · 学习进度">
+  <div class="progress-drawer" id="progressDrawer" role="dialog" aria-modal="true" aria-label="تقدّم التعلّم · 学习进度">
 
     <div class="progress-drawer-head">
       <div class="progress-drawer-title">
         تقدّم التعلّم · 学习进度
       </div>
-      <button class="progress-drawer-close" id="btnProgressClose" type="button" aria-label="Close">✕</button>
+      <button class="progress-drawer-close" id="btnProgressClose" type="button" aria-label="إغلاق">✕</button>
     </div>
 
     <div class="progress-drawer-body" id="progressDrawerBody">
@@ -7260,13 +8296,13 @@
      VOCAB BOOK DRAWER — 生词本抽屉
      ============================================================ -->
 <div class="vocab-drawer-overlay" id="vocabDrawerOverlay">
-  <div class="vocab-drawer" id="vocabDrawer" role="dialog" aria-modal="true" aria-label="Vocab Book · 生词本">
+  <div class="vocab-drawer" id="vocabDrawer" role="dialog" aria-modal="true" aria-label="كتاب المفردات · 生词本">
 
     <div class="vocab-drawer-head">
       <div class="vocab-drawer-title">
         كتاب المفردات · 生词本
       </div>
-      <button class="vocab-drawer-close" id="btnVocabClose" type="button" aria-label="Close">✕</button>
+      <button class="vocab-drawer-close" id="btnVocabClose" type="button" aria-label="إغلاق">✕</button>
     </div>
 
     <div class="vocab-drawer-body" id="vocabDrawerBody">
@@ -7362,8 +8398,8 @@ function setLearningLevel(level){
   document.body.classList.remove('mode-beginner', 'mode-practice', 'mode-advanced');
   document.body.classList.add('mode-' + level);
 
-  /* Highlight the correct pill */
-  document.querySelectorAll('.lv-pill').forEach(btn => {
+  /* Highlight the correct pill — both old header pills and new cp pills */
+  document.querySelectorAll('.lv-pill, .cp-lv-pill').forEach(btn => {
     btn.classList.toggle('is-active', btn.dataset.level === level);
   });
 }
@@ -7868,22 +8904,31 @@ function showToast(cn, en){
 }
 
 /* ============================================================
-   LEARNING FLOW STATE — setLearningStep(1|2|3|4)
-   Highlights the current step in #learningSteps strip.
-   Does NOT touch any other UI — purely additive.
+   LEARNING FLOW STATE — setLearningStep(1..5)
+   步骤映射:
+     1 = أدخل النص    / 输入中文   (init / clear / stop)
+     2 = استمع        / 听发音     (playAll triggered)
+     3 = اقرأ المعنى  / 看阿语解释  (analysis card shown)
+     4 = اضغط الحرف  / 点汉字学习  (char card clicked)
+     5 = راجع الكلمات / 复习词卡   (word deck rendered, practice+ only)
+   - Highlights active step, marks previous steps as "done".
+   - Syncs both #learningSteps (main) and #learningStepsCompact.
+   - Pure visual — does NOT block any interaction.
    ============================================================ */
 function setLearningStep(step){
-  const strip = document.getElementById('learningSteps');
-  if(!strip) return;
-  strip.dataset.step = step;
-  strip.querySelectorAll('.ls-step').forEach(el => {
-    const n = parseInt(el.dataset.stepNum, 10);
-    el.classList.toggle('active', n === step);
-    /* keep text-faint spans inside the active step readable */
-    const subSpan = el.querySelector('span:not(.num)');
-    if(subSpan){
-      subSpan.style.color = (n === step) ? 'rgba(255,255,255,0.82)' : '';
-    }
+  [
+    document.getElementById('learningSteps'),
+    document.getElementById('learningStepsCompact')
+  ].forEach(strip => {
+    if(!strip) return;
+    strip.dataset.step = step;
+    strip.querySelectorAll('.ls-step').forEach(el => {
+      const n = parseInt(el.dataset.stepNum, 10);
+      const isActive = (n === step);
+      const isDone   = (n < step);
+      el.classList.toggle('active', isActive);
+      el.classList.toggle('done',   isDone);
+    });
   });
 }
 
@@ -8230,7 +9275,7 @@ function updateEngineStatus(){
     el.className = 'engine-status';
     if(note) note.style.display = 'none';
   }else if(e === 'mymemory'){
-    el.textContent = '自动翻译 · Auto';
+    el.textContent = 'ترجمة تلقائية · 自动翻译';
     el.className = 'engine-status online';
     if(note && noteText){
       note.style.display = 'block';
@@ -8692,7 +9737,7 @@ function renderWordDeck(words){
         </div>
       </div>
       <div class="mean">
-        <div class="ar" dir="rtl" style="font-size:13px; line-height:1.6;">${data.ar || '—'}</div>
+        <div class="ar" dir="rtl" style="font-family:var(--font-ar);font-size:15px;line-height:1.8;color:var(--ar-primary);font-weight:500;background:var(--ar-accent-light);border-radius:8px;padding:5px 9px;margin-top:2px;">${data.ar || '—'}</div>
       </div>
       <div class="actions">
         <button type="button" class="word-btn" data-action="speak"><span class="wb-icon">🔊</span><span class="wb-cn">استمع · 朗读</span></button>
@@ -8723,6 +9768,8 @@ function renderWordDeck(words){
           .forEach(el => el.classList.remove('playing','highlighted'));
         card.classList.add('playing');
         speakText(data.text).finally(()=> card.classList.remove('playing'));
+        /* === 学习步骤：用户使用词卡 → 步骤⑤ 复习词卡 === */
+        setLearningStep(5);
       });
     }
     if(inspectBtn){
@@ -8731,6 +9778,7 @@ function renderWordDeck(words){
         if(!first) return;
         const target = document.querySelector('.char-card[data-char="' + CSS.escape(first) + '"]');
         if(target) target.click();
+        /* 词卡的"首字"按钮会触发 char click → step 4，无需重复设置步骤 */
       });
     }
     wordDeck.appendChild(card);
@@ -8937,6 +9985,7 @@ function renderSentenceBlocks(sentences){
     const arSbResult = translateSentence(sent, 'ar');
     arSbEl.textContent = arSbResult.text || '';
     arSbEl.dir = 'rtl';
+    arSbEl.style.fontFamily = 'var(--font-ar)';
 
     /* ---- 操作按钮 ---- */
     const actEl = document.createElement('div');
@@ -8957,7 +10006,7 @@ function renderSentenceBlocks(sentences){
     /* 跟读 */
     const echoBtn = document.createElement('button');
     echoBtn.type = 'button';
-    echoBtn.className = 'sb-btn';
+    echoBtn.className = 'sb-btn sb-btn-echo';
     echoBtn.innerHTML = '🎤 كرّر · 跟读';
     echoBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -9185,6 +10234,13 @@ async function analyzeInput(text){
   setMeaningWithBadge('analysisAr', 'analysisArBadge', arResult);
   analysis.classList.add('show');
 
+  /* === 学习步骤：分析卡显示 → 进入步骤③ 看阿语解释
+     仅当当前步骤 ≤ 2 时才前进（避免从步骤4点击其他字时倒退）
+     When analysis shows, advance to step 3 (read Arabic meaning) —
+     but only if we haven't reached a later step yet. */
+  const _curStep = parseInt(document.getElementById('learningSteps')?.dataset?.step || '1', 10);
+  if(_curStep <= 2) setLearningStep(3);
+
   /* === Practice Loop: render/refresh whenever analysis updates === */
   renderPracticeLoop(trimmed);
 
@@ -9367,7 +10423,7 @@ function render(){
       card.className = 'char-card latin';
       card.dataset.char = word;
       card.dataset.kind = 'latin';
-      const py = document.createElement('span'); py.className = 'py'; py.textContent = 'EN';
+      const py = document.createElement('span'); py.className = 'py'; py.textContent = 'لات';
       const ct = document.createElement('span'); ct.className = 'char'; ct.textContent = word;
       card.appendChild(py); card.appendChild(ct);
       card.addEventListener('click', () => onLatinClick(card, word));
@@ -9384,6 +10440,11 @@ function render(){
 
   /* analyze whole text */
   analyzeInput(text);
+
+  /* === 学习步骤：文字已渲染 → 若仍在步骤①，前进到步骤② 提示用户听发音
+     Step advances from ① to ② when text is entered and char grid rendered. */
+  const _stepNow = parseInt(document.getElementById('learningSteps')?.dataset?.step || '1', 10);
+  if(_stepNow <= 1) setLearningStep(2);
 }
 
 /* ============================================================
@@ -9405,7 +10466,7 @@ function onCharClick(card, ch, entry){
   /* === 进度追踪：记录读过的汉字 === */
   progressTrackChar(ch);
 
-  /* === 学习流程：进入步骤4 Character Study === */
+  /* === 学习步骤：用户点击汉字 → 高亮步骤④ 点汉字学习 === */
   setLearningStep(4);
   showToast('انقر على حرف · 点击单字查看笔顺和发音');
 
@@ -9476,10 +10537,10 @@ function showDetail(ch, entry){
   const strokesEl = document.getElementById('dStrokes');
   const radicalEl = document.getElementById('dRadical');
   if(rad){
-    strokesEl.innerHTML = rad[1] + ' <span style="font-size:11px;color:var(--ink-faint);">خط · 画</span>';
+    strokesEl.innerHTML = rad[1] + ' <span style="font-size:11px;color:var(--text-faint);">خط · 画</span>';
     radicalEl.textContent = rad[0];
   }else{
-    strokesEl.innerHTML = '<span style="color:var(--ink-faint);">جارٍ التحميل…</span>';
+    strokesEl.innerHTML = '<span style="color:var(--text-faint);">جارٍ التحميل…</span>';
     radicalEl.textContent = '—';
     const strokeToken = ch + '::strokes::' + Date.now();
     showDetail._strokeToken = strokeToken;
@@ -9490,7 +10551,7 @@ function showDetail(ch, entry){
             if(showDetail._strokeToken !== strokeToken || currentDetailChar !== ch) return;
             const n = (data && Array.isArray(data.strokes)) ? data.strokes.length : 0;
             if(n > 0){
-              strokesEl.innerHTML = n + ' <span style="font-size:11px;color:var(--ink-faint);">خط · 画</span>';
+              strokesEl.innerHTML = n + ' <span style="font-size:11px;color:var(--text-faint);">خط · 画</span>';
             }else{
               strokesEl.textContent = '—';
             }
@@ -9543,11 +10604,11 @@ function showDetail(ch, entry){
 const STRUCTURES = {"爱":"TB","八":"SG","爸":"TB","吧":"LR","白":"SG","百":"SG","班":"LR","半":"SG","包":"SE","杯":"LR","本":"SG","边":"SE","便":"LR","病":"SE","不":"SG","菜":"TB","茶":"TB","常":"TB","唱":"LR","超":"SE","车":"SG","吃":"LR","出":"SG","穿":"TB","床":"SE","打":"LR","大":"SG","蛋":"TB","到":"LR","道":"SE","得":"LR","的":"LR","弟":"TB","第":"TB","点":"TB","电":"SG","东":"SG","都":"LR","读":"LR","对":"LR","多":"TB","儿":"SG","二":"SG","饭":"LR","房":"SE","飞":"SG","非":"SG","分":"TB","服":"LR","高":"TB","哥":"TB","歌":"LR","个":"TB","给":"LR","工":"SG","公":"TB","狗":"LR","关":"TB","贵":"TB","国":"FE","果":"TB","还":"SE","孩":"LR","汉":"LR","好":"LR","号":"TB","喝":"LR","和":"LR","很":"LR","后":"SE","候":"LR","话":"LR","欢":"LR","回":"FE","会":"TB","火":"SG","机":"LR","鸡":"LR","几":"SG","家":"TB","间":"SE","见":"SG","件":"LR","叫":"LR","姐":"LR","今":"TB","九":"SG","觉":"TB","开":"SG","看":"TB","可":"SE","客":"TB","课":"LR","口":"SG","块":"LR","来":"SG","老":"SG","了":"SG","冷":"LR","里":"SG","两":"SG","亮":"TB","零":"TB","六":"TB","妈":"LR","吗":"LR","买":"TB","卖":"TB","忙":"LR","猫":"LR","么":"SG","没":"LR","妹":"LR","们":"LR","米":"SG","面":"SG","名":"TB","明":"LR","哪":"LR","那":"LR","奶":"LR","男":"TB","脑":"LR","呢":"LR","能":"LR","你":"LR","年":"SG","您":"TB","牛":"SG","女":"SG","朋":"LR","漂":"LR","苹":"TB","七":"SG","期":"LR","起":"SE","气":"SG","千":"SG","前":"TB","钱":"LR","请":"LR","去":"TB","热":"TB","人":"SG","认":"LR","日":"SG","三":"SG","商":"TB","上":"SG","少":"SG","谁":"LR","什":"LR","生":"SG","师":"LR","十":"SG","时":"LR","识":"LR","士":"SG","市":"TB","事":"SG","视":"LR","是":"TB","手":"SG","书":"SG","水":"SG","睡":"LR","说":"LR","思":"TB","四":"FE","岁":"TB","他":"LR","它":"TB","她":"LR","太":"SG","题":"LR","天":"SG","条":"TB","听":"LR","同":"SE","外":"LR","玩":"LR","晚":"LR","喂":"LR","文":"SG","问":"SE","我":"SG","五":"SG","午":"SG","西":"SG","息":"TB","习":"SG","喜":"TB","系":"TB","下":"SG","先":"TB","现":"LR","想":"TB","小":"SG","校":"LR","些":"LR","写":"TB","谢":"LR","新":"LR","星":"TB","兴":"TB","休":"LR","学":"TB","雪":"TB","样":"LR","要":"TB","也":"SG","一":"SG","衣":"SG","医":"SE","宜":"TB","以":"LR","椅":"LR","影":"LR","友":"SE","有":"SE","雨":"SG","语":"LR","元":"TB","院":"LR","月":"SG","再":"SG","在":"SE","早":"TB","怎":"TB","找":"LR","这":"SE","真":"TB","正":"SG","知":"LR","只":"TB","中":"SG","钟":"LR","住":"LR","桌":"TB","子":"SG","字":"TB","租":"LR","昨":"LR","作":"LR","坐":"TB","做":"LR","啊":"LR","帮":"TB","备":"TB","比":"LR","笔":"TB","表":"TB","别":"LR","步":"TB","场":"LR","词":"LR","次":"LR","从":"LR","错":"LR","但":"LR","地":"LR","等":"TB","店":"SE","懂":"LR","动":"LR","咖":"LR","啡":"LR","夫":"SG","告":"TB","跟":"LR","馆":"LR","过":"SE","黑":"TB","红":"LR","花":"TB","画":"SE","坏":"LR","己":"SG","记":"LR","交":"TB","教":"LR","介":"TB","进":"SE","近":"SE","经":"LR","睛":"LR","酒":"LR","就":"LR","考":"SE","裤":"LR","快":"LR","篮":"TB","乐":"SG","累":"TB","离":"TB","留":"TB","楼":"LR","路":"LR","旅":"LR","绿":"LR","慢":"LR","每":"TB","门":"SG","拿":"TB","鸟":"SG","旁":"TB","跑":"LR","票":"TB","妻":"TB","情":"LR","晴":"LR","球":"LR","然":"TB","让":"LR","肉":"SG","色":"TB","绍":"LR","身":"SG","始":"LR","试":"LR","室":"TB","舒":"LR","送":"SE","诉":"LR","虽":"LR","所":"LR","疼":"SE","踢":"LR","体":"LR","跳":"LR","铁":"LR","头":"SG","完":"TB","万":"SG","网":"SE","往":"LR","忘":"TB","望":"TB","为":"SG","位":"LR","舞":"TB","希":"TB","洗":"LR","笑":"TB","姓":"LR","颜":"LR","眼":"LR","药":"TB","爷":"TB","已":"SG","意":"TB","因":"FE","阴":"LR","泳":"LR","游":"LR","右":"SE","鱼":"SG","远":"SE","运":"SE","站":"LR","长":"SG","丈":"SG","周":"SE","着":"TB","准":"LR","自":"SG","走":"SG","足":"SG","最":"TB","左":"SE","喱":"LR","阿":"LR","矮":"LR","安":"TB","把":"LR","般":"LR","搬":"LR","板":"LR","办":"SG","饱":"LR","报":"LR","北":"LR","被":"LR","必":"SG","变":"TB","遍":"SE","宾":"TB","冰":"LR","才":"SG","参":"TB","草":"TB","层":"SE","查":"TB","差":"SE","尝":"TB","村":"LR","成":"SE","城":"LR","迟":"SE","持":"LR","初":"LR","除":"LR","楚":"TB","处":"SE","船":"LR","春":"TB","聪":"LR","答":"TB","带":"TB","担":"LR","单":"TB","当":"TB","灯":"LR","典":"TB","调":"LR","定":"TB","丢":"TB","冬":"TB","短":"LR","段":"LR","锻":"LR","朵":"TB","饿":"LR","而":"SG","耳":"SG","发":"TB","法":"LR","方":"SG","放":"LR","风":"SE","封":"LR","附":"LR","复":"TB","该":"LR","概":"LR","感":"TB","干":"SG","刚":"LR","糕":"LR","根":"LR","更":"SG","共":"TB","故":"LR","顾":"LR","瓜":"SG","刮":"LR","怪":"LR","惯":"LR","海":"LR","害":"TB","合":"TB","河":"LR","乎":"SG","护":"LR","化":"LR","环":"LR","换":"LR","黄":"TB","婚":"LR","活":"LR","或":"SE","激":"LR","级":"LR","极":"LR","急":"TB","季":"TB","续":"LR","加":"LR","假":"LR","坚":"TB","检":"LR","简":"TB","健":"LR","讲":"LR","蕉":"TB","角":"TB","饺":"LR","脚":"LR","较":"LR","接":"LR","街":"LR","节":"TB","结":"LR","解":"LR","界":"TB","借":"LR","斤":"SG","净":"LR","静":"LR","境":"LR","久":"SG","旧":"LR","居":"SE","句":"SE","据":"LR","决":"LR","卡":"TB","康":"SE","渴":"LR","刻":"LR","空":"TB","哭":"TB","筷":"TB","矿":"LR","蓝":"TB","礼":"LR","李":"TB","理":"LR","力":"SG","历":"SE","脸":"LR","练":"LR","炼":"LR","凉":"LR","辆":"LR","聊":"LR","料":"LR","邻":"LR","凌":"LR","马":"SG","码":"LR","满":"LR","毛":"SG","帽":"LR","末":"SG","目":"SG","南":"TB","难":"LR","怒":"TB","爬":"LR","怕":"LR","拍":"LR","盘":"TB","胖":"LR","啤":"LR","片":"SG","平":"SG","瓶":"LR","其":"TB","奇":"TB","骑":"LR","汽":"LR","铅":"LR","且":"SG","轻":"LR","清":"LR","秋":"LR","求":"SG","区":"SE","趣":"SE","全":"TB","泉":"TB","裙":"LR","容":"TB","如":"LR","赛":"TB","伞":"TB","扫":"LR","沙":"LR","山":"SG","衫":"LR","烧":"LR","勺":"SE","声":"TB","实":"TB","史":"SG","世":"SG","适":"SE","收":"LR","受":"TB","瘦":"SE","叔":"LR","束":"SG","树":"LR","数":"LR","刷":"LR","双":"LR","算":"TB","糖":"LR","特":"LR","梯":"LR","提":"LR","甜":"LR","挺":"LR","突":"TB","图":"FE","腿":"LR","碗":"LR","卫":"SG","闻":"SE","屋":"SE","务":"TB","物":"LR","戏":"SE","夏":"TB","鲜":"LR","相":"LR","香":"TB","箱":"TB","响":"LR","向":"SE","像":"LR","鞋":"LR","心":"SG","信":"LR","行":"LR","熊":"TB","须":"LR","需":"TB","选":"SE","牙":"SG","言":"SG","演":"LR","羊":"SG","阳":"LR","养":"TB","业":"SG","页":"SG","姨":"LR","议":"LR","易":"TB","音":"TB","银":"LR","饮":"LR","应":"SE","迎":"SE","用":"SG","邮":"LR","又":"SG","于":"SG","羽":"SG","育":"TB","遇":"SE","园":"FE","员":"TB","愿":"TB","越":"SE","咱":"LR","脏":"LR","择":"LR","展":"SE","张":"LR","照":"TB","者":"SE","直":"TB","纸":"LR","终":"LR","种":"LR","重":"TB","主":"SG","助":"LR","注":"LR","总":"TB","嘴":"LR"};
 
 const STRUCTURE_LABELS = {
-  LR: { cn: '左右结构', en: 'Left-right structure' },
-  TB: { cn: '上下结构', en: 'Top-bottom structure' },
-  SE: { cn: '半包围结构', en: 'Semi-enclosed structure' },
-  FE: { cn: '全包围结构', en: 'Full-enclosed structure' },
-  SG: { cn: '独体字',     en: 'Single structure' }
+  LR: { cn: '左右结构', en: 'يسار - يمين' },
+  TB: { cn: '上下结构', en: 'أعلى - أسفل' },
+  SE: { cn: '半包围结构', en: 'شبه محيطة' },
+  FE: { cn: '全包围结构', en: 'محيطة كاملة' },
+  SG: { cn: '独体字',     en: 'مستقلة' }
 };
 
 /* Simple line-art diagrams illustrating each structure shape */
@@ -9604,7 +10665,7 @@ function renderStrokeAnimation(ch){
   strokeStage.appendChild(loading);
 
   if(typeof HanziWriter === 'undefined'){
-    strokeStage.innerHTML = '<div class="error">Hanzi Writer 未加载<br>需要联网首次加载笔顺数据<br><small>يلزم الإنترنت لتحميل بيانات الخطوط</small></div>';
+    strokeStage.innerHTML = '<div class="error">Hanzi Writer · تعذّر التحميل<br>يلزم الإنترنت لتحميل بيانات الخطوط · 需联网加载笔顺数据</div>';
     hanziWriter = null;
     return;
   }
@@ -9707,7 +10768,7 @@ btnPauseStroke.addEventListener('click', () => {
   }else{
     hanziWriter.resumeAnimation();
     strokeAnimating = true;
-    btnPauseStroke.innerHTML = '<span class="icon">⏸</span> 暂停 Pause';
+    btnPauseStroke.innerHTML = '<span class="icon">⏸</span> إيقاف · 暂停';
   }
 });
 btnSpeakDetail.addEventListener('click', () => {
@@ -9755,7 +10816,7 @@ async function playAll(){
   btnPlayAll.classList.add('is-active');
   btnPlayAll.innerHTML = '■ إيقاف · 停止';
 
-  /* === 学习流程：进入步骤2 Understand === */
+  /* === 学习步骤：用户点击播放 → 高亮步骤② 听发音 === */
   setLearningStep(2);
   const analysisEl = document.getElementById('analysis');
   if(analysisEl && analysisEl.classList.contains('show')){
@@ -10033,7 +11094,7 @@ function buildChoosePinyin(cjkChars, text){
           btn.classList.remove('disabled');
           btn.classList.add('wrong');
           feedback.className = 'pl-feedback no show';
-          feedback.textContent = '✗ 正确: ' + correct;
+          feedback.textContent = '✗ الصواب: ' + correct;
           /* still mark as attempted (count as practiced) */
           PRACTICE_STATE.donePinyin = true;
           checkPracticeCompletion();
@@ -10170,7 +11231,7 @@ function buildReadCheck(text){
 
   newBtn.addEventListener('click', () => {
     PRACTICE_STATE.doneRead = true;
-    newBtn.textContent = '✓ 已完成跟读';
+    newBtn.textContent = '✓ تمّت · 已完成跟读';
     newBtn.classList.add('done');
     checkPracticeCompletion();
   });
@@ -10276,8 +11337,8 @@ if(btnFollow){
     btnFollow.classList.toggle('shadow-active', followMode);
     if(followHint) followHint.classList.toggle('show', followMode);
     try{ localStorage.setItem('ui.followMode', followMode ? '1' : '0'); }catch(e){}
-    /* === 学习流程：跟读开启 → step 3，关闭 → 回 step 2 === */
-    if(followMode){ setLearningStep(3); } else { setLearningStep(2); }
+    /* 跟读模式是辅助播放功能，不改变步骤条状态
+       Echo mode is a playback aid — steps are driven by content actions, not mode toggles */
     showToast(
       followMode ? 'وضع الصدى مفعَّل · 跟读模式已开启' : 'وضع الصدى معطَّل · 跟读模式已关闭',
       followMode ? 'وضع الصدى مفعَّل' : 'وضع الصدى معطَّل'
@@ -10390,7 +11451,7 @@ const btnKeyTest = document.getElementById('btnKeyTest');
 if(btnKeyTest){
   btnKeyTest.addEventListener('click', async () => {
     btnKeyTest.disabled = true;
-    btnKeyTest.textContent = '测试中…';
+    btnKeyTest.textContent = 'جارٍ الاختبار… · 测试中…';
     try{
       const result = getYoudaoCredentials().appKey
         ? await callYoudaoTranslate('你好', 'en')
@@ -10872,7 +11933,7 @@ function progressUpdatePill(){
   const ppVocab  = document.getElementById('ppVocab');
 
   if(ppChars)  ppChars.textContent  = (data.chars  || []).length;
-  if(ppStreak) ppStreak.textContent = (data.streak || 0) + 'd';
+  if(ppStreak) ppStreak.textContent = (data.streak || 0) + 'ي';
   if(ppVocab)  ppVocab.textContent  = vocabCount;
 }
 
@@ -10930,7 +11991,7 @@ function progressRenderDrawer(){
     const barClass = day.isToday ? 'progress-day-bar today' : (day.count > 0 ? 'progress-day-bar active' : 'progress-day-bar');
     const lblClass = day.isToday ? 'progress-day-label today' : 'progress-day-label';
     return `<div class="progress-day">
-      <div class="${barClass}" style="height:${heightPct}px;" title="${day.count} chars · ${day.key}"></div>
+      <div class="${barClass}" style="height:${heightPct}px;" title="${day.count} حرف · ${day.key}"></div>
       <div class="${lblClass}">${day.isToday ? 'اليوم' : day.label}</div>
     </div>`;
   }).join('');
@@ -11153,7 +12214,7 @@ progressUpdatePill();
 
   /* ── Level descriptions ── */
   const LV_DESC = {
-    beginner: '<ul><li>النص الصيني · 原文</li><li>البينيين · 拼音</li><li>الترجمة الإنجليزية · 英文翻译</li><li>ترتيب الخطوط · 笔顺</li><li class="off">بدون عربي · 无阿语</li><li class="off">بدون بطاقات الكلمات · 无词语卡</li></ul>',
+    beginner: '<ul><li>النص الصيني · 原文</li><li>البينيين · 拼音 (دائمًا مرئي)</li><li>الترجمة العربية · 阿语翻译</li><li>تشغيل الصوت · 播放/点读</li><li>انقر حرفًا: ترتيب الخطوط · 笔顺</li><li class="off">بدون أزرار متقدمة · 无高级按钮</li><li class="off">بدون إحصائيات · 无统计数据</li></ul>',
     practice: '<ul><li>كل ميزات المبتدئ · 初学全部</li><li>بطاقات الكلمات · 词语卡片</li><li>إخفاء البينيين/الترجمة · 隐藏切换</li><li>وضع الصدى · 跟读模式</li><li class="off">بدون إحصائيات · 无统计数据</li></ul>',
     advanced: '<ul><li>عرض كل الميزات · 显示全部</li><li>الترجمة العربية · 阿语翻译</li><li>إحصائيات الجملة · 句子统计</li><li>إعدادات محرك الترجمة · 翻译引擎设置</li></ul>'
   };
@@ -11185,14 +12246,26 @@ progressUpdatePill();
     toggleBtn.classList.add('panel-open');
     syncModePills();
     syncLvPills();
+    /* Mobile backdrop */
+    const bd = document.getElementById('cpBackdrop');
+    if(bd && window.innerWidth <= 768 && !panel.classList.contains('docked-left') && !panel.classList.contains('docked-right')){
+      bd.classList.add('show');
+    }
   }
   function closePanel(){
     panel.classList.remove('show');
     toggleBtn.classList.remove('panel-open');
+    /* Hide backdrop */
+    const bd = document.getElementById('cpBackdrop');
+    if(bd) bd.classList.remove('show');
   }
 
   toggleBtn.addEventListener('click', () => panel.classList.contains('show') ? closePanel() : openPanel());
   if(cpClose) cpClose.addEventListener('click', closePanel);
+
+  /* Backdrop tap closes panel on mobile */
+  const cpBackdrop = document.getElementById('cpBackdrop');
+  if(cpBackdrop) cpBackdrop.addEventListener('click', closePanel);
 
   /* close on outside click (float mode only — docked panels stay open) */
   document.addEventListener('click', (e) => {
@@ -11213,7 +12286,7 @@ progressUpdatePill();
       /* Call the global function directly — display:none blocks event bubbling */
       if(typeof setProductMode === 'function'){
         setProductMode(m);
-        const lbl = m === 'tool' ? 'Switched to Tool Mode · 工具模式' : 'Switched to Study Mode · 学习模式';
+        const lbl = m === 'tool' ? 'تم التبديل لوضع الأداة · 工具模式' : 'تم التبديل لوضع الدراسة · 学习模式';
         if(typeof showToast === 'function') showToast(lbl, lbl);
       }
       syncModePills(); syncLvPills(); updateStatus();
