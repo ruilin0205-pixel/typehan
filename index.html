@@ -8864,11 +8864,18 @@
      3. Hide demo/onboarding/overview/learning-step leftovers
    ═════════════════════════════════════════════════════════════════ */
 
-/* ── 1. Hide leftover demo/onboarding elements globally ── */
+/* ── 1. Hide leftover demo/onboarding elements globally
+       (high specificity to override body.mode-beginner .beginner-hint rule) ── */
 .ob-overlay, .ob-card, .ob-spotlight, .ob-step, .ob-dots,
 .overview, .overview-card, #overview, .overview-step,
 .learning-steps, #learningSteps, #learningStepsCompact,
-.beginner-hint, .cp-swipe-handle {
+.cp-swipe-handle {
+  display: none !important;
+}
+html body .beginner-hint,
+html body.mode-beginner .beginner-hint,
+html body.mode-practice .beginner-hint,
+html body.mode-advanced .beginner-hint {
   display: none !important;
 }
 
@@ -8888,13 +8895,14 @@
   display: flex !important;
   flex-direction: column !important;
 }
-/* Default float position when no inline drag-pos is set */
+/* Default float position when no inline drag-pos is set:
+   Panel appears just left of the FAB (which is at right:16px, ~52px wide) */
 #ctrlPanel:not(.docked-left):not(.docked-right) {
   top: 78px;
-  inset-inline-end: 16px;
+  inset-inline-end: auto;
   inset-inline-start: auto;
   left: auto;
-  right: 16px;
+  right: 80px;
 }
 /* When dragged, inline styles override the above */
 #ctrlPanel[style*="left:"]:not(.docked-left):not(.docked-right),
@@ -9050,37 +9058,115 @@ header {
   overflow: hidden !important;
 }
 
-/* Panel toggle button — readable across all sizes; high visibility per spec */
+/* ═════════════════════════════════════════════════════════════════
+   PANEL TOGGLE BUTTON — converted to FIXED FLOATING ACTION BUTTON
+   on the right edge of the viewport. Click opens the control panel.
+   ═════════════════════════════════════════════════════════════════ */
 #btnPanelToggle {
-  padding: 8px 14px !important;
-  font-size: 12.5px !important;
-  font-weight: 700 !important;
-  white-space: nowrap !important;
-  flex-shrink: 0 !important;
+  position: fixed !important;
+  top: 50% !important;
+  right: 16px !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  z-index: 4500 !important;
+
+  /* Pill-shaped vertical FAB */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+
+  width: 54px !important;
+  min-width: 54px !important;
+  height: auto !important;
+  padding: 14px 6px !important;
+
+  border-radius: 27px !important;
   background: linear-gradient(160deg, #5685a3, #355974) !important;
   color: #fff !important;
-  border: 1.5px solid rgba(53,89,116,0.45) !important;
-  box-shadow: 0 4px 12px rgba(70,111,142,0.30), inset 0 1px 0 rgba(255,255,255,0.20) !important;
+  border: 1.5px solid rgba(53,89,116,0.55) !important;
+  box-shadow:
+    0 8px 24px rgba(31,61,84,0.32),
+    0 2px 6px rgba(31,61,84,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.22) !important;
+
+  font-family: var(--font-ar), var(--font-ui) !important;
+  font-weight: 700 !important;
   letter-spacing: 0.02em !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease !important;
+  font-size: 0 !important; /* hide the literal whitespace/text nodes; spans below set their own size */
+}
+/* Big gear icon at the top of the FAB */
+#btnPanelToggle::before {
+  content: '⚙' !important;
+  font-size: 24px !important;
+  line-height: 1 !important;
+  display: block !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15) !important;
 }
 #btnPanelToggle:hover {
   background: linear-gradient(160deg, #4f7d9b, #2c4d68) !important;
-  box-shadow: 0 6px 16px rgba(70,111,142,0.42) !important;
-  transform: translateY(-1px);
+  box-shadow:
+    0 12px 28px rgba(31,61,84,0.42),
+    0 3px 8px rgba(31,61,84,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.25) !important;
+  transform: translateY(-50%) translateX(-2px) !important;
 }
 #btnPanelToggle:active {
-  transform: translateY(0);
+  transform: translateY(-50%) translateX(0) scale(0.96) !important;
 }
 #btnPanelToggle.panel-open {
-  background: linear-gradient(160deg, #355974, #1f3d54) !important;
-  box-shadow: 0 2px 6px rgba(31,61,84,0.40), inset 0 2px 4px rgba(0,0,0,0.15) !important;
+  background: linear-gradient(160deg, #2c4d68, #1f3d54) !important;
+  box-shadow:
+    0 4px 12px rgba(31,61,84,0.40),
+    inset 0 2px 4px rgba(0,0,0,0.18) !important;
+}
+#btnPanelToggle.panel-open::before {
+  content: '✕' !important;
+}
+#btnPanelToggle .panel-btn-text {
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  white-space: nowrap !important;
+  display: block !important;
+  text-align: center !important;
 }
 #btnPanelToggle .panel-mode-badge {
-  background: rgba(255,255,255,0.22) !important;
+  background: rgba(255,255,255,0.25) !important;
   color: #fff !important;
   font-weight: 700 !important;
-  padding: 2px 8px !important;
-  font-size: 10.5px !important;
+  padding: 2px 7px !important;
+  font-size: 9.5px !important;
+  border-radius: 999px !important;
+  letter-spacing: 0.02em !important;
+  display: block !important;
+  text-align: center !important;
+}
+
+/* Subtle pulse hint on first paint so users notice the FAB */
+@keyframes cpFabHint {
+  0%, 100% {
+    box-shadow:
+      0 8px 24px rgba(31,61,84,0.32),
+      0 2px 6px rgba(31,61,84,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      0 0 0 0 rgba(86,133,163,0.30);
+  }
+  50% {
+    box-shadow:
+      0 8px 24px rgba(31,61,84,0.32),
+      0 2px 6px rgba(31,61,84,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      0 0 0 12px rgba(86,133,163,0.0);
+  }
+}
+#btnPanelToggle:not(.panel-open):not(:hover) {
+  animation: cpFabHint 2.6s ease-in-out infinite;
 }
 
 /* ── 4. Tablet (481–1024px) layout ── */
@@ -9124,11 +9210,19 @@ header {
     font-size: 11px !important;
   }
   #btnBgMusic #bgMusicLabel { display: none !important; }
+  /* FAB stays fixed-right on mobile too, just slightly smaller */
   #btnPanelToggle {
-    padding: 6px 10px !important;
-    font-size: 11px !important;
+    width: 46px !important;
+    min-width: 46px !important;
+    padding: 12px 5px !important;
+    right: 10px !important;
   }
+  #btnPanelToggle::before { font-size: 19px !important; }
   #btnPanelToggle .panel-btn-text { display: none !important; }
+  #btnPanelToggle .panel-mode-badge {
+    font-size: 8.5px !important;
+    padding: 1px 5px !important;
+  }
   #dailyCharBadge { display: none !important; }
 
   /* Section spacing */
@@ -9216,20 +9310,29 @@ header {
     line-height: 1.65 !important;
   }
 
-  /* Floating panel position on mobile — float in upper-right corner */
+  /* Floating panel position on mobile — appears at top, panel slightly inset
+     from right so it sits visually next to the FAB without covering it */
   #ctrlPanel:not(.docked-left):not(.docked-right) {
     top: 64px;
-    inset-inline-end: 8px;
-    width: min(320px, calc(100vw - 16px)) !important;
+    right: 68px;
+    inset-inline-end: auto !important;
+    inset-inline-start: auto !important;
+    left: auto !important;
+    width: min(300px, calc(100vw - 84px)) !important;
+    max-width: min(300px, calc(100vw - 84px)) !important;
     max-height: min(70dvh, 540px) !important;
   }
   #ctrlPanel .cp-body {
     max-height: calc(min(70dvh, 540px) - 54px) !important;
   }
 
-  /* Floating action buttons (back-to-top, focus-input) — keep clear of panel */
+  /* Floating action buttons (back-to-top, focus-input) —
+     place at LEFT side so they don't conflict with the FAB on the right */
   .floating-actions {
-    inset-inline-end: 10px !important;
+    inset-inline-end: auto !important;
+    inset-inline-start: 10px !important;
+    left: 10px !important;
+    right: auto !important;
     bottom: 16px !important;
     gap: 8px !important;
   }
@@ -9249,14 +9352,26 @@ header {
   .topbar-title { font-size: 14px !important; }
   .topbar-sub   { display: none !important; }
   header { padding: 5px 8px !important; }
+  /* Smaller FAB on tiny screens */
+  #btnPanelToggle {
+    width: 42px !important;
+    min-width: 42px !important;
+    padding: 10px 4px !important;
+    right: 8px !important;
+  }
+  #btnPanelToggle::before { font-size: 17px !important; }
   #btnPanelToggle .panel-mode-badge {
-    font-size: 9px !important;
-    padding: 1px 5px !important;
+    font-size: 8px !important;
+    padding: 1px 4px !important;
   }
   #ctrlPanel:not(.docked-left):not(.docked-right) {
-    width: calc(100vw - 12px) !important;
-    max-width: calc(100vw - 12px) !important;
-    inset-inline-end: 6px;
+    top: 60px;
+    right: 56px !important;
+    left: auto !important;
+    inset-inline-end: auto !important;
+    inset-inline-start: auto !important;
+    width: calc(100vw - 68px) !important;
+    max-width: calc(100vw - 68px) !important;
   }
   .editor { font-size: 16px !important; padding: 12px !important; }
   .controls .btn { font-size: 12px !important; padding: 8px 12px !important; }
@@ -9389,8 +9504,8 @@ body.fresh-start #stepHint {
     <div class="topbar-right">
       <span class="topbar-status" id="topbarStatus"></span>
       <button id="btnBgMusic" type="button" title="موسيقى خلفية · 背景音乐" aria-label="تشغيل/إيقاف الموسيقى الخلفية" style="background:transparent;border:1px solid rgba(31,37,43,0.12);border-radius:8px;padding:4px 10px;font-size:12px;color:var(--text-soft);cursor:pointer;font-family:var(--font-ar);display:flex;align-items:center;gap:4px;min-height:40px;min-width:40px;transition:background 0.2s;">🎵 <span id="bgMusicLabel">موسيقى</span></button>
-      <button id="btnPanelToggle" type="button" title="لوحة التحكم · 控制面板">
-        ⚙ <span class="panel-btn-text">الإعدادات</span><span class="panel-mode-badge" id="panelModeBadge">مبتدئ</span>
+      <button id="btnPanelToggle" type="button" title="لوحة التحكم · 控制面板" aria-label="فتح لوحة التحكم · 打开控制面板">
+        <span class="panel-btn-text">الإعدادات</span><span class="panel-mode-badge" id="panelModeBadge">مبتدئ</span>
       </button>
     </div>
   </header>
@@ -9452,9 +9567,6 @@ body.fresh-start #stepHint {
         <div class="cp-row">
           <button class="cp-action-btn" id="cpBtnVocab">⭐ المفردات · 生词本 <span id="cpVocabCount">0</span></button>
           <button class="cp-action-btn" id="cpBtnProgress">🔥 التقدّم · 进度</button>
-        </div>
-        <div class="cp-row" style="margin-top:4px;">
-          <button class="cp-action-btn" id="cpBtnPresentation">📽 العرض · 演示模式</button>
         </div>
       </div>
 
@@ -11930,6 +12042,9 @@ async function analyzeInput(text){
 
   /* MISC-LOAD1 FIX: if this is an auto-restored draft render (not user interaction),
      delay cloud translate by 1s so we don't fire API requests before user has engaged */
+  /* TDZ FIX: hoist reqId here — it's referenced inside the _isAutoLoadRender block
+     before its original declaration further down. */
+  const reqId = ++TRANSLATION_STATE.currentRequest;
   if(typeof _isAutoLoadRender !== 'undefined' && _isAutoLoadRender){
     await new Promise(r => setTimeout(r, 1000));
     if(reqId !== TRANSLATION_STATE.currentRequest) return; /* user typed in the meantime */
@@ -11944,8 +12059,7 @@ async function analyzeInput(text){
   /* AR-ONLY: needsCloudEn=false */
   if(needsCloudAr) setMeaningWithBadge('analysisAr', 'analysisArBadge', { text: arResult.text, quality: 'loading' });
 
-  /* Track request so stale responses don't overwrite newer input */
-  const reqId = ++TRANSLATION_STATE.currentRequest;
+  /* (reqId was assigned above, before the _isAutoLoadRender delay) */
 
   const tasks = [];
   if(needsCloudEn){
@@ -13728,6 +13842,11 @@ _isAutoLoadRender = false;
     }
   }catch(e){}
 })();
+/* TDZ FIX: declare _vocabCache before any code path can call vocabLoad/vocabHas.
+   render() (called below) iterates chars and calls vocabHas, which calls vocabLoad,
+   which reads _vocabCache. Without this hoist, restoring a saved session causes
+   "Cannot access '_vocabCache' before initialization". */
+var _vocabCache = null;
 setProductMode(loadModePreference());
 setLearningLevel(loadLevelPreference());
 
@@ -13750,9 +13869,9 @@ _isAutoLoadRender = false;
 /* PERF-VOCAB1 FIX: write-through in-memory cache for vocab list.
    vocabLoad() reads from cache; vocabSave() writes through to both.
    This reduces per-render localStorage reads from N (one per vocabHas call) to 1. */
-let _vocabCache = null;
+/* _vocabCache is hoisted above (var) so the declaration here is omitted. */
 function vocabLoad(){
-  if(_vocabCache !== null) return _vocabCache;
+  if(_vocabCache !== null && _vocabCache !== undefined) return _vocabCache;
   try{
     const raw = localStorage.getItem(APP_STORAGE.vocab);
     _vocabCache = raw ? JSON.parse(raw) : [];
@@ -14617,6 +14736,19 @@ function trackTodayChar(ch){
   const backdrop    = document.getElementById('cpBackdrop');
 
   if(!panel || !toggleBtn) return;
+
+  /* ─────────────────────────────────────────────────────────────
+     CONTAINING-BLOCK FIX:
+     <header> has `backdrop-filter: blur(16px)` which (per spec) makes
+     it a containing block for `position:fixed` children. That breaks
+     `top: 50%` etc. — they evaluate against the header's box, not the
+     viewport. Solution: move the FAB and the panel directly into <body>.
+     ───────────────────────────────────────────────────────────── */
+  try {
+    if(toggleBtn.parentElement !== document.body) document.body.appendChild(toggleBtn);
+    if(panel.parentElement !== document.body) document.body.appendChild(panel);
+    if(backdrop && backdrop.parentElement !== document.body) document.body.appendChild(backdrop);
+  } catch(_) {}
 
   /* ── Level descriptions ── */
   const LV_DESC = {
@@ -15979,33 +16111,8 @@ function showDailySummary(){
 })();
 
 
-/* ── B. Presentation Mode (演示模式) ── */
-(function(){
-  'use strict';
-  /* Add presentation toggle to topbar */
-  var topbarRight = document.querySelector('.topbar-right');
-  if(!topbarRight) return;
-  var btn = document.createElement('button');
-  btn.className = 'pres-toggle-btn';
-  btn.innerHTML = '📺 <span>عرض · 演示</span>';
-  btn.title = 'وضع العرض التقديمي — للفصل الدراسي · 演示模式 — 适合课堂投影';
-  btn.addEventListener('click', function(){
-    document.body.classList.toggle('presentation-mode');
-    const active = document.body.classList.contains('presentation-mode');
-    btn.innerHTML = active
-      ? '✕ <span>خروج العرض · 退出演示</span>'
-      : '📺 <span>عرض · 演示</span>';
-    /* SYNC FIX: also update CP panel button if it exists */
-    var cpPresBtn = document.getElementById('cpBtnPresentation');
-    if(cpPresBtn){
-      cpPresBtn.textContent = active ? '📽 إيقاف العرض · 退出演示' : '📽 العرض · 演示模式';
-      cpPresBtn.style.cssText = active
-        ? 'background:linear-gradient(180deg,#4c7996,#355974);color:#fff;border-color:rgba(53,89,116,.3);'
-        : '';
-    }
-  });
-  topbarRight.insertBefore(btn, topbarRight.firstChild);
-})();
+/* ── B. Presentation Mode disabled (removed per user request) ── */
+/* (was injecting a presentation toggle button into the topbar) */
 
 
 /* ── C. Radical Family Display (同偏旁字族展示) ── */
