@@ -8856,6 +8856,473 @@
   .topbar-left { display: none !important; }
 }
 
+/* ═════════════════════════════════════════════════════════════════
+   MASTER OVERRIDE BLOCK (r13)
+   — final-priority rules that fix:
+     1. Universal floating draggable control panel (no more bottom sheet)
+     2. Layout overlap, text wrap, header on mobile/tablet
+     3. Hide demo/onboarding/overview/learning-step leftovers
+   ═════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Hide leftover demo/onboarding elements globally ── */
+.ob-overlay, .ob-card, .ob-spotlight, .ob-step, .ob-dots,
+.overview, .overview-card, #overview, .overview-step,
+.learning-steps, #learningSteps, #learningStepsCompact,
+.beginner-hint, .cp-swipe-handle {
+  display: none !important;
+}
+
+/* ── 2. Control panel: UNIVERSAL floating draggable window ──
+   Applies on desktop, tablet AND mobile. The user wants the same
+   floating-card UX everywhere — no bottom sheet, no full-screen drawer. */
+#ctrlPanel,
+#ctrlPanel.show {
+  position: fixed !important;
+  width: min(320px, calc(100vw - 24px)) !important;
+  max-width: 320px !important;
+  max-height: min(78dvh, 640px) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 24px 64px rgba(18,24,30,0.20), 0 2px 12px rgba(18,24,30,0.08) !important;
+  z-index: 4000 !important;
+  bottom: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+/* Default float position when no inline drag-pos is set */
+#ctrlPanel:not(.docked-left):not(.docked-right) {
+  top: 78px;
+  inset-inline-end: 16px;
+  inset-inline-start: auto;
+  left: auto;
+  right: 16px;
+}
+/* When dragged, inline styles override the above */
+#ctrlPanel[style*="left:"]:not(.docked-left):not(.docked-right),
+#ctrlPanel[style*="top:"]:not(.docked-left):not(.docked-right) {
+  inset-inline-end: auto !important;
+  inset-inline-start: auto !important;
+  right: auto !important;
+}
+
+/* Visibility */
+#ctrlPanel:not(.show) {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-6px) scale(0.985) !important;
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0.16s !important;
+}
+#ctrlPanel.show {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateY(0) scale(1) !important;
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0s !important;
+}
+
+/* Docked side panels — keep them, they're useful on tablet+desktop */
+#ctrlPanel.docked-left,
+#ctrlPanel.docked-right {
+  top: 0 !important;
+  height: 100dvh !important;
+  width: 300px !important;
+  max-width: 80vw !important;
+  max-height: 100dvh !important;
+  border-radius: 0 !important;
+}
+#ctrlPanel.docked-left {
+  inset-inline-end: 0 !important;
+  inset-inline-start: auto !important;
+  right: 0 !important;
+  left: auto !important;
+}
+#ctrlPanel.docked-right {
+  inset-inline-start: 0 !important;
+  inset-inline-end: auto !important;
+  left: 0 !important;
+  right: auto !important;
+}
+
+/* Header: always grab-handle, always interactive */
+#ctrlPanel .cp-head {
+  border-radius: 20px 20px 0 0 !important;
+  cursor: grab !important;
+  padding: 14px 14px 12px !important;
+  touch-action: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  position: relative !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(249,247,243,0.95)) !important;
+  border-bottom: 1px solid rgba(31,37,43,0.08) !important;
+}
+#ctrlPanel .cp-head:active { cursor: grabbing !important; }
+/* Visible drag indicator (three lines) — makes it clearly a draggable floating panel */
+#ctrlPanel .cp-head::before {
+  content: '⋮⋮' !important;
+  position: absolute !important;
+  top: 50% !important;
+  inset-inline-start: 8px !important;
+  transform: translateY(-50%) rotate(90deg) !important;
+  font-size: 13px !important;
+  color: rgba(70,111,142,0.55) !important;
+  letter-spacing: -2px !important;
+  pointer-events: none !important;
+  font-weight: 900 !important;
+}
+#ctrlPanel .cp-head-title {
+  padding-inline-start: 18px !important;
+}
+#ctrlPanel.docked-left .cp-head,
+#ctrlPanel.docked-right .cp-head {
+  cursor: default !important;
+  border-radius: 0 !important;
+}
+#ctrlPanel.docked-left .cp-head::before,
+#ctrlPanel.docked-right .cp-head::before {
+  content: none !important;
+}
+#ctrlPanel.docked-left .cp-head-title,
+#ctrlPanel.docked-right .cp-head-title {
+  padding-inline-start: 0 !important;
+}
+
+/* Body scroll */
+#ctrlPanel .cp-body {
+  padding: 14px !important;
+  max-height: calc(min(78dvh, 640px) - 56px) !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+  padding-bottom: max(14px, env(safe-area-inset-bottom, 14px)) !important;
+}
+#ctrlPanel.docked-left .cp-body,
+#ctrlPanel.docked-right .cp-body {
+  max-height: calc(100dvh - 56px) !important;
+}
+
+/* Dock buttons — visible on ALL screens (so user can dock on phone too if they want) */
+#cpDockLeft, #cpDockFloat, #cpDockRight, #cpClose {
+  display: flex !important;
+  width: 28px !important;
+  height: 28px !important;
+  font-size: 14px !important;
+  min-width: 28px !important;
+}
+
+/* Backdrop only when explicitly shown; never auto-on for float */
+#cpBackdrop { display: none !important; }
+#cpBackdrop.show { display: none !important; }
+
+/* Body should never need padding-bottom for a "bottom sheet" since panel floats */
+.wrap { padding-bottom: 64px !important; }
+
+/* ── 3. Header layout — fix overlap on phone/tablet ── */
+header {
+  grid-template-columns: auto 1fr auto !important;
+  gap: 8px !important;
+  padding: 8px 12px !important;
+  flex-wrap: nowrap !important;
+}
+.topbar-center {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+.topbar-title {
+  font-size: clamp(14px, 3.6vw, 20px) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+}
+.topbar-sub {
+  font-size: clamp(9px, 2.4vw, 11px) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+}
+.topbar-right {
+  flex-shrink: 0 !important;
+  gap: 6px !important;
+}
+.topbar-left {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Panel toggle button — readable across all sizes; high visibility per spec */
+#btnPanelToggle {
+  padding: 8px 14px !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  background: linear-gradient(160deg, #5685a3, #355974) !important;
+  color: #fff !important;
+  border: 1.5px solid rgba(53,89,116,0.45) !important;
+  box-shadow: 0 4px 12px rgba(70,111,142,0.30), inset 0 1px 0 rgba(255,255,255,0.20) !important;
+  letter-spacing: 0.02em !important;
+}
+#btnPanelToggle:hover {
+  background: linear-gradient(160deg, #4f7d9b, #2c4d68) !important;
+  box-shadow: 0 6px 16px rgba(70,111,142,0.42) !important;
+  transform: translateY(-1px);
+}
+#btnPanelToggle:active {
+  transform: translateY(0);
+}
+#btnPanelToggle.panel-open {
+  background: linear-gradient(160deg, #355974, #1f3d54) !important;
+  box-shadow: 0 2px 6px rgba(31,61,84,0.40), inset 0 2px 4px rgba(0,0,0,0.15) !important;
+}
+#btnPanelToggle .panel-mode-badge {
+  background: rgba(255,255,255,0.22) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  padding: 2px 8px !important;
+  font-size: 10.5px !important;
+}
+
+/* ── 4. Tablet (481–1024px) layout ── */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .wrap {
+    width: min(960px, calc(100% - 24px)) !important;
+    padding: 28px 0 64px !important;
+  }
+  .topbar-title { font-size: 17px !important; }
+  .topbar-sub   { font-size: 10px !important; }
+  #ctrlPanel:not(.docked-left):not(.docked-right) {
+    top: 72px;
+  }
+}
+
+/* ── 5. Mobile (≤768px) layout — fix overlap, wrap, font ── */
+@media (max-width: 768px) {
+  .wrap {
+    width: calc(100% - 16px) !important;
+    padding: 12px 0 56px !important;
+  }
+  header {
+    padding: 6px 10px !important;
+    margin-bottom: 14px !important;
+    gap: 6px !important;
+  }
+  .topbar-left { display: none !important; }
+  .topbar-center {
+    grid-column: 1 !important;
+  }
+  .topbar-right {
+    grid-column: 2 !important;
+  }
+  header {
+    grid-template-columns: 1fr auto !important;
+  }
+  #btnBgMusic {
+    min-height: 36px !important;
+    min-width: 36px !important;
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+  }
+  #btnBgMusic #bgMusicLabel { display: none !important; }
+  #btnPanelToggle {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+  #btnPanelToggle .panel-btn-text { display: none !important; }
+  #dailyCharBadge { display: none !important; }
+
+  /* Section spacing */
+  .section { margin-bottom: 14px !important; }
+  .section-head { margin-bottom: 8px !important; }
+  .section-label {
+    font-size: clamp(12px, 3.2vw, 14px) !important;
+    line-height: 1.5 !important;
+  }
+  .section-note {
+    font-size: clamp(10px, 2.6vw, 12px) !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Editor textarea */
+  .editor {
+    font-size: 16px !important; /* prevent iOS zoom */
+    min-height: 100px !important;
+    padding: 14px !important;
+  }
+
+  /* Controls row — wrap nicely */
+  .controls {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .controls .btn {
+    flex: 1 1 auto !important;
+    min-width: 90px !important;
+    font-size: 13px !important;
+    padding: 10px 14px !important;
+  }
+  .speed-group {
+    flex: 1 1 100% !important;
+    margin-top: 4px !important;
+  }
+
+  /* Utility bar — wrap */
+  .utility-bar, .utility-group {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  .utility-btn {
+    flex: 1 1 auto !important;
+    font-size: 11px !important;
+    padding: 7px 10px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Scene bar */
+  .scene-bar {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  .scene-btn {
+    font-size: 11px !important;
+    padding: 6px 10px !important;
+  }
+  .scene-helper-label {
+    width: 100% !important;
+    font-size: 11px !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* Char grid + word deck */
+  .char-grid {
+    gap: 6px !important;
+  }
+  .word-deck {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* Analysis box */
+  .analysis {
+    padding: 14px !important;
+    font-size: 14px !important;
+  }
+  #analysisAr {
+    font-size: 15px !important;
+    line-height: 1.85 !important;
+  }
+  #analysisPinyin {
+    font-size: 13px !important;
+    line-height: 1.65 !important;
+  }
+
+  /* Floating panel position on mobile — float in upper-right corner */
+  #ctrlPanel:not(.docked-left):not(.docked-right) {
+    top: 64px;
+    inset-inline-end: 8px;
+    width: min(320px, calc(100vw - 16px)) !important;
+    max-height: min(70dvh, 540px) !important;
+  }
+  #ctrlPanel .cp-body {
+    max-height: calc(min(70dvh, 540px) - 54px) !important;
+  }
+
+  /* Floating action buttons (back-to-top, focus-input) — keep clear of panel */
+  .floating-actions {
+    inset-inline-end: 10px !important;
+    bottom: 16px !important;
+    gap: 8px !important;
+  }
+  .float-btn {
+    width: 42px !important;
+    height: 42px !important;
+    font-size: 18px !important;
+  }
+}
+
+/* ── 6. Very narrow phones (≤380px) ── */
+@media (max-width: 380px) {
+  .wrap {
+    width: calc(100% - 10px) !important;
+    padding: 8px 0 48px !important;
+  }
+  .topbar-title { font-size: 14px !important; }
+  .topbar-sub   { display: none !important; }
+  header { padding: 5px 8px !important; }
+  #btnPanelToggle .panel-mode-badge {
+    font-size: 9px !important;
+    padding: 1px 5px !important;
+  }
+  #ctrlPanel:not(.docked-left):not(.docked-right) {
+    width: calc(100vw - 12px) !important;
+    max-width: calc(100vw - 12px) !important;
+    inset-inline-end: 6px;
+  }
+  .editor { font-size: 16px !important; padding: 12px !important; }
+  .controls .btn { font-size: 12px !important; padding: 8px 12px !important; }
+}
+
+/* ── 7. Text-overlap & wrap guards — global ── */
+.section-head,
+.section-label,
+.section-note,
+.analysis-head,
+.analysis-kicker,
+.analysis-hint,
+.engine-title,
+.engine-status,
+.helper-strip,
+.save-status,
+.scene-helper-label,
+.cp-head-title,
+.cp-label,
+.cp-lv-desc li,
+.utility-btn,
+.scene-btn,
+.btn,
+.preset-btn {
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* RTL text containers — avoid overflow */
+[dir="rtl"] .analysis,
+[dir="rtl"] .cp-body,
+[dir="rtl"] .controls,
+[dir="rtl"] .utility-bar {
+  word-break: normal;
+  overflow-wrap: anywhere !important;
+}
+
+/* ── 8. Pills inside control panel — wrap & size cleanly ── */
+.cp-mode-pill, .cp-lv-pill, .cp-action-btn {
+  min-height: 36px !important;
+  white-space: normal !important;
+  line-height: 1.35 !important;
+}
+.cp-row {
+  gap: 6px !important;
+}
+
+/* ── 9. Make sure the engine details collapse doesn't overflow ── */
+.engine-panel {
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+.engine-panel summary {
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+
+/* ── 10. Disable the body.fresh-start treatment that hid presets ── */
+body.fresh-start .scene-bar,
+body.fresh-start .presets,
+body.fresh-start #stepHint {
+  display: revert !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
 </style>
 </head>
 <body dir="rtl">
@@ -8898,115 +9365,7 @@
 })();
 </script>
 
-<!-- ============================================================
-     ONBOARDING OVERLAY — 新手引导弹窗
-     Shown once on first visit. Dismissed state saved to localStorage.
-     ============================================================ -->
-<div class="ob-overlay" id="obOverlay" role="dialog" aria-modal="true" aria-label="مرحبًا بك في HanziLens">
-  <div class="ob-card" id="obCard">
-
-    <!-- Progress dots -->
-    <div class="ob-dots">
-      <div class="ob-dot active" id="obDot0"></div>
-      <div class="ob-dot" id="obDot1"></div>
-      <div class="ob-dot" id="obDot2"></div>
-    </div>
-
-    <!-- Step 0: Welcome -->
-    <div class="ob-step" id="obStep0">
-      <div class="ob-icon">🏮</div>
-      <div class="ob-title">مرحباً بك في HanziLens · 欢迎</div>
-      <div class="ob-subtitle" style="font-size:13px;line-height:1.8;color:var(--ar-primary);font-family:var(--font-ar);">
-        <strong>HanziLens</strong> = عدسة تكشف أسرار الحروف الصينية (汉字 Hànzì)
-      </div>
-      <div class="ob-body">
-        الصينية لغة عظيمة — لكنها تبدأ بحرف واحد.<br>
-        الصق <strong>أي نص صيني</strong> هنا وستحصل فوراً على:<br>
-        <span class="ar-hint" style="margin-top:6px;display:block;">🔊 النطق (بينيين) &nbsp;·&nbsp; 📖 الترجمة العربية &nbsp;·&nbsp; ✍️ ترتيب الخطوط</span>
-      </div>
-      <div class="ob-demo">
-        <div class="char-box"><span class="py">nǐ hǎo</span>你好</div>
-        <div class="arrow">→</div>
-        <div class="meaning" style="text-align:right;font-family:var(--font-ar);">مرحبًا<br><span style="font-size:11px;opacity:0.7;">nǐ hǎo · 你好</span></div>
-      </div>
-      <div class="ob-actions">
-        <button class="ob-btn-next" id="obNext0">لنبدأ · 开始 →</button>
-        <button class="ob-btn-skip" id="obSkip">تخطّى · 跳过</button>
-      </div>
-    </div>
-
-    <!-- Step 1: Paste & Translate -->
-    <div class="ob-step" id="obStep1" style="display:none;">
-      <div class="ob-icon">📝</div>
-      <div class="ob-title">الخطوة 1 · 输入中文</div>
-      <div class="ob-subtitle">اكتب أو الصق أي نص صيني</div>
-      <div class="ob-body">
-        اكتب <strong>حرفاً أو جملةً صينية</strong> في خانة الإدخال،<br>
-        أو اختر أحد الأمثلة الجاهزة بالضغط عليها.
-        <span class="ar-hint">① اختر مثالاً أو اكتب نصك الخاص</span>
-      </div>
-      <div class="ob-demo" style="gap:8px;">
-        <div class="char-box"><span class="py">hǎo hǎo xué xí</span>好好学习</div>
-        <div class="arrow">→</div>
-        <div class="meaning">اجتهد في الدراسة</div>
-      </div>
-      <div class="ob-actions">
-        <button class="ob-btn-next" id="obNext1">التالي · 下一步 →</button>
-        <button class="ob-btn-skip" id="obSkip1">تخطّى · 跳过</button>
-      </div>
-    </div>
-
-    <!-- Step 2: Understand the sentence -->
-    <div class="ob-step" id="obStep2" style="display:none;">
-      <div class="ob-icon">▶</div>
-      <div class="ob-title">الخطوة 2 · 点击开始学习</div>
-      <div class="ob-subtitle">استمع واقرأ الترجمة</div>
-      <div class="ob-body">
-        اضغط <strong>▶ ابدأ التعلّم</strong> لتسمع النطق<br>
-        وترى البينيين والترجمة العربية فورًا.
-        <span class="ar-hint">② اضغط الزر الأزرق الكبير</span>
-      </div>
-      <div class="ob-demo" style="flex-direction:column; gap:6px; font-size:14px;">
-        <span style="padding:10px 20px; border-radius:14px; background:linear-gradient(180deg,#4c7996,#355974); color:#fff; font-size:14px; font-weight:700; display:inline-block;">▶ ابدأ التعلّم · 开始学习</span>
-      </div>
-      <div class="ob-actions">
-        <button class="ob-btn-next" id="obNext2">التالي · 下一步 →</button>
-        <button class="ob-btn-skip" id="obSkip2">تخطّى · 跳过</button>
-      </div>
-    </div>
-
-    <!-- Step 3: Tap a character -->
-    <div class="ob-step" id="obStep3" style="display:none;">
-      <div class="ob-icon">✍️</div>
-      <div class="ob-title">الخطوة 3 · 点击汉字看详情</div>
-      <div class="ob-subtitle">انقر على أي حرف للتعمّق</div>
-      <div class="ob-body">
-        انقر على أي <strong>بطاقة حرف</strong> أسفل النص<br>
-        لترى ترتيب الخطوط والنطق والمعنى.
-        <span class="ar-hint">③ انقر على الحرف الذي تريد دراسته</span>
-      </div>
-      <div class="ob-demo" style="gap:6px;">
-        <div class="char-box" style="cursor:pointer; border-color:rgba(70,111,142,0.30); box-shadow:0 6px 18px rgba(70,111,142,0.18); display:flex; flex-direction:column; align-items:center; gap:1px;">
-          <span class="py">hǎo</span>好
-          <span style="font-size:9px;color:#a4722f;font-family:var(--font-ar);">هابطة↘↗</span>
-        </div>
-        <div class="arrow">→</div>
-        <div style="display:flex; flex-direction:column; gap:4px; font-family:var(--font-ui); font-size:12px; color:var(--text-soft);">
-          <span>✦ ترتيب الخطوط · 笔顺</span>
-          <span>✦ النطق · 发音</span>
-          <span>✦ المعنى · 含义</span>
-        </div>
-      </div>
-      <div class="ob-actions">
-        <button class="ob-btn-next" id="obNext3">فهمتُ · 开始使用</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Spotlight ring (follows highlighted elements) -->
-<div class="ob-spotlight" id="obSpotlight"></div>
+<!-- ONBOARDING + OVERVIEW + SPOTLIGHT removed (cleanup r13) -->
 
 <div class="wrap">
 
@@ -9121,39 +9480,7 @@
     </div>
   </div>
 
-  <div class="overview learning-only" id="overview">
-    <div class="overview-card">
-      <div class="overview-step">1</div>
-      <div class="overview-title">أدخل أي نص صيني · 输入内容</div>
-      <div class="overview-sub">إدخال</div>
-      <div class="overview-desc">اكتب أو الصق أي نص صيني — حرفًا واحدًا أو كلمة أو جملة كاملة — وافهمه فورًا.</div>
-    </div>
-    <div class="overview-card">
-      <div class="overview-step">2</div>
-      <div class="overview-title">افهم الجملة · 理解句子</div>
-      <div class="overview-sub">استيعاب</div>
-      <div class="overview-desc">اطّلع على البينيين والترجمة والمفردات الأساسية. ابنِ فهمًا كاملًا للجملة قبل التعمّق.</div>
-    </div>
-    <div class="overview-card">
-      <div class="overview-step">3</div>
-      <div class="overview-title">تعمّق في الحروف · 单字精读</div>
-      <div class="overview-sub">استكشاف</div>
-      <div class="overview-desc">انقر على أي حرف لترى ترتيب خطوطه وجذره وبنيته ونطقه — دورة تعلّم متكاملة.</div>
-    </div>
-    <div style="grid-column:1/-1;text-align:start;margin-top:-4px;">
-      <button id="btnDismissOverview" style="padding:4px 12px;border:1px solid rgba(31,37,43,0.08);border-radius:999px;background:transparent;font-size:11px;color:var(--text-faint);cursor:pointer;" onclick="(function(){try{localStorage.setItem('hanzi.overviewDismissed','1');}catch(e){}document.getElementById('overview').style.display='none';})()">✕ فهمتُ · 我知道了</button>
-    </div>
-  </div>
-  <script>
-  (function(){
-    try{
-      if(localStorage.getItem('hanzi.overviewDismissed')==='1'){
-        var ov=document.getElementById('overview');
-        if(ov) ov.style.display='none';
-      }
-    }catch(e){}
-  })();
-  </script>
+  <!-- overview removed -->
 
   <!-- ============ EDITOR ============ -->
   <!-- بنر ترحيب المبتدئ — يظهر فقط في وضع المبتدئ · 初学提示横幅 -->
@@ -9184,35 +9511,8 @@
       <div class="section-note learning-only">أدخل النص ← افهم ← ادرس الحروف · 输入 → 理解 → 精读</div>
     </div>
 
-    <!-- Learning Steps strip — 5-step bilingual guide · 五步中阿双语引导条 -->
-    <div class="learning-steps learning-only" id="learningSteps" data-step="1" aria-label="خطوات التعلّم · 学习步骤">
-      <div class="ls-step active" data-step-num="1">
-        <span class="num">①</span>
-        <span class="ls-ar">أدخل النص</span>
-        <span class="ls-zh">输入中文</span>
-      </div>
-      <div class="ls-step" data-step-num="2">
-        <span class="num">②</span>
-        <span class="ls-ar">استمع</span>
-        <span class="ls-zh">听发音</span>
-      </div>
-      <div class="ls-step" data-step-num="3">
-        <span class="num">③</span>
-        <span class="ls-ar">اقرأ المعنى</span>
-        <span class="ls-zh">看阿语解释</span>
-      </div>
-      <div class="ls-step" data-step-num="4">
-        <span class="num">④</span>
-        <span class="ls-ar">اضغط الحرف</span>
-        <span class="ls-zh">点汉字学习</span>
-      </div>
-      <div class="ls-step" data-step-num="5">
-        <span class="num">⑤</span>
-        <span class="ls-ar">راجع الكلمات</span>
-        <span class="ls-zh">复习词卡</span>
-      </div>
-    </div>
-    <div id="stepHint"></div>
+    <!-- learning-steps strip removed -->
+    <div id="stepHint" style="display:none;"></div>
 
     <div class="editor-wrap">
       <textarea class="editor" id="editor" placeholder="اكتب أو الصق نصًّا صينيًّا هنا — حرفاً أو كلمةً أو جملةً كاملة&#10;مثال: 你好 · 好好学习 · 春天来了，花儿开了。"></textarea>
@@ -9320,34 +9620,7 @@
       <div class="analysis-hint">افهم الجملة كاملةً أولًا · 先理解整句，再查单字</div>
     </div>
 
-    <!-- 理解卡上方：学习路径提示 (compact 版) -->
-    <div class="learning-steps compact learning-only" id="learningStepsCompact" aria-label="خطوات التعلّم · 学习步骤">
-      <div class="ls-step" data-step-num="1">
-        <span class="num">①</span>
-        <span class="ls-ar">أدخل</span>
-        <span class="ls-zh">输入</span>
-      </div>
-      <div class="ls-step" data-step-num="2">
-        <span class="num">②</span>
-        <span class="ls-ar">استمع</span>
-        <span class="ls-zh">听发音</span>
-      </div>
-      <div class="ls-step active" data-step-num="3">
-        <span class="num">③</span>
-        <span class="ls-ar">اقرأ المعنى</span>
-        <span class="ls-zh">看阿语解释</span>
-      </div>
-      <div class="ls-step" data-step-num="4">
-        <span class="num">④</span>
-        <span class="ls-ar">اضغط</span>
-        <span class="ls-zh">点汉字</span>
-      </div>
-      <div class="ls-step" data-step-num="5">
-        <span class="num">⑤</span>
-        <span class="ls-ar">راجع</span>
-        <span class="ls-zh">复习</span>
-      </div>
-    </div>
+    <!-- compact learning-steps strip removed -->
 
     <div class="analysis-reading">
       <!-- 分句块区域 (多句时显示，单句时隐藏) -->
@@ -12967,42 +13240,7 @@ btnPlayAll.addEventListener('click', () => { if(isPlayingQueue) stopAll(); else 
   if(_editor) _editor.addEventListener('focus', warmMic, {once:true});
 })();
 btnClear.addEventListener('click', clearAll);
-/* ── CONTROL PANEL: swipe-down to close on mobile bottom sheet ── */
-/* V3-1: Extended to accept swipe from anywhere on panel, not only drag handle */
-(function(){
-  var panel = document.getElementById('ctrlPanel');
-  if(!panel) return;
-  var startY = 0, isDragging = false;
-  panel.addEventListener('touchstart', function(e){
-    /* Allow drag from header or panel body (but not interactive inputs) */
-    var tag = e.target.tagName;
-    if(tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
-    startY = e.touches[0].clientY;
-    isDragging = true;
-  }, {passive: true});
-  panel.addEventListener('touchmove', function(e){
-    if(!isDragging) return;
-    var dy = e.touches[0].clientY - startY;
-    if(dy > 0){
-      panel.style.transform = 'translateY(' + dy + 'px)';
-    }
-  }, {passive: true});
-  panel.addEventListener('touchend', function(e){
-    if(!isDragging) return;
-    isDragging = false;
-    var endY = e.changedTouches[0].clientY;
-    var dy = endY - startY;
-    panel.style.transform = '';
-    if(dy > 60){
-      /* V3-1: reduced threshold from 80 to 60 for snappier close */
-      panel.classList.remove('show');
-      var toggle = document.getElementById('btnPanelToggle');
-      if(toggle) toggle.classList.remove('panel-open');
-      var backdrop = document.getElementById('cpBackdrop');
-      if(backdrop) backdrop.classList.remove('show');
-    }
-  }, {passive: true});
-})();
+/* swipe-to-close handler disabled — replaced by unified pointer-event drag in panel IIFE */
 
 
 document.getElementById('snPrev')?.addEventListener('click', () => navigateSentence(-1));
@@ -14365,6 +14603,7 @@ function trackTodayChar(ch){
    FLOATING CONTROL PANEL — 浮动控制面板
    ============================================================ */
 (function(){
+  'use strict';
   const panel       = document.getElementById('ctrlPanel');
   const toggleBtn   = document.getElementById('btnPanelToggle');
   const dragHandle  = document.getElementById('cpDragHandle');
@@ -14375,6 +14614,7 @@ function trackTodayChar(ch){
   const cpLvDesc    = document.getElementById('cpLvDesc');
   const cpLevelSec  = document.getElementById('cpLevelSection');
   const statusEl    = document.getElementById('topbarStatus');
+  const backdrop    = document.getElementById('cpBackdrop');
 
   if(!panel || !toggleBtn) return;
 
@@ -14392,10 +14632,9 @@ function trackTodayChar(ch){
     const m = document.body.classList.contains('tool-mode') ? 'tool' : 'learning';
     const l = ['beginner','practice','advanced'].find(c => document.body.classList.contains('mode-'+c)) || 'beginner';
     if(statusEl) statusEl.textContent = MODE_LABEL[m] + (m==='learning' ? ' · '+LV_LABEL[l] : '');
-    /* Update topbar mode badge */
-    var badge = document.getElementById('panelModeBadge');
+    const badge = document.getElementById('panelModeBadge');
     if(badge){
-      var lvLabels = {beginner:'مبتدئ', practice:'تدريب', advanced:'متقدّم'};
+      const lvLabels = {beginner:'مبتدئ', practice:'تدريب', advanced:'متقدّم'};
       badge.textContent = m === 'tool' ? 'أداة' : (lvLabels[l] || 'مبتدئ');
     }
   }
@@ -14418,41 +14657,59 @@ function trackTodayChar(ch){
     toggleBtn.classList.add('panel-open');
     syncModePills();
     syncLvPills();
-    /* Mobile backdrop */
-    const bd = document.getElementById('cpBackdrop');
-    if(bd && window.innerWidth <= 768 && !panel.classList.contains('docked-left') && !panel.classList.contains('docked-right')){
-      bd.classList.add('show');
-    }
   }
   function closePanel(){
     panel.classList.remove('show');
     toggleBtn.classList.remove('panel-open');
-    /* Hide backdrop */
-    const bd = document.getElementById('cpBackdrop');
-    if(bd) bd.classList.remove('show');
+    if(backdrop) backdrop.classList.remove('show');
   }
+  function isOpen(){ return panel.classList.contains('show'); }
 
-  toggleBtn.addEventListener('click', () => panel.classList.contains('show') ? closePanel() : openPanel());
-  if(cpClose) cpClose.addEventListener('click', closePanel);
+  /* expose for other modules */
+  window.openCtrlPanel  = openPanel;
+  window.closeCtrlPanel = closePanel;
 
-  /* Backdrop tap closes panel on mobile */
-  const cpBackdrop = document.getElementById('cpBackdrop');
-  if(cpBackdrop) cpBackdrop.addEventListener('click', closePanel);
-
-  /* close on outside click (float mode only — docked panels stay open) */
-  document.addEventListener('click', (e) => {
-    const isDocked = panel.classList.contains('docked-left') || panel.classList.contains('docked-right');
-    if(!isDocked && panel.classList.contains('show') && !panel.contains(e.target) && e.target !== toggleBtn) closePanel();
+  /* Toggle button — single source of truth */
+  toggleBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    if(isOpen()) closePanel();
+    else openPanel();
   });
 
-  /* Escape key closes panel (float mode only) */
-  /* BUG-ESC1: panel Escape now handled by unified dispatcher in main keydown handler */
+  if(cpClose) cpClose.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    closePanel();
+  });
+
+  if(backdrop) backdrop.addEventListener('click', closePanel);
+
+  /* Outside click closes the panel — but NOT when clicking the toggle button itself.
+     Use pointerdown so it fires before the toggle's click. */
+  document.addEventListener('pointerdown', function(e){
+    if(!isOpen()) return;
+    if(panel.contains(e.target)) return;
+    if(toggleBtn.contains(e.target)) return;
+    /* Don't close docked panels on outside click */
+    if(panel.classList.contains('docked-left') || panel.classList.contains('docked-right')) return;
+    closePanel();
+  }, true);
+
+  /* Escape key */
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && isOpen() &&
+       !panel.classList.contains('docked-left') &&
+       !panel.classList.contains('docked-right')){
+      closePanel();
+    }
+  });
 
   /* ── mode pills ── */
   panel.querySelectorAll('.cp-mode-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
       const m = btn.dataset.mode;
-      /* Call the global function directly — display:none blocks event bubbling */
       if(typeof setProductMode === 'function'){
         setProductMode(m);
         const lbl = m === 'tool' ? 'تم التبديل لوضع الأداة · 工具模式' : 'تم التبديل لوضع الدراسة · 学习模式';
@@ -14464,9 +14721,9 @@ function trackTodayChar(ch){
 
   /* ── level pills ── */
   panel.querySelectorAll('.cp-lv-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
       const l = btn.dataset.level;
-      /* Call the global function directly — display:none blocks event bubbling */
       if(typeof setLearningLevel === 'function'){
         setLearningLevel(l);
         if(typeof LEVEL_LABELS !== 'undefined' && typeof showToast === 'function'){
@@ -14478,33 +14735,34 @@ function trackTodayChar(ch){
     });
   });
 
-  /* ── action buttons — vocabOpenDrawer/progressOpenDrawer are global, call directly ── */
+  /* ── action buttons ── */
   const cpVocab = document.getElementById('cpBtnVocab');
   const cpProg  = document.getElementById('cpBtnProgress');
-  if(cpVocab) cpVocab.addEventListener('click', () => {
+  if(cpVocab) cpVocab.addEventListener('click', function(e){
+    e.stopPropagation();
     closePanel();
     if(typeof vocabOpenDrawer === 'function') vocabOpenDrawer();
   });
-  if(cpProg) cpProg.addEventListener('click', () => {
+  if(cpProg) cpProg.addEventListener('click', function(e){
+    e.stopPropagation();
     closePanel();
     if(typeof progressOpenDrawer === 'function') progressOpenDrawer();
   });
 
-  /* BUG3 FIX: Use 'presentation-mode' (not 'mode-presentation') to match existing CSS + topbar btn */
   const cpPres = document.getElementById('cpBtnPresentation');
-  if(cpPres) cpPres.addEventListener('click', () => {
+  if(cpPres) cpPres.addEventListener('click', function(e){
+    e.stopPropagation();
     const active = document.body.classList.toggle('presentation-mode');
     cpPres.textContent = active ? '📽 إيقاف العرض · 退出演示' : '📽 العرض · 演示模式';
     if(active) cpPres.style.cssText = 'background:linear-gradient(180deg,#4c7996,#355974);color:#fff;border-color:rgba(53,89,116,.3);';
     else cpPres.style.cssText = '';
-    /* SYNC FIX: also update the topbar pres-toggle-btn if it exists */
-    var topbarPresBtn = document.querySelector('.pres-toggle-btn');
+    const topbarPresBtn = document.querySelector('.pres-toggle-btn');
     if(topbarPresBtn){
       topbarPresBtn.innerHTML = active
         ? '✕ <span>خروج العرض · 退出演示</span>'
         : '📺 <span>عرض · 演示</span>';
     }
-    closePanel(); /* GAP3 FIX: close panel after toggling so content is visible */
+    closePanel();
     if(typeof showToast === 'function') showToast(active ? 'وضع العرض مفعَّل · 演示模式已开启' : 'تم إيقاف وضع العرض · 已退出演示');
   });
 
@@ -14518,79 +14776,149 @@ function trackTodayChar(ch){
 
   /* ── dock buttons ── */
   function setDock(mode){
-    const wasShown = panel.classList.contains('show');
-    panel.classList.remove('docked-left','docked-right','show');
-    panel.style.cssText = ''; /* reset inline drag position */
+    panel.classList.remove('docked-left','docked-right');
+    /* Clear all inline drag position props (including RTL inset-inline) */
+    panel.style.left = '';
+    panel.style.top  = '';
+    panel.style.right = '';
+    panel.style.bottom = '';
+    panel.style.insetInlineStart = '';
+    panel.style.insetInlineEnd   = '';
     [cpDockLeft, cpDockFloat, cpDockRight].forEach(b => b && b.classList.remove('active'));
     if(mode === 'left'){
       panel.classList.add('docked-left');
-      panel.classList.add('show');
       if(cpDockLeft) cpDockLeft.classList.add('active');
     } else if(mode === 'right'){
       panel.classList.add('docked-right');
-      panel.classList.add('show');
       if(cpDockRight) cpDockRight.classList.add('active');
     } else {
-      /* float — restore default position */
-      panel.style.top   = '80px';
-      panel.style.right = '20px';
-      panel.style.left  = 'auto';
-      if(wasShown) panel.classList.add('show');
       if(cpDockFloat) cpDockFloat.classList.add('active');
     }
-    try{ localStorage.setItem(APP_STORAGE.panelDock, mode); }catch(e){}
+    /* Make sure it's visible after dock change */
+    panel.classList.add('show');
+    toggleBtn.classList.add('panel-open');
+    try{ localStorage.setItem('ui.panelDock', mode); }catch(e){}
   }
 
-  if(cpDockLeft)  cpDockLeft.addEventListener('click',  () => setDock('left'));
-  if(cpDockRight) cpDockRight.addEventListener('click', () => setDock('right'));
-  if(cpDockFloat) cpDockFloat.addEventListener('click', () => setDock('float'));
+  if(cpDockLeft)  cpDockLeft.addEventListener('click',  function(e){ e.stopPropagation(); setDock('left');  });
+  if(cpDockRight) cpDockRight.addEventListener('click', function(e){ e.stopPropagation(); setDock('right'); });
+  if(cpDockFloat) cpDockFloat.addEventListener('click', function(e){ e.stopPropagation(); setDock('float'); });
 
   /* restore dock preference */
   try{
-    const saved = localStorage.getItem(APP_STORAGE.panelDock);
-    if(saved === 'left' || saved === 'right') setDock(saved);
-    else cpDockFloat && cpDockFloat.classList.add('active');
-  }catch(e){ cpDockFloat && cpDockFloat.classList.add('active'); }
+    const saved = localStorage.getItem('ui.panelDock');
+    if(saved === 'left' || saved === 'right'){
+      panel.classList.add('docked-' + saved);
+      const b = saved === 'left' ? cpDockLeft : cpDockRight;
+      if(b) b.classList.add('active');
+    } else {
+      if(cpDockFloat) cpDockFloat.classList.add('active');
+    }
+  }catch(e){ if(cpDockFloat) cpDockFloat.classList.add('active'); }
 
-  /* ── drag to move (float mode only) ── */
-  let dragging = false, ox = 0, oy = 0;
-  dragHandle.addEventListener('mousedown', (e) => {
+  /* ─────────────────────────────────────────────────────────────
+     UNIVERSAL DRAG — pointer events work on mouse, touch, and pen.
+     Works on desktop, mobile, and tablet alike.
+     Disabled when panel is docked.
+     ───────────────────────────────────────────────────────────── */
+  let dragging = false;
+  let dragStartX = 0, dragStartY = 0;
+  let panelStartLeft = 0, panelStartTop = 0;
+  let movedFar = false;
+
+  function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+  function onPointerDown(e){
     if(panel.classList.contains('docked-left') || panel.classList.contains('docked-right')) return;
+    /* Don't start drag if user is interacting with a button in the header */
+    if(e.target.closest('.cp-dock-btn')) return;
     dragging = true;
-    const r = panel.getBoundingClientRect();
-    ox = e.clientX - r.left;
-    oy = e.clientY - r.top;
+    movedFar = false;
+    const rect = panel.getBoundingClientRect();
+    /* Convert to inline left/top so we can move it. Reset RTL inset props as well. */
+    panel.style.left  = rect.left + 'px';
+    panel.style.top   = rect.top  + 'px';
+    panel.style.right = 'auto';
+    panel.style.bottom = 'auto';
+    panel.style.insetInlineStart = 'auto';
+    panel.style.insetInlineEnd   = 'auto';
+    panelStartLeft = rect.left;
+    panelStartTop  = rect.top;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
     panel.style.transition = 'none';
+    dragHandle.style.cursor = 'grabbing';
+    try{ dragHandle.setPointerCapture(e.pointerId); }catch(_){}
     e.preventDefault();
-  });
-  document.addEventListener('mousemove', (e) => {
+  }
+  function onPointerMove(e){
     if(!dragging) return;
-    panel.style.left   = (e.clientX - ox) + 'px';
-    panel.style.top    = (e.clientY - oy) + 'px';
-    panel.style.right  = 'auto';
-    panel.style.bottom = 'auto';
-  });
-  document.addEventListener('mouseup', () => {
-    if(dragging){ dragging = false; panel.style.transition = ''; }
-  });
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    if(Math.abs(dx) > 3 || Math.abs(dy) > 3) movedFar = true;
+    const newLeft = panelStartLeft + dx;
+    const newTop  = panelStartTop  + dy;
+    /* Keep panel on-screen */
+    const w = panel.offsetWidth;
+    const h = panel.offsetHeight;
+    const maxLeft = window.innerWidth  - 40;
+    const maxTop  = window.innerHeight - 40;
+    panel.style.left = clamp(newLeft, -(w - 40), maxLeft) + 'px';
+    panel.style.top  = clamp(newTop,  0,          maxTop) + 'px';
+  }
+  function onPointerUp(e){
+    if(!dragging) return;
+    dragging = false;
+    panel.style.transition = '';
+    dragHandle.style.cursor = '';
+    try{ dragHandle.releasePointerCapture(e.pointerId); }catch(_){}
+    if(movedFar){
+      /* Save position */
+      try{
+        localStorage.setItem('ui.panelPos', JSON.stringify({
+          left: panel.style.left, top: panel.style.top
+        }));
+      }catch(_){}
+    }
+  }
+  if(dragHandle){
+    dragHandle.addEventListener('pointerdown', onPointerDown);
+    dragHandle.addEventListener('pointermove', onPointerMove);
+    dragHandle.addEventListener('pointerup',   onPointerUp);
+    dragHandle.addEventListener('pointercancel', onPointerUp);
+    /* Prevent default touch behavior so dragging works smoothly on mobile */
+    dragHandle.style.touchAction = 'none';
+  }
 
-  /* touch drag */
-  dragHandle.addEventListener('touchstart', (e) => {
+  /* Restore saved float position */
+  try{
+    const savedPos = localStorage.getItem('ui.panelPos');
+    if(savedPos && !panel.classList.contains('docked-left') && !panel.classList.contains('docked-right')){
+      const pos = JSON.parse(savedPos);
+      if(pos && pos.left && pos.top){
+        panel.style.left  = pos.left;
+        panel.style.top   = pos.top;
+        panel.style.right = 'auto';
+        panel.style.bottom = 'auto';
+        panel.style.insetInlineStart = 'auto';
+        panel.style.insetInlineEnd   = 'auto';
+      }
+    }
+  }catch(_){}
+
+  /* If window resizes and panel is off-screen, bring it back to default */
+  window.addEventListener('resize', function(){
     if(panel.classList.contains('docked-left') || panel.classList.contains('docked-right')) return;
-    dragging = true;
-    const r = panel.getBoundingClientRect();
-    ox = e.touches[0].clientX - r.left;
-    oy = e.touches[0].clientY - r.top;
-    panel.style.transition = 'none';
+    const rect = panel.getBoundingClientRect();
+    if(rect.left < 0 || rect.top < 0 || rect.left > window.innerWidth - 40 || rect.top > window.innerHeight - 40){
+      panel.style.left = '';
+      panel.style.top  = '';
+      panel.style.right = '';
+      panel.style.bottom = '';
+      panel.style.insetInlineStart = '';
+      panel.style.insetInlineEnd   = '';
+    }
   }, { passive:true });
-  document.addEventListener('touchmove', (e) => {
-    if(!dragging) return;
-    panel.style.left   = (e.touches[0].clientX - ox) + 'px';
-    panel.style.top    = (e.touches[0].clientY - oy) + 'px';
-    panel.style.right  = 'auto';
-    panel.style.bottom = 'auto';
-  }, { passive:true });
-  document.addEventListener('touchend', () => { dragging = false; panel.style.transition = ''; });
 
   /* initial status */
   updateStatus();
@@ -15929,49 +16257,8 @@ function showDailySummary(){
 })();
 
 
-/* ── G. Swipe-to-Dismiss for Mobile Control Panel (底部抽屉手势关闭) ── */
-(function(){
-  'use strict';
-  var isMob = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768;
-  if(!isMob) return;
-  var panel = document.getElementById('ctrlPanel');
-  if(!panel) return;
-
-  /* Add swipe handle */
-  var handle = document.createElement('div');
-  handle.className = 'cp-swipe-handle';
-  panel.insertBefore(handle, panel.firstChild);
-
-  var startY = 0, dy = 0, dragging = false;
-  panel.addEventListener('touchstart', function(e){
-    var t = e.target;
-    if(t === handle || t.classList.contains('cp-head') || t.id === 'cpDragHandle'){
-      startY = e.touches[0].clientY;
-      dy = 0;
-      dragging = true;
-      panel.style.transition = 'none';
-    }
-  }, {passive:true});
-  panel.addEventListener('touchmove', function(e){
-    if(!dragging) return;
-    dy = e.touches[0].clientY - startY;
-    if(dy > 0) panel.style.transform = 'translateY(' + dy + 'px)';
-  }, {passive:true});
-  panel.addEventListener('touchend', function(){
-    if(!dragging) return;
-    dragging = false;
-    panel.style.transition = '';
-    if(dy > 80){
-      /* Close panel */
-      panel.classList.remove('show');
-      var toggle = document.getElementById('btnPanelToggle');
-      if(toggle) toggle.classList.remove('panel-open');
-      var backdrop = document.getElementById('cpBackdrop');
-      if(backdrop) backdrop.classList.remove('show');
-    }
-    panel.style.transform = '';
-  });
-})();
+/* ── G. Swipe-to-Dismiss handler disabled — replaced by unified pointer drag ── */
+/* (was conflicting with panel drag and forcing translateY on the panel) */
 
 
 /* ── H. Writing Practice Canvas (手写描摹练习) ── */
