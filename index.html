@@ -8879,6 +8879,23 @@ html body.mode-advanced .beginner-hint {
   display: none !important;
 }
 
+/* ── 1b. CRITICAL FIX: .floating-actions was getting BOTH left and right
+        applied in RTL (inset-inline-end + right), making it a giant
+        invisible container that intercepts clicks on the feedback bar
+        and other elements at the bottom of the page. Force shrink-wrap. ── */
+html body .floating-actions {
+  left: auto !important;
+  right: 18px !important;
+  inset-inline-start: auto !important;
+  inset-inline-end: auto !important;
+  width: auto !important;
+  max-width: max-content !important;
+  pointer-events: none !important; /* container is invisible; only buttons accept clicks */
+}
+html body .floating-actions > * {
+  pointer-events: auto !important; /* buttons inside ARE clickable */
+}
+
 /* ── 2. Control panel: UNIVERSAL floating draggable window ──
    Applies on desktop, tablet AND mobile. The user wants the same
    floating-card UX everywhere — no bottom sheet, no full-screen drawer. */
@@ -9327,14 +9344,17 @@ header {
   }
 
   /* Floating action buttons (back-to-top, focus-input) —
-     place at LEFT side so they don't conflict with the FAB on the right */
-  .floating-actions {
+     place at LEFT side so they don't conflict with the FAB on the right.
+     Use left only; explicitly clear right to avoid the width-stretch bug. */
+  html body .floating-actions {
     inset-inline-end: auto !important;
-    inset-inline-start: 10px !important;
+    inset-inline-start: auto !important;
     left: 10px !important;
     right: auto !important;
     bottom: 16px !important;
     gap: 8px !important;
+    width: auto !important;
+    max-width: max-content !important;
   }
   .float-btn {
     width: 42px !important;
